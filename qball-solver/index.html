@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Ball Solver — Monistic Field Theory</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../#results">Results</a>
+                <a href="../#papers">Papers</a>
+                <a href="../#solvers" class="active">Solvers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Q-Ball Soliton Solver</h1>
+        <p class="lede">
+            Solve the nonlinear Q-ball soliton equation
+            <span class="eq">u″ = [m₂ − ω² − λ₄(u/r)² + λ₆(u/r)⁴ − Z/√(r²+a²)] · u</span>
+            for the contraction field of MFT. Adjust the parameters or load a preset
+            for a specific Standard Model particle.
+        </p>
+
+        <section class="status" id="status">
+            <p id="status-text">Loading Pyodide and Python solver…</p>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </section>
+
+        <section class="solver-grid" id="solver-ui" style="display: none;">
+            <aside class="controls">
+                <h2>Parameters</h2>
+
+                <div class="presets">
+                    <p class="control-label">Presets</p>
+                    <div class="preset-buttons">
+                        <button class="preset" data-preset="electron">Electron</button>
+                        <button class="preset" data-preset="muon">Muon</button>
+                        <button class="preset" data-preset="tau">Tau</button>
+                    </div>
+                    <p class="preset-description" id="preset-description">
+                        Adjust parameters or click a preset to load Standard Model particle configurations.
+                    </p>
+                </div>
+
+                <hr>
+
+                <div class="control">
+                    <label for="m2">m₂ (mass term)</label>
+                    <input type="number" id="m2" value="1.0" step="0.1">
+                </div>
+
+                <div class="control">
+                    <label for="lam4">λ₄ (quartic)</label>
+                    <input type="number" id="lam4" value="2.0" step="0.1">
+                </div>
+
+                <div class="control">
+                    <label for="lam6">λ₆ (sextic)</label>
+                    <input type="number" id="lam6" value="0.5" step="0.05">
+                </div>
+
+                <div class="control">
+                    <label for="Z">Z (Coulomb coupling)</label>
+                    <input type="number" id="Z" value="1.0" step="0.1">
+                </div>
+
+                <div class="control">
+                    <label for="a">a (softening length)</label>
+                    <input type="number" id="a" value="1.0" step="0.1">
+                </div>
+
+                <div class="control">
+                    <label for="omega2">ω² (internal frequency squared)</label>
+                    <input type="number" id="omega2" value="0.5" step="0.01" min="0.05" max="0.99">
+                </div>
+
+                <button id="solve-btn" class="solve-button">Solve</button>
+
+                <div class="silver-ratio-note">
+                    <p><strong>Silver-ratio condition:</strong> λ₄² = 8 m₂ λ₆ ⟹ default values m₂=1, λ₄=2, λ₆=0.5 satisfy this exactly.</p>
+                </div>
+            </aside>
+
+            <section class="results">
+                <h2>Results</h2>
+                <div id="results-summary" class="results-summary">
+                    <p class="placeholder">Click <strong>Solve</strong> to compute soliton solutions.</p>
+                </div>
+
+                <div class="plots">
+                    <div class="plot-container">
+                        <h3>Potential V(φ)</h3>
+                        <canvas id="potential-canvas" width="600" height="300"></canvas>
+                    </div>
+                    <div class="plot-container">
+                        <h3>Soliton profile u(r)</h3>
+                        <canvas id="profile-canvas" width="600" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div id="solitons-table-container"></div>
+            </section>
+        </section>
+
+        <section class="explanatory">
+            <h2>About this solver</h2>
+            <p>
+                This solver finds soliton solutions of the Q-ball equation in MFT
+                by shooting from r = 0 and matching the boundary condition u(∞) = 0.
+                For a given internal frequency ω², the equation may admit zero, one,
+                or several normalisable soliton solutions, distinguished by their
+                node count and central amplitude φ_core = u′(0).
+            </p>
+            <p>
+                The potential V(φ) = m₂/2·φ² − λ₄/4·φ⁴ + λ₆/6·φ⁶ has a barrier at
+                φ_b = √((λ₄ − √(λ₄² − 4m₂λ₆))/(2λ₆)) and a second minimum at
+                φ_v = √((λ₄ + √(λ₄² − 4m₂λ₆))/(2λ₆)). When the silver-ratio condition
+                λ₄² = 8 m₂ λ₆ holds, these take the values φ_b² = 1/√2 and
+                φ_v² = √2 = δ − 1, with δ = 1 + √2 the silver ratio.
+            </p>
+            <p>
+                Solitons whose core amplitude lies in the linear region (φ < φ_b/2)
+                correspond to the lighter family members (electron, up quark);
+                those near the barrier (0.5 φ_b &lt; φ &lt; 1.1 φ_b) correspond to
+                the second family (muon, charm); and those in the nonlinear vacuum
+                (φ > 1.1 φ_b) correspond to the third family (tau, top).
+            </p>
+            <p>
+                Mass calibration: with m₂ = 1, λ₄ = 2, λ₆ = 0.5, Z = 1, the electron's
+                soliton energy E ≈ 0.00427 in MFT units corresponds to 0.511 MeV,
+                giving the conversion factor MFT_TO_MEV ≈ 119.67.
+            </p>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/mft" target="_blank">github.com/dalewahl/mft</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+
+    <script src="solver.js"></script>
+</body>
+</html>
