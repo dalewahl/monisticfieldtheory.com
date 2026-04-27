@@ -289,7 +289,7 @@ async function runSolver() {
     pyodide.globals.set('js_params', pyodide.toPy(params));
     let result;
     try {
-        const pyResult = pyodide.runPython('solve(js_params.to_py())');
+        const pyResult = pyodide.runPython('solve(js_params)');
         result = pyResult.toJs({ dict_converter: Object.fromEntries });
         pyResult.destroy();
     } catch (err) {
