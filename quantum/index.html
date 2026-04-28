@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum — Monistic Field Theory</title>
+    <meta name="description" content="The quantum sector of MFT: canonical quantisation, propagators and Feynman rules, electromagnetic scattering matching QED to 10⁻⁴⁵, and 3D finiteness of the sextic potential.">
+    <link rel="stylesheet" href="../style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'none'
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/">Foundations</a>
+                <a href="../particles/">Particles</a>
+                <a href="../gravity/">Gravity</a>
+                <a href="../quantum/" class="active">Quantum</a>
+                <a href="../qball-solver/">Solvers</a>
+                <a href="../papers/">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container guide-page">
+
+        <section class="hero">
+            <h1>Quantum</h1>
+            <p class="hero-tagline">
+                The quantum completion of MFT: canonical quantisation of the contraction
+                field and electromagnetism, derivation of all three propagator structures,
+                proof that electromagnetic scattering matches QED to
+                $\mathcal{O}(m_e^2/M_{\text{Pl}}^2) \approx 10^{-45}$, and the resolution of
+                renormalisability via 3D power counting — where the sextic coupling is marginal,
+                the silver-ratio condition is preserved, and no counterterms are needed.
+            </p>
+            <div class="status-block">
+                <p class="status-label">Papers covered</p>
+                <p style="margin: 0; font-size: 14px; color: #444;">
+                    P10 (Quantum Completion: Hamiltonian, constraints, Fock space) ·
+                    P11 (Linearised Propagators and Feynman Rules) ·
+                    P14 (Electromagnetic Form Factor and $g = 2$) ·
+                    P15 (3D Finiteness and Renormalisability).
+                </p>
+            </div>
+        </section>
+
+        <!-- Opening framing -->
+        <section class="section">
+            <h2>1. The quantum question</h2>
+            <p>
+                MFT is a classical theory of an elastic medium. The action of <a href="../foundations/">Foundations §2</a>
+                describes a continuous contraction field $\varphi$ and a 3-metric $h_{ij}$
+                evolving under coupled field equations. <strong>What does this look like as a
+                quantum field theory?</strong>
+            </p>
+            <p>
+                Three concerns must be addressed for MFT to be quantum-mechanically consistent:
+            </p>
+            <ol class="forced-moves">
+                <li><strong>Canonical structure.</strong> What are the conjugate momenta?
+                    What constraints does Gauss's law impose? What does the physical Hilbert
+                    space look like? <em>Answered by P10.</em></li>
+                <li><strong>Feynman rules.</strong> What are the tree-level propagators for
+                    the scalar mode, the photon, and the massive gauge bosons? What are the
+                    interaction vertices? <em>Answered by P11.</em></li>
+                <li><strong>Renormalisation.</strong> The sextic coupling $\lambda_6$ is
+                    non-renormalisable in four spacetime dimensions. Doesn't this kill the
+                    theory? <em>Answered by P15: no, because MFT is fundamentally three-dimensional
+                    in the relevant sense.</em></li>
+                <li><strong>Comparison with experiment.</strong> Does the electron, as a
+                    finite-size soliton, contradict the LEP bound $r_e < 10^{-3}$ fm?
+                    <em>Answered by P14: no, the classical soliton radius is a
+                    renormalisation artifact and the physical form factor matches QED to
+                    $10^{-45}$.</em></li>
+            </ol>
+            <p>
+                The four papers answer all four concerns. The result is a quantum field theory
+                that recovers QED for electromagnetism, has finite one-loop corrections in
+                three dimensions, preserves the silver-ratio condition under RG flow, and
+                produces $g = 2$ for the electron without postulating the Dirac equation.
+            </p>
+        </section>
+
+        <!-- P10: Quantum Completion -->
+        <section class="section">
+            <h2>2. Canonical quantisation <span class="paper-tag">P10</span></h2>
+
+            <h3>Hamiltonian and constraints</h3>
+            <p>
+                Starting from the MFT Lagrangian for the contraction field $c$, scalar potential
+                $\phi$, and gauge field $A_i$, the Legendre transform yields canonical momenta
+                $\pi_c, \pi_\phi, \pi^i$. Two constraints emerge:
+            </p>
+            <ul>
+                <li><strong>Primary constraint:</strong> $\pi_\phi = 0$. The scalar potential
+                    $\phi$ has no conjugate momentum — it is a pure auxiliary field.</li>
+                <li><strong>Secondary constraint (Gauss's law):</strong> Requiring
+                    $\partial_\tau \pi_\phi = 0$ (persistence of the primary constraint) yields
+                    $\partial_i \pi^i = \rho$ in the presence of charged matter.</li>
+            </ul>
+            <p>
+                These are first-class constraints generating $U(1)$ gauge transformations.
+                Imposing Coulomb gauge $\partial_i A_i = 0$ together with Gauss's law leaves
+                only the transverse components $A_i^T, \pi_T^i$ as physical degrees of freedom.
+                The scalar potential $\phi$ and its constraint are eliminated from the reduced
+                Hamiltonian.
+            </p>
+
+            <h3>Linearisation around the MFT vacuum</h3>
+            <p>
+                Choose a static, spatially homogeneous background $c(\tau, \mathbf{x}) = c_0$
+                where $V'(c_0) = 0$ and $V''(c_0) > 0$ (a local minimum). For the relaxed
+                vacuum $c_0 = 0$: $m_{\text{eff}}^2 = V''(0) = m_2 = 1$. For the nonlinear
+                vacuum $c_0 = \varphi_v$: $m_{\text{eff}}^2 = V''(\varphi_v) = 4\delta \approx 9.66$.
+                Writing $c = c_0 + \delta c$ and expanding to quadratic order:
+            </p>
+            <div class="equation-display">
+                $$H_{\text{free}} = \int d^3x \left[
+                  \tfrac{1}{2}\pi_{\delta c}^2 + \tfrac{1}{2}(\nabla \delta c)^2 + \tfrac{1}{2}m_{\text{eff}}^2(\delta c)^2
+                  + \tfrac{1}{2 Z_{E0}}\pi_T^i \pi_T^i + \tfrac{1}{4} Z_{B0}\, f_{ij} f_{ij}
+                \right]$$
+            </div>
+            <p>
+                where $f_{ij} = \partial_i a_j - \partial_j a_i$ and the stiffness coefficients
+                $Z_{E0}, Z_{B0}$ are evaluated at the background.
+            </p>
+
+            <h3>Free dispersion relations</h3>
+            <p>
+                Fourier-transforming gives the tree-level dispersion relations:
+            </p>
+            <div class="equation-display">
+                $$\omega_c^2(\mathbf{k}) = |\mathbf{k}|^2 + m_{\text{eff}}^2 \qquad \text{(scalar contraction mode)}$$
+                $$\omega_\gamma^2(\mathbf{k}) = \frac{Z_{B0}}{Z_{E0}} |\mathbf{k}|^2 \equiv c_{\text{eff}}^2 |\mathbf{k}|^2 \qquad \text{(transverse photon)}$$
+            </div>
+            <p>
+                The scalar mass $m_{\text{eff}} = \sqrt{V''(c_0)}$ is set by the curvature of
+                the sextic potential at the background. The photon dispersion is massless and
+                its speed $c_{\text{eff}} = \sqrt{Z_{B0}/Z_{E0}}$ defines the universal
+                lightcone — the same emergent speed of light derived in
+                <a href="../foundations/">Foundations §8</a>.
+            </p>
+
+            <h3>Fock space</h3>
+            <p>
+                The dynamical variables are promoted to operators with equal-$\tau$
+                commutation relations:
+            </p>
+            <div class="equation-display">
+                $$[\hat{\delta c}(\mathbf{x}), \hat{\pi}_{\delta c}(\mathbf{y})] = i\hbar\, \delta^3(\mathbf{x} - \mathbf{y})$$
+                $$[\hat{a}_i^T(\mathbf{x}), \hat{\pi}_T^j(\mathbf{y})] = i\hbar\, \delta_{ij}^T(\mathbf{x} - \mathbf{y})$$
+            </div>
+            <p>
+                where $\delta_{ij}^T$ is the transverse delta function. The constraints are
+                imposed at the operator level; only transverse modes appear in the physical
+                Hilbert space.
+            </p>
+            <p>
+                The scalar fluctuation operator and the transverse gauge field expand in
+                creation and annihilation operators:
+            </p>
+            <div class="equation-display">
+                $$\hat{\delta c}(\mathbf{x}) = \int \frac{d^3k}{(2\pi)^3}\, \frac{1}{\sqrt{2\omega_c(\mathbf{k})}} \left( \hat{a}_{\mathbf{k}}\, e^{i\mathbf{k}\cdot\mathbf{x}} + \hat{a}_{\mathbf{k}}^\dagger\, e^{-i\mathbf{k}\cdot\mathbf{x}} \right)$$
+            </div>
+            <p>
+                with $[\hat{a}_{\mathbf{k}}, \hat{a}_{\mathbf{k}'}^\dagger] = (2\pi)^3 \delta^3(\mathbf{k} - \mathbf{k}')$
+                and analogous photon operators with two transverse polarisations. The vacuum
+                $|0\rangle$ satisfies $\hat{a}_{\mathbf{k}} |0\rangle = 0$ for all
+                $\mathbf{k}$. Standard QFT structure obtains.
+            </p>
+
+            <h3>What the background stiffnesses control</h3>
+            <p>
+                The background stiffness functions $Z_E(c_0), Z_B(c_0)$ control three key
+                features:
+            </p>
+            <ol>
+                <li><strong>Emergent speed of light.</strong> $c_{\text{eff}} = \sqrt{Z_{B0}/Z_{E0}}$
+                    sets the universal lightcone shared by all low-energy excitations.</li>
+                <li><strong>Medium dependence.</strong> In regions where $c \neq c_0$, the
+                    stiffness deviates, producing an effective refractive index — the
+                    microscopic origin of gravitational lensing and the cosmological
+                    photon-shift law.</li>
+                <li><strong>Scalar mass from elastic stiffness.</strong>
+                    $m_{\text{eff}} = \sqrt{V''(c_0)}$ is determined by the potential
+                    curvature: $m_{\text{eff}} = 1$ at the relaxed vacuum, $\approx 3.11$
+                    at the nonlinear vacuum.</li>
+            </ol>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P10: Quantum Completion (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_quantum_completion.py">mft_quantum_completion.py</a>
+            </p>
+        </section>
+
+        <!-- P11: Propagators -->
+        <section class="section">
+            <h2>3. Linearised propagators and Feynman rules <span class="paper-tag">P11</span></h2>
+
+            <p>
+                Once the action is canonically quantised, computing observables requires
+                Feynman rules. P11 derives the three propagator structures and the
+                interaction vertices for systematic perturbative computation.
+            </p>
+
+            <h3>The three propagators</h3>
+
+            <h4>Scalar contraction propagator</h4>
+            <p>
+                Expanding around $\varphi_0$ and Fourier-transforming:
+            </p>
+            <div class="equation-display">
+                $$\boxed{\Delta_\varphi(\omega, \mathbf{k}) = \frac{1}{Z_\tau \omega^2 + Z_s \mathbf{k}^2 + m_\varphi^2}}$$
+            </div>
+            <p>
+                where $Z_\tau, Z_s$ are effective kinetic and gradient coefficients, and
+                $m_\varphi^2 = V''_{\text{eff}}(\varphi_0)$. At the relaxed vacuum
+                $m_\varphi^2 = m_2 = 1$. At the nonlinear vacuum $m_\varphi^2 = 4\delta \approx 9.66$.
+                The static propagator (equal-ordering correlator, $\omega = 0$):
+                $\Delta_\varphi^{\text{static}}(\mathbf{k}) = (Z_s \mathbf{k}^2 + m_\varphi^2)^{-1}$.
+            </p>
+
+            <h4>Massless photon propagator</h4>
+            <p>
+                Under the working hypothesis $\varepsilon(\varphi) = 1$ everywhere
+                (constrained by $f_\pi^2 = \delta$ at 0.03%), the photon Lagrangian is
+                already canonically normalised. Working in Coulomb gauge with the transverse
+                projector $\Pi_{ij}(\mathbf{k}) = \delta_{ij} - k_i k_j / \mathbf{k}^2$:
+            </p>
+            <div class="equation-display">
+                $$\boxed{D_{ij}^{(\gamma)}(\omega, \mathbf{k}) = \frac{\Pi_{ij}(\mathbf{k})}{Z_{\tau, A} \omega^2 + \mathbf{k}^2}}$$
+            </div>
+            <p>
+                The effective photon speed is $c_\gamma = 1/\sqrt{Z_{\tau, A}}$. With the
+                canonical normalisation $Z_{\tau, A} = 1$, the photon propagates at
+                $c_\gamma = 1$ everywhere, establishing the universal lightcone trivially.
+            </p>
+
+            <h4>Massive gauge propagators ($W^\pm, Z$)</h4>
+            <p>
+                Electroweak vector bosons arise as transverse modes with effective mass terms
+                set by the Q-ball spectrum at $Z_{\text{boson}} = 9/5$:
+            </p>
+            <div class="equation-display">
+                $$\boxed{D_{ij}^{(a)}(\omega, \mathbf{k}) = \frac{\Pi_{ij}(\mathbf{k})}{Z_{\tau, W} \omega^2 + \mathbf{k}^2 + m_a^2}, \qquad a = W^+, W^-, Z}$$
+            </div>
+            <p>
+                with $m_a^2$ the effective mass derived from <a href="../particles/">Particles §3</a>.
+                These propagators feed standard Feynman-diagrammatic computation.
+            </p>
+
+            <h3>Feynman rules and a key simplification</h3>
+            <p>
+                The interaction vertices follow from cubic and quartic terms in the action.
+                Scalar self-interactions follow from the sextic potential:
+                $V_3 \sim (\lambda_4, \lambda_6) \varphi^3, \varphi^5$ at the nonlinear vacuum
+                (after shifting). Gauge self-interactions follow from the non-abelian
+                structure of $SU(2) \times U(1)$.
+            </p>
+            <p>
+                A crucial simplification: <strong>under $\varepsilon = 1$, the
+                scalar–gauge–gauge couplings $\varphi A A$ and $\varphi W W, \varphi Z Z$
+                vanish identically.</strong> The contraction field couples to electromagnetism
+                only through the gravitational sector $F(\varphi)$, which is
+                $\mathcal{O}(\beta) \sim 10^{-4}$ — strongly suppressed. There is no
+                tree-level Higgs–photon coupling beyond gravitational corrections at
+                $10^{-45}$.
+            </p>
+            <p>
+                This is what makes MFT electromagnetism look like ordinary QED in P14.
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P11: Linearised Propagators and Feynman Rules (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_propagators.py">mft_propagators.py</a>
+            </p>
+        </section>
+
+        <!-- P14: scattering -->
+        <section class="section">
+            <h2>4. Electromagnetic scattering and $g = 2$ <span class="paper-tag">P14</span></h2>
+
+            <p>
+                The electron in MFT is not a point particle — it is a finite-size Q-ball
+                soliton. Naïvely this contradicts the LEP bound $r_e < 10^{-3}$ fm. P14
+                resolves the apparent contradiction in five steps and ends with $F_{\text{MFT}} = F_{\text{QED}} + \mathcal{O}(10^{-45})$.
+            </p>
+
+            <h3>The classical form factor and the apparent problem</h3>
+            <p>
+                The electron soliton (Q-ball with $Z = 1$, $\ell = 0$) has charge density
+                $\rho(r) = 2 e \omega \varphi^2(r)$ and electromagnetic form factor:
+            </p>
+            <div class="equation-display">
+                $$F(q) = \frac{4\pi}{Q_{\text{total}}} \int_0^\infty \rho(r)\, j_0(qr)\, r^2\, dr$$
+            </div>
+            <p>
+                where $j_0(x) = \sin(x)/x$. By construction $F(0) = 1$ (Thomson scattering
+                recovered), and the charge radius is $\langle r^2 \rangle^{1/2} \approx 0.07$–$0.64\, \lambda_C$
+                depending on solver branch, where $\lambda_C = 386$ fm is the Compton wavelength.
+            </p>
+            <p>
+                The LEP bound is $r_e < 10^{-3}$ fm $\approx 2.6 \times 10^{-6}\, \lambda_C$.
+                <strong>The classical soliton radius exceeds this by a factor of $10^4$–$10^5$.</strong>
+                Apparent ruling-out of the soliton model.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_scattering_fig1_classical.png" alt="The electron soliton profile, charge density, and classical form factor showing the apparent problem.">
+                <figcaption>
+                    The electron soliton and its classical form factor.
+                    <strong>(a)</strong> Radial profile $\varphi(r)$.
+                    <strong>(b)</strong> Charge density $\rho(r) = \omega \varphi^2(r)$ with charge radius indicated.
+                    <strong>(c)</strong> Electromagnetic form factor $|F(q)|^2$ vs momentum transfer; 1% deviation
+                    at $q \approx 0.1$ MeV. Thomson scattering ($F(0) = 1$) recovered exactly.
+                </figcaption>
+            </figure>
+
+            <h3>The resolution: classical radius is a renormalisation artifact</h3>
+            <p>
+                The LEP bound measures the precision to which $e^+e^-$ scattering data agrees
+                with QED — including all loop corrections (vertex, self-energy, vacuum
+                polarisation). A deviation from QED at the level corresponding to a charge
+                radius $r$ would be detectable if $r > 10^{-3}$ fm.
+                <strong>The bound is on deviations from QED, not on the electron's actual
+                effective size.</strong>
+            </p>
+            <p>
+                QED's own loop corrections give the electron an effective charge distribution:
+            </p>
+            <div class="equation-display">
+                $$\langle r^2 \rangle_{\text{QED}}^{1/2} \sim \sqrt{\frac{\alpha}{\pi}}\, \frac{1}{m_e} \approx 0.02\text{–}0.20\, \lambda_C$$
+            </div>
+            <p>
+                depending on the cutoff scheme ($\Lambda = m_e$ to $\Lambda = M_{\text{Pl}}$).
+                <strong>The MFT soliton radius sits within this range.</strong> Furthermore,
+                the MFT form factor and QED's corrections go in opposite directions: MFT
+                suppresses the cross-section ($|F|^2 < 1$) while QED's vacuum polarisation
+                enhances it ($\alpha_{\text{eff}}(q^2) > \alpha$). At $q \sim 1$ MeV, both
+                effects are $\mathcal{O}(0.1\text{–}1\%)$.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_scattering_fig2_reinterpret.png" alt="MFT electron radius compared to QED's own effective radius; the classical soliton is a bare quantity.">
+                <figcaption>
+                    Reinterpretation of the LEP bound. Left: the MFT classical soliton radius sits within the
+                    range of QED's own effective electron radius at different cutoff scales. Right: MFT and QED
+                    corrections to scattering go in opposite directions and partially cancel.
+                </figcaption>
+            </figure>
+
+            <h3>The renormalisation argument</h3>
+            <p>
+                The classical soliton charge radius is the <em>bare</em> charge distribution
+                — analogous to the bare mass and bare charge in QED before counterterms are
+                applied. After all-orders renormalisation:
+            </p>
+            <div class="equation-display">
+                $$\boxed{F_{\text{MFT}}(q) = F_{\text{QED}}(q) + \mathcal{O}(m_e^2/M_{\text{Pl}}^2) \approx F_{\text{QED}}(q) + 10^{-45}}$$
+            </div>
+            <p>
+                The cancellation of the classical $R^2 \sim \mathcal{O}(1)$ is a
+                <strong>non-perturbative all-orders statement</strong> — it cannot be cancelled
+                at any finite loop order $\mathcal{O}(\alpha^n)$, but the sum over all orders
+                converges to the QED result. This is exactly analogous to the Skyrmion charge
+                radius converging to the QCD proton radius.
+            </p>
+
+            <h3>One-loop verification</h3>
+            <p>
+                P14v2 adds an explicit one-loop verification to confirm the renormalisation
+                argument is consistent at the first loop order where it could fail:
+            </p>
+            <ul class="forced-moves">
+                <li>The electron's charge density lives entirely in the linear regime of the
+                    sextic potential ($\varphi_{\text{core}} \ll \varphi_b$, with
+                    $Q_{\text{core}}/Q_{\text{total}} < 0.1\%$). In this regime the MFT
+                    electromagnetic sector is <em>literally scalar QED</em>.</li>
+                <li>The one-loop scalar self-energy has UV log coefficient
+                    $3 m^2/(16 \pi^2)$ — the textbook scalar-QED value, extracted numerically
+                    to four significant figures.</li>
+                <li>The vertex form factor slope matches $-\tfrac{1}{2}\alpha/(4\pi m^2)$.</li>
+                <li>The Ward–Takahashi identity is preserved: the confining Coulomb source
+                    does not spoil gauge invariance.</li>
+                <li>The UV coefficient is invariant under the soliton background — the
+                    confining background does not alter the UV counterterm structure.</li>
+            </ul>
+            <p>
+                This does not prove all-orders equality (that remains the non-perturbative
+                claim), but it confirms that the first loop order is consistent with the
+                Skyrmion–QCD analogy.
+            </p>
+
+            <h3>The hierarchy</h3>
+            <p>
+                Three contributions to the electron's electromagnetic form factor form a clean
+                hierarchy:
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Contribution</th><th>Magnitude</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Classical soliton (bare)</td><td>$\mathcal{O}(1)$</td><td>Absorbed by renormalisation</td></tr>
+                        <tr><td>QED loop corrections</td><td>$\mathcal{O}(\alpha/\pi) \approx 10^{-3}$</td><td>Physical (matches QED)</td></tr>
+                        <tr><td>Gravitational (MFT-specific)</td><td>$\mathcal{O}(m_e^2/M_{\text{Pl}}^2) \approx 10^{-45}$</td><td>Undetectable</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                The ratio $(\alpha/\pi)/(m_e^2/M_{\text{Pl}}^2) \approx 10^{42}$ quantifies
+                the dominance of QED over gravity in the electromagnetic sector. <strong>No
+                foreseeable experiment can distinguish the MFT electron from the QED electron.</strong>
+            </p>
+
+            <h3>The gyromagnetic ratio: $g = 2$ from the Weinberg theorem</h3>
+            <p>
+                A Q-ball is a classical scalar field configuration with no intrinsic
+                magnetic moment — naïvely $\mu = 0$. But MFT electrons are not classical
+                Q-balls; they are spin-½ via the Finkelstein–Rubinstein constraint
+                (<a href="../particles/">Particles §4</a>) on the configuration space of
+                solitons with internal $U(1)$ phase. After FR-constrained quantisation, the
+                electron is a spin-½ particle minimally coupled to the photon.
+            </p>
+            <p>
+                The Weinberg theorem on emergent Lorentz invariance with minimal coupling
+                states: any spin-½ particle with charge $e$ minimally coupled to the photon
+                has gyromagnetic ratio $g = 2$ at tree level.
+                <strong>$g = 2$ is therefore derived in MFT, not postulated</strong>:
+            </p>
+            <ol class="forced-moves">
+                <li>Emergent Lorentz invariance from <a href="../foundations/">Foundations §8</a>.</li>
+                <li>FR-constrained quantisation gives spin-½ from the Q-ball internal $U(1)$
+                    phase.</li>
+                <li>Minimal coupling to the photon (no $\varphi A A$ vertex under $\varepsilon = 1$)
+                    via the covariant derivative.</li>
+                <li>Weinberg's theorem then gives $g = 2$.</li>
+            </ol>
+            <p>
+                The anomalous moment $g - 2 = \alpha/(2\pi)$ at one loop follows from the
+                S-matrix equivalence with QED. Schwinger's coefficient is reproduced exactly.
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P14: Electromagnetic Scattering and $g = 2$ (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_scattering_complete_v2.py">mft_scattering_complete_v2.py</a>
+            </p>
+        </section>
+
+        <!-- P15: 3D finiteness -->
+        <section class="section">
+            <h2>5. 3D finiteness — why MFT is renormalisable <span class="paper-tag">P15</span></h2>
+
+            <p>
+                The sextic coupling $\lambda_6$ is non-renormalisable in four spacetime
+                dimensions. Naïvely this kills MFT as a quantum field theory. P15 resolves
+                this by showing that <strong>MFT is fundamentally three-dimensional in the
+                relevant sense</strong>: the Q-ball ansatz separates time from space, the
+                fluctuation operator is 3D, and in 3D the sextic coupling is marginal — not
+                non-renormalisable.
+            </p>
+
+            <h3>Power counting: why dimension matters</h3>
+            <p>
+                For a scalar field with potential
+                $V(\varphi) = \tfrac{1}{2}m_2\varphi^2 - \tfrac{1}{4}\lambda_4\varphi^4 + \tfrac{1}{6}\lambda_6\varphi^6$
+                in $D$ spacetime dimensions, dimensional analysis gives:
+            </p>
+            <div class="equation-display">
+                $$[\lambda_4] = 4 - D, \qquad [\lambda_6] = 6 - 2D$$
+            </div>
+            <p>
+                A coupling with mass dimension $\ge 0$ is renormalisable; with negative
+                dimension it is non-renormalisable. The sextic coupling:
+            </p>
+            <ul class="forced-moves">
+                <li>$D = 3$: $[\lambda_6] = 0$ — <strong>marginal</strong> (borderline
+                    renormalisable).</li>
+                <li>$D = 4$: $[\lambda_6] = -2$ — non-renormalisable. Each loop generates new
+                    operators ($\varphi^8, \varphi^{10}, \ldots$) that require new
+                    counterterms.</li>
+                <li>$D > 4$: progressively worse.</li>
+            </ul>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_3d_finiteness_fig1.png" alt="Power counting: the sextic coupling is marginal at D=3, non-renormalisable at D=4.">
+                <figcaption>
+                    Power counting for the sextic coupling. (a) Mass dimension $[\lambda_6] = 6 - 2D$:
+                    marginal at $D = 3$, non-renormalisable at $D = 4$. (b) Coupling dimensions vs $D$ for
+                    $\varphi^4$, $\varphi^6$, $\varphi^8$. The MFT spatial dimension $D = 3$ places the sextic
+                    exactly at the boundary. (c) Summary of the 3D vs 4D distinction.
+                </figcaption>
+            </figure>
+
+            <h3>What would happen if 4D power counting applied</h3>
+            <p>
+                If 4D counting were assumed, the one-loop divergence
+                $[V''(\varphi)]^2/(64\pi^2 \varepsilon)$ generates a $\varphi^8$ operator
+                (coefficient $25\lambda_6^2 = 6.25$) at one loop, even though it is absent
+                from the tree-level Lagrangian. Reading off one-loop beta functions:
+            </p>
+            <div class="equation-display">
+                $$\beta(m_2) = -0.076, \quad \beta(\lambda_4) = -0.519, \quad \beta(\lambda_6) = -0.570, \quad \beta(\lambda_8) = +0.158$$
+            </div>
+            <p>
+                Crucially, the silver-ratio parameter $\rho = \lambda_4^2/(m_2 \lambda_6)$
+                has flow:
+            </p>
+            <div class="equation-display">
+                $$\frac{d\rho}{d \ln \mu} = +5.57 \quad \text{at } \rho = 8$$
+            </div>
+            <p>
+                <strong>This is not zero.</strong> Under 4D RG flow, $\rho$ would drift
+                rapidly from 8 to 15 within one $e$-folding of energy scale, and to 355 by
+                ten $e$-foldings. The silver-ratio condition would be destroyed and all mass
+                predictions would fail.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_3d_finiteness_fig2.png" alt="The catastrophic 4D RG flow that would destroy the silver-ratio condition.">
+                <figcaption>
+                    The catastrophic 4D RG flow. (a) Silver-ratio parameter $\rho = \lambda_4^2/(m_2 \lambda_6)$
+                    drifts rapidly from 8 under 4D RG. (b) All three couplings run with the scale.
+                    (c) A $\varphi^8$ operator is generated at one loop (absent at tree level), signalling
+                    non-renormalisability. <strong>This is what would happen if 4D counting applied — but it
+                    does not.</strong>
+                </figcaption>
+            </figure>
+
+            <h3>The Q-ball ansatz separates variables</h3>
+            <p>
+                The MFT action is on a 3D spatial slice $\Sigma$ with ordering parameter
+                $\tau$. The Q-ball ansatz
+                $\Phi(\tau, \mathbf{x}) = \varphi(\mathbf{x})\, e^{-i\omega\tau}$
+                separates the $\tau$ dependence (a phase) from the spatial profile $\varphi(\mathbf{x})$.
+                After substitution, the action reduces to a <em>three-dimensional</em>
+                spatial functional of $\varphi(\mathbf{x})$. The stationary points satisfy
+                a 3D radial equation. The fluctuation operator about a Q-ball solution is
+                the 3D operator
+                $L = -\nabla^2 + V''_{\text{eff}}(\varphi(\mathbf{x}))$.
+            </p>
+            <p>
+                <strong>Quantum corrections to the soliton mass spectrum are governed by 3D
+                loop integrals</strong> — not 4D ones. In 3D, $[\lambda_6] = 0$ is marginal.
+            </p>
+
+            <h3>The 3D one-loop effective potential is finite</h3>
+            <p>
+                The one-loop effective potential in 3D is the standard spectral sum:
+            </p>
+            <div class="equation-display">
+                $$V_{1\text{-loop}}^{(3D)}(\varphi) = -\frac{1}{12\pi}[V''(\varphi)]^{3/2}$$
+            </div>
+            <p>
+                <strong>Closed-form, finite, no counterterms needed.</strong> No $\varphi^8$ or
+                higher operators are generated. The one-loop effective potential is a
+                finite function of $\varphi$ that adds a small correction to the tree-level
+                $V_6$.
+            </p>
+
+            <h3>The silver ratio is preserved</h3>
+            <p>
+                Because the 3D one-loop correction is finite and has no $1/\varepsilon$ poles,
+                <strong>there are no UV divergences to shift the couplings.</strong> The
+                silver-ratio condition $\lambda_4^2 = 8 m_2 \lambda_6$ is preserved
+                under quantum corrections. The mass-ratio predictions
+                ($m_\mu/m_e$, $m_\tau/m_\mu$, $m_Z/m_W$) are RG-invariant and protected.
+            </p>
+
+            <div class="callout callout-info">
+                <p><strong>Analogy with thermal field theory.</strong> A 4D quantum field
+                theory at finite temperature reduces, in the high-temperature limit, to an
+                effective 3D Euclidean field theory after integrating out the imaginary-time
+                modes. In this 3D effective theory, couplings that are non-renormalisable in
+                4D become renormalisable. MFT works the same way: the Q-ball ansatz
+                effectively "compactifies" the $\tau$ dependence to a single phase, leaving
+                a 3D spatial problem where the sextic is marginal.</p>
+            </div>
+
+            <h3>Why the Q-ball ansatz is exact for MFT solitons</h3>
+            <p>
+                The Q-ball ansatz is not an approximation for MFT solitons — it is exact
+                because the MFT action has an exact internal $U(1)$ symmetry
+                $\Phi \to e^{i\alpha}\Phi$. This symmetry is generated by the Noether charge
+                $Q$ that defines the soliton type. The phase $e^{-i\omega\tau}$ is the global
+                action of this $U(1)$ on the static profile $\varphi(\mathbf{x})$. There is
+                no $\tau$-dependence beyond this phase for stationary solutions, by the
+                conservation of $Q$.
+            </p>
+            <p>
+                Higher-loop corrections preserve this structure because the Q-ball $U(1)$
+                symmetry is exact: the one-loop spectral problem is 3D, the two-loop
+                computation is 3D, and so on. <strong>3D finiteness is a structural property
+                of MFT, not a low-energy approximation.</strong>
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P15: 3D Finiteness and Renormalisability (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_3d_finiteness.py">mft_3d_finiteness.py</a>
+            </p>
+        </section>
+
+        <!-- Synthesis -->
+        <section class="section">
+            <h2>6. Synthesis: a quantum-mechanically consistent theory</h2>
+            <p>
+                The four quantum papers establish that MFT is a complete, quantum-mechanically
+                consistent field theory:
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Concern</th><th>Resolution</th><th>Paper</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Canonical structure?</td><td>Standard Hamiltonian + Gauss-law constraint; physical Hilbert space is the transverse Fock space.</td><td>P10</td></tr>
+                        <tr><td>Tree-level Feynman rules?</td><td>Three propagators (scalar, photon, massive gauge); $\varphi A A$ couplings vanish under $\varepsilon = 1$.</td><td>P11</td></tr>
+                        <tr><td>Electron a finite-size soliton?</td><td>Classical radius is bare; physical form factor matches QED to $10^{-45}$.</td><td>P14</td></tr>
+                        <tr><td>$g = 2$ for the electron?</td><td>Derived from emergent Lorentz invariance + FR-constrained spin-½ + minimal coupling, via the Weinberg theorem.</td><td>P14</td></tr>
+                        <tr><td>Sextic coupling non-renormalisable?</td><td>Q-ball ansatz reduces to 3D where $[\lambda_6] = 0$ is marginal; one-loop $V_{\text{1-loop}}^{(3D)}$ is finite.</td><td>P15</td></tr>
+                        <tr><td>Silver ratio preserved under RG?</td><td>Yes; no UV divergences in 3D, mass ratios are RG-invariant.</td><td>P15</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                <strong>The result is a quantum field theory that recovers all of QED's
+                predictions for electromagnetism, has finite one-loop corrections, preserves
+                the silver-ratio condition under RG flow, and produces $g = 2$ for the electron
+                without postulating the Dirac equation.</strong>
+            </p>
+            <p>
+                With this in place, the MFT corpus across <a href="../foundations/">Foundations</a>,
+                <a href="../particles/">Particles</a>, <a href="../gravity/">Gravity</a>, and
+                Quantum forms a closed theory: a single elastic medium, governed by one
+                derived sextic potential, in which all of microphysics, gravity, cosmology,
+                and quantum field theory follow from the contraction dynamics. Three open
+                problems remain (PMNS matrix, quantitative cosmology, SU(3) colour selection),
+                listed in the <a href="../guide/">Guide</a>.
+            </p>
+        </section>
+
+        <!-- Where to next -->
+        <section class="section">
+            <h2>Where to next</h2>
+            <div class="next-grid">
+                <a href="../foundations/" class="next-card">
+                    <h3>← Foundations</h3>
+                    <p>The action and the silver-ratio condition the quantum theory inherits.</p>
+                    <p class="next-papers">P0 · P1 · P2 · P9</p>
+                </a>
+                <a href="../particles/" class="next-card">
+                    <h3>← Particles</h3>
+                    <p>The classical Q-ball spectrum and family-of-three theorem that the quantum theory builds on.</p>
+                    <p class="next-papers">P3 · P4 · P6 · P7 · P8</p>
+                </a>
+                <a href="../gravity/" class="next-card">
+                    <h3>← Gravity</h3>
+                    <p>The macroscopic regime: rotation curves, cosmological expansion, compact objects.</p>
+                    <p class="next-papers">P5 · P12 · P13</p>
+                </a>
+                <a href="../synthesis/" class="next-card">
+                    <h3>Synthesis →</h3>
+                    <p>The flagship paper as a single synthesis page: principle, action, parameter ledger, derivation chain.</p>
+                    <p class="next-papers">P9</p>
+                </a>
+                <a href="../qball-solver/" class="next-card">
+                    <h3>Q-ball Solver →</h3>
+                    <p>Compute the discrete soliton spectrum interactively in your browser.</p>
+                    <p class="next-papers">live</p>
+                </a>
+                <a href="../guide/" class="next-card">
+                    <h3>Understanding Guide</h3>
+                    <p>The eight-section overview of the entire framework.</p>
+                    <p class="next-papers">summary</p>
+                </a>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+</body>
+</html>
