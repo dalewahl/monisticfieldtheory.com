@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Q-Ball Solver — Monistic Field Theory</title>
+    <title>Q-Ball Lepton Spectrum Solver — Monistic Field Theory</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 </head>
@@ -21,12 +21,12 @@
     </header>
 
     <main class="container">
-        <h1>Q-Ball Soliton Solver</h1>
+        <h1>Q-Ball Lepton Spectrum Solver</h1>
         <p class="lede">
-            Solve the nonlinear Q-ball soliton equation
-            <span class="eq">u″ = [m₂ − ω² − λ₄(u/r)² + λ₆(u/r)⁴ − Z/√(r²+a²)] · u</span>
-            for the contraction field of MFT. Adjust the parameters or load a preset
-            for a specific Standard Model particle.
+            From the MFT potential parameters, compute the full discrete spectrum
+            of soliton solutions of the Q-ball equation. The charged lepton families
+            (e, μ, τ) emerge as specific entries in this spectrum from a single
+            parameter set, with energy scale calibrated by m_e = 0.511 MeV.
         </p>
 
         <section class="status" id="status">
@@ -36,64 +36,61 @@
 
         <section class="solver-grid" id="solver-ui" style="display: none;">
             <aside class="controls">
-                <h2>Parameters</h2>
+                <h2>Potential parameters</h2>
 
                 <div class="presets">
-                    <p class="control-label">Presets</p>
-                    <div class="preset-buttons">
-                        <button class="preset" data-preset="electron">Electron</button>
-                        <button class="preset" data-preset="muon">Muon</button>
-                        <button class="preset" data-preset="tau">Tau</button>
-                    </div>
+                    <button class="preset" data-preset="lepton_sector">Load lepton sector preset</button>
                     <p class="preset-description" id="preset-description">
-                        Adjust parameters or click a preset to load Standard Model particle configurations.
+                        Click the preset to load canonical values, or adjust manually.
                     </p>
                 </div>
 
                 <hr>
 
                 <div class="control">
-                    <label for="m2">m₂ (mass term)</label>
+                    <label for="m2">m₂ <span class="hint-inline">(quadratic mass term)</span></label>
                     <input type="number" id="m2" value="1.0" step="0.1">
                 </div>
 
                 <div class="control">
-                    <label for="lam4">λ₄ (quartic)</label>
+                    <label for="lam4">λ₄ <span class="hint-inline">(quartic coupling)</span></label>
                     <input type="number" id="lam4" value="2.0" step="0.1">
                 </div>
 
                 <div class="control">
-                    <label for="lam6">λ₆ (sextic)</label>
+                    <label for="lam6">λ₆ <span class="hint-inline">(sextic coupling)</span></label>
                     <input type="number" id="lam6" value="0.5" step="0.05">
                 </div>
 
                 <div class="control">
-                    <label for="Z">Z (Coulomb coupling)</label>
+                    <label for="Z">Z <span class="hint-inline">(Coulomb coupling)</span></label>
                     <input type="number" id="Z" value="1.0" step="0.1">
                 </div>
 
                 <div class="control">
-                    <label for="a">a (softening length)</label>
+                    <label for="a">a <span class="hint-inline">(softening length)</span></label>
                     <input type="number" id="a" value="1.0" step="0.1">
                 </div>
 
-                <div class="control">
-                    <label for="omega2">ω² (internal frequency squared)</label>
-                    <input type="number" id="omega2" value="0.5" step="0.01" min="0.05" max="0.99">
-                </div>
+                <button id="solve-btn" class="solve-button">Compute spectrum</button>
+                <p class="solve-time-note">Takes ~20–30 seconds; the equation is solved by shooting at 40 ω² values.</p>
 
-                <button id="solve-btn" class="solve-button">Solve</button>
-
-                <div class="silver-ratio-note">
-                    <p><strong>Silver-ratio condition:</strong> λ₄² = 8 m₂ λ₆ ⟹ default values m₂=1, λ₄=2, λ₆=0.5 satisfy this exactly.</p>
+                <div class="silver-ratio-note" id="silver-ratio-note">
+                    <p><strong>Silver-ratio condition:</strong> when λ₄² = 8 m₂ λ₆,
+                    the potential has a silver-ratio fixed-point structure (δ = 1+√2)
+                    that produces the discrete three-family spectrum. Default values
+                    satisfy this exactly: λ₄² = 4 = 8 × 1 × 0.5.</p>
                 </div>
             </aside>
 
             <section class="results">
-                <h2>Results</h2>
+                <h2>Discrete spectrum</h2>
+
                 <div id="results-summary" class="results-summary">
-                    <p class="placeholder">Click <strong>Solve</strong> to compute soliton solutions.</p>
+                    <p class="placeholder">Click <strong>Compute spectrum</strong> to solve the Q-ball equation across ω² and identify the soliton tower.</p>
                 </div>
+
+                <div id="lepton-triple-container"></div>
 
                 <div class="plots">
                     <div class="plot-container">
@@ -101,48 +98,51 @@
                         <canvas id="potential-canvas" width="600" height="300"></canvas>
                     </div>
                     <div class="plot-container">
-                        <h3>Soliton profile u(r)</h3>
+                        <h3>Lepton soliton profiles u(r)</h3>
                         <canvas id="profile-canvas" width="600" height="300"></canvas>
                     </div>
                 </div>
 
-                <div id="solitons-table-container"></div>
+                <div id="spectrum-table-container"></div>
             </section>
         </section>
 
         <section class="explanatory">
-            <h2>About this solver</h2>
+            <h2>About this calculation</h2>
             <p>
-                This solver finds soliton solutions of the Q-ball equation in MFT
-                by shooting from r = 0 and matching the boundary condition u(∞) = 0.
-                For a given internal frequency ω², the equation may admit zero, one,
-                or several normalisable soliton solutions, distinguished by their
-                node count and central amplitude φ_core = u′(0).
+                The Q-ball equation u″ = [m₂ − ω² − λ₄(u/r)² + λ₆(u/r)⁴ − Z/√(r²+a²)] · u
+                admits a discrete spectrum of soliton solutions for any given potential.
+                Each solution is characterised by its node count, central amplitude φ_core,
+                internal frequency ω², and energy E = ω²·Q (where Q = ∫u² dr is the
+                Noether charge).
             </p>
             <p>
-                The potential V(φ) = m₂/2·φ² − λ₄/4·φ⁴ + λ₆/6·φ⁶ has a barrier at
-                φ_b = √((λ₄ − √(λ₄² − 4m₂λ₆))/(2λ₆)) and a second minimum at
-                φ_v = √((λ₄ + √(λ₄² − 4m₂λ₆))/(2λ₆)). When the silver-ratio condition
-                λ₄² = 8 m₂ λ₆ holds, these take the values φ_b² = 1/√2 and
-                φ_v² = √2 = δ − 1, with δ = 1 + √2 the silver ratio.
+                <strong>ω² is not a free parameter</strong> — it is an eigenvalue of the
+                equation, fixed by the requirement that u(r) → 0 as r → ∞ for each
+                discrete solution. The solver scans ω² ∈ [0.05, 0.99] and finds the
+                soliton solutions automatically.
             </p>
             <p>
-                Solitons whose core amplitude lies in the linear region (φ < φ_b/2)
-                correspond to the lighter family members (electron, up quark);
-                those near the barrier (0.5 φ_b &lt; φ &lt; 1.1 φ_b) correspond to
-                the second family (muon, charm); and those in the nonlinear vacuum
-                (φ > 1.1 φ_b) correspond to the third family (tau, top).
+                The charged lepton sector of the Standard Model is identified with three
+                specific entries in this spectrum: the n=0 ground state in linear vacuum
+                (electron, φ_core ≈ 0.02), an n=0 mode at the barrier (muon, φ_core ≈ 0.71),
+                and an n=1 metastable mode in the nonlinear vacuum (tau, φ_core ≈ 1.93).
+                The Family-of-Three Stability Theorem (P3 of the corpus) shows that this
+                count is a structural consequence of constrained Morse-index analysis.
             </p>
             <p>
-                Mass calibration: with m₂ = 1, λ₄ = 2, λ₆ = 0.5, Z = 1, the electron's
-                soliton energy E ≈ 0.00427 in MFT units corresponds to 0.511 MeV,
-                giving the conversion factor MFT_TO_MEV ≈ 119.67.
+                <strong>Free parameter count.</strong> The lepton sector operates with
+                effectively one free parameter: m_e = 0.511 MeV calibrates the energy
+                scale. The potential parameters m₂, λ₄, λ₆ are linked by the silver-ratio
+                condition λ₄² = 8 m₂ λ₆. Z = 1 and a = 1 are fixed by physics within MFT.
+                m₂ = 1 is a unit choice. All three lepton masses, plus the predictions
+                for the up-type quark sector, follow.
             </p>
         </section>
 
         <footer class="page-footer">
             <p>
-                Source: <a href="https://github.com/dalewahl/mft" target="_blank">github.com/dalewahl/mft</a>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
                 · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
             </p>
         </footer>

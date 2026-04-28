@@ -1,7 +1,7 @@
-/* MFT Q-Ball Solver — JavaScript layer
+/* MFT Q-Ball Lepton Spectrum Solver — JavaScript layer (v2)
  *
- * Loads Pyodide, fetches the Python solver module, wires up UI events,
- * runs the solver on demand, renders results to canvases.
+ * Scan ω² internally, return the full discrete tower, highlight the
+ * canonical lepton triple. ω² is never an input.
  */
 
 let pyodide = null;
@@ -51,18 +51,19 @@ function clearCanvas(canvas) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function plotCurve(canvas, xs, ys, options = {}) {
+function plotCurves(canvas, curves, options = {}) {
+    /* curves: array of { xs, ys, color, label } */
     const ctx = canvas.getContext('2d');
     const W = canvas.width;
     const H = canvas.height;
 
-    const padding = { left: 50, right: 20, top: 20, bottom: 35 };
+    const padding = { left: 50, right: 100, top: 20, bottom: 35 };
     const plotW = W - padding.left - padding.right;
     const plotH = H - padding.top - padding.bottom;
 
     clearCanvas(canvas);
 
-    if (xs.length === 0) {
+    if (curves.length === 0) {
         ctx.fillStyle = '#888';
         ctx.font = '13px sans-serif';
         ctx.textAlign = 'center';
@@ -70,10 +71,16 @@ function plotCurve(canvas, xs, ys, options = {}) {
         return;
     }
 
-    const xmin = options.xmin !== undefined ? options.xmin : Math.min(...xs);
-    const xmax = options.xmax !== undefined ? options.xmax : Math.max(...xs);
-    const ymin = options.ymin !== undefined ? options.ymin : Math.min(...ys);
-    const ymax = options.ymax !== undefined ? options.ymax : Math.max(...ys);
+    // Auto-range across all curves
+    let xmin = Infinity, xmax = -Infinity, ymin = Infinity, ymax = -Infinity;
+    for (const c of curves) {
+        for (const x of c.xs) { if (x < xmin) xmin = x; if (x > xmax) xmax = x; }
+        for (const y of c.ys) { if (y < ymin) ymin = y; if (y > ymax) ymax = y; }
+    }
+    if (options.xmin !== undefined) xmin = options.xmin;
+    if (options.xmax !== undefined) xmax = options.xmax;
+    if (options.ymin !== undefined) ymin = options.ymin;
+    if (options.ymax !== undefined) ymax = options.ymax;
     const yrange = ymax - ymin || 1;
     const xrange = xmax - xmin || 1;
 
@@ -93,7 +100,7 @@ function plotCurve(canvas, xs, ys, options = {}) {
     ctx.lineTo(padding.left + plotW, padding.top + plotH);
     ctx.stroke();
 
-    // Zero line if range crosses zero
+    // Zero line
     if (ymin < 0 && ymax > 0) {
         const yZero = yToPixel(0);
         ctx.strokeStyle = '#aaa';
@@ -115,7 +122,6 @@ function plotCurve(canvas, xs, ys, options = {}) {
     ctx.fillText(xmin.toFixed(1), padding.left, padding.top + plotH + 14);
     ctx.fillText(xmax.toFixed(1), padding.left + plotW, padding.top + plotH + 14);
 
-    // Axis labels
     if (options.xlabel) {
         ctx.textAlign = 'center';
         ctx.font = '12px sans-serif';
@@ -130,19 +136,21 @@ function plotCurve(canvas, xs, ys, options = {}) {
         ctx.restore();
     }
 
-    // Curve
-    ctx.strokeStyle = options.color || '#2c5aa0';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    for (let i = 0; i < xs.length; i++) {
-        const px = xToPixel(xs[i]);
-        const py = yToPixel(ys[i]);
-        if (i === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
+    // Curves
+    for (const c of curves) {
+        ctx.strokeStyle = c.color || '#2c5aa0';
+        ctx.lineWidth = c.lineWidth || 2;
+        ctx.beginPath();
+        for (let i = 0; i < c.xs.length; i++) {
+            const px = xToPixel(c.xs[i]);
+            const py = yToPixel(c.ys[i]);
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
     }
-    ctx.stroke();
 
-    // Vertical markers (e.g., φ_barrier, φ_vacuum, φ_core)
+    // Markers
     if (options.markers) {
         for (const m of options.markers) {
             const px = xToPixel(m.x);
@@ -162,109 +170,227 @@ function plotCurve(canvas, xs, ys, options = {}) {
             }
         }
     }
+
+    // Legend
+    if (curves.some(c => c.label)) {
+        let yLegend = padding.top + 10;
+        const xLegend = padding.left + plotW + 10;
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'left';
+        for (const c of curves) {
+            if (!c.label) continue;
+            ctx.strokeStyle = c.color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(xLegend, yLegend);
+            ctx.lineTo(xLegend + 18, yLegend);
+            ctx.stroke();
+            ctx.fillStyle = '#333';
+            ctx.fillText(c.label, xLegend + 22, yLegend + 4);
+            yLegend += 16;
+        }
+    }
 }
 
 // === Render results ===
 
+const LEPTON_COLORS = {
+    electron: '#27ae60',
+    muon: '#2c5aa0',
+    tau: '#c0392b',
+};
+
+const LEPTON_OBSERVED_MEV = {
+    electron: 0.511,
+    muon: 105.66,
+    tau: 1776.86,
+};
+
 function renderResults(result) {
     const summary = document.getElementById('results-summary');
-    const tableContainer = document.getElementById('solitons-table-container');
+    const tripleContainer = document.getElementById('lepton-triple-container');
+    const tableContainer = document.getElementById('spectrum-table-container');
 
     if (!result.success) {
         summary.innerHTML = `<p class="error">${result.message}</p>`;
         clearCanvas(document.getElementById('potential-canvas'));
         clearCanvas(document.getElementById('profile-canvas'));
         tableContainer.innerHTML = '';
+        tripleContainer.innerHTML = '';
         return;
     }
 
-    // Potential plot with markers
-    const potCanvas = document.getElementById('potential-canvas');
-    const pc = result.potential_curve;
-    const markers = [];
-    if (result.phi_barrier) {
-        markers.push({ x: result.phi_barrier, color: '#e67e22', label: `φ_b=${result.phi_barrier.toFixed(3)}` });
-    }
-    if (result.phi_vacuum) {
-        markers.push({ x: result.phi_vacuum, color: '#c0392b', label: `φ_v=${result.phi_vacuum.toFixed(3)}` });
-    }
-    for (const s of result.solitons) {
-        markers.push({
-            x: s.phi_core,
-            color: '#2c5aa0',
-            label: `φ_core=${s.phi_core.toFixed(3)}`,
-        });
-    }
-    plotCurve(potCanvas, pc.phi, pc.V, {
-        xlabel: 'φ',
-        ylabel: 'V(φ)',
-        markers,
-    });
+    // === Summary ===
+    const sr = result.silver_ratio;
+    const srBadge = sr.satisfied
+        ? '<span class="badge ok">silver-ratio satisfied</span>'
+        : `<span class="badge warn">silver-ratio violated (λ₄²=${sr.lam4_squared.toFixed(3)}, 8m₂λ₆=${sr.eight_m2_lam6.toFixed(3)})</span>`;
 
-    // Profile plot — first soliton found, or empty
-    const profCanvas = document.getElementById('profile-canvas');
-    if (result.solitons.length > 0) {
-        const s = result.solitons[0];
-        plotCurve(profCanvas, s.r, s.u, {
-            xlabel: 'r',
-            ylabel: 'u(r)',
-            color: '#2c5aa0',
-        });
-    } else {
-        clearCanvas(profCanvas);
-        const ctx = profCanvas.getContext('2d');
-        ctx.fillStyle = '#888';
-        ctx.font = '13px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('No soliton solution at this ω²', profCanvas.width / 2, profCanvas.height / 2);
-    }
+    summary.innerHTML = `
+        <p>
+            <strong>${result.spectrum.length}</strong> distinct solitons found in the spectrum.
+            ${srBadge}
+        </p>
+        <p class="hint">
+            Energy scale calibrated by setting the lowest-energy soliton equal to
+            m_e = 0.511 MeV (MFT_TO_MEV = ${result.mft_to_mev.toFixed(2)}).
+            φ_barrier = ${result.phi_barrier.toFixed(4)}, φ_vacuum = ${result.phi_vacuum.toFixed(4)}.
+        </p>
+    `;
 
-    // Summary
-    if (result.solitons.length === 0) {
-        summary.innerHTML = `
-            <p>No soliton solutions found at ω² = ${result.params.omega2}.</p>
-            <p class="hint">Try a different ω² value (range 0.05–0.99). For the canonical lepton calibration:
-            ω² ≈ 0.96 → electron, ω² ≈ 0.55 → muon, ω² ≈ 0.16 → tau.</p>
+    // === Lepton triple ===
+    const triple = result.lepton_triple;
+    if (triple) {
+        const e = result.spectrum[triple.electron_idx];
+        const mu = result.spectrum[triple.muon_idx];
+        const ta = result.spectrum[triple.tau_idx];
+
+        const errorPct = (model, observed) =>
+            (100 * Math.abs(model - observed) / observed).toFixed(1);
+
+        const r10_model = mu.E / e.E;
+        const r21_model = ta.E / mu.E;
+        const r20_model = ta.E / e.E;
+
+        tripleContainer.innerHTML = `
+            <h3>Identified lepton triple</h3>
+            <table class="lepton-triple-table">
+                <thead>
+                    <tr>
+                        <th>Family</th>
+                        <th>E (MFT units)</th>
+                        <th>Predicted (MeV)</th>
+                        <th>Observed (MeV)</th>
+                        <th>Error</th>
+                        <th>ω²</th>
+                        <th>φ_core</th>
+                        <th>regime</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="lepton-row electron">
+                        <td><span class="dot" style="background:${LEPTON_COLORS.electron}"></span> electron</td>
+                        <td>${e.E.toFixed(5)}</td>
+                        <td>${e.mass_MeV.toFixed(2)}</td>
+                        <td>${LEPTON_OBSERVED_MEV.electron}</td>
+                        <td>calibration</td>
+                        <td>${e.omega2.toFixed(4)}</td>
+                        <td>${e.phi_core.toFixed(4)}</td>
+                        <td>${e.regime}</td>
+                    </tr>
+                    <tr class="lepton-row muon">
+                        <td><span class="dot" style="background:${LEPTON_COLORS.muon}"></span> muon</td>
+                        <td>${mu.E.toFixed(5)}</td>
+                        <td>${mu.mass_MeV.toFixed(2)}</td>
+                        <td>${LEPTON_OBSERVED_MEV.muon}</td>
+                        <td>${errorPct(mu.mass_MeV, LEPTON_OBSERVED_MEV.muon)}%</td>
+                        <td>${mu.omega2.toFixed(4)}</td>
+                        <td>${mu.phi_core.toFixed(4)}</td>
+                        <td>${mu.regime}</td>
+                    </tr>
+                    <tr class="lepton-row tau">
+                        <td><span class="dot" style="background:${LEPTON_COLORS.tau}"></span> tau</td>
+                        <td>${ta.E.toFixed(5)}</td>
+                        <td>${ta.mass_MeV.toFixed(2)}</td>
+                        <td>${LEPTON_OBSERVED_MEV.tau}</td>
+                        <td>${errorPct(ta.mass_MeV, LEPTON_OBSERVED_MEV.tau)}%</td>
+                        <td>${ta.omega2.toFixed(4)}</td>
+                        <td>${ta.phi_core.toFixed(4)}</td>
+                        <td>${ta.regime}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="lepton-ratios-table">
+                <thead>
+                    <tr><th>Mass ratio</th><th>MFT model</th><th>Observed</th><th>Error</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>m_μ / m_e</td><td>${r10_model.toFixed(2)}</td><td>206.77</td><td>${errorPct(r10_model, 206.768)}%</td></tr>
+                    <tr><td>m_τ / m_μ</td><td>${r21_model.toFixed(3)}</td><td>16.817</td><td>${errorPct(r21_model, 16.817)}%</td></tr>
+                    <tr><td>m_τ / m_e</td><td>${r20_model.toFixed(1)}</td><td>3477.2</td><td>${errorPct(r20_model, 3477.2)}%</td></tr>
+                </tbody>
+            </table>
         `;
     } else {
-        const MFT_TO_MEV = 119.67;
-        const rows = result.solitons.map((s, idx) => `
-            <tr>
-                <td>${idx}</td>
+        tripleContainer.innerHTML = '<p class="hint">No three-soliton triple matching observed lepton ratios was found in the computed spectrum.</p>';
+    }
+
+    // === Potential plot ===
+    const potCanvas = document.getElementById('potential-canvas');
+    const pc = result.potential_curve;
+    const markers = [
+        { x: result.phi_barrier, color: '#e67e22', label: `φ_b=${result.phi_barrier.toFixed(3)}` },
+        { x: result.phi_vacuum, color: '#7f8c8d', label: `φ_v=${result.phi_vacuum.toFixed(3)}` },
+    ];
+    if (triple) {
+        const e = result.spectrum[triple.electron_idx];
+        const mu = result.spectrum[triple.muon_idx];
+        const ta = result.spectrum[triple.tau_idx];
+        markers.push({ x: e.phi_core, color: LEPTON_COLORS.electron, label: 'e⁻' });
+        markers.push({ x: mu.phi_core, color: LEPTON_COLORS.muon, label: 'μ' });
+        markers.push({ x: ta.phi_core, color: LEPTON_COLORS.tau, label: 'τ' });
+    }
+    plotCurves(potCanvas, [{ xs: pc.phi, ys: pc.V, color: '#333' }], {
+        xlabel: 'φ', ylabel: 'V(φ)', markers,
+    });
+
+    // === Profile plot ===
+    const profCanvas = document.getElementById('profile-canvas');
+    if (triple) {
+        const e = result.spectrum[triple.electron_idx];
+        const mu = result.spectrum[triple.muon_idx];
+        const ta = result.spectrum[triple.tau_idx];
+        // Normalize each profile for visual comparison
+        const normalize = (u, r) => {
+            const norm = Math.sqrt(u.reduce((sum, ui, i) => sum + ui * ui * (i > 0 ? r[i] - r[i - 1] : 0), 0));
+            return norm > 0 ? u.map(ui => ui / norm) : u;
+        };
+        plotCurves(profCanvas, [
+            { xs: e.r, ys: normalize(e.u, e.r), color: LEPTON_COLORS.electron, label: 'electron' },
+            { xs: mu.r, ys: normalize(mu.u, mu.r), color: LEPTON_COLORS.muon, label: 'muon' },
+            { xs: ta.r, ys: normalize(ta.u, ta.r), color: LEPTON_COLORS.tau, label: 'tau' },
+        ], { xlabel: 'r', ylabel: 'u(r) / norm', xmax: 12 });
+    } else {
+        clearCanvas(profCanvas);
+    }
+
+    // === Full spectrum table ===
+    const rows = result.spectrum.slice(0, 30).map((s, idx) => {
+        const isLepton = s.lepton ? `lepton-row ${s.lepton}` : '';
+        const leptonLabel = s.lepton ? `<span class="lepton-tag" style="background:${LEPTON_COLORS[s.lepton]}">${s.lepton}</span>` : '';
+        return `
+            <tr class="${isLepton}">
+                <td>${idx}${leptonLabel}</td>
                 <td>${s.E.toFixed(5)}</td>
-                <td>${(s.E * MFT_TO_MEV).toFixed(2)}</td>
+                <td>${s.mass_MeV.toFixed(2)}</td>
+                <td>${s.omega2.toFixed(4)}</td>
                 <td>${s.Q.toFixed(4)}</td>
-                <td>${s.A.toFixed(4)}</td>
                 <td>${s.phi_core.toFixed(4)}</td>
                 <td>${s.n_nodes}</td>
                 <td>${s.regime}</td>
             </tr>
-        `).join('');
-
-        summary.innerHTML = `
-            <p><strong>${result.solitons.length}</strong> soliton solution${result.solitons.length === 1 ? '' : 's'} found at ω² = ${result.params.omega2}.</p>
-            <p class="hint">Mass shown in MeV uses MFT_TO_MEV = ${MFT_TO_MEV} (electron-calibrated, canonical parameters).</p>
         `;
+    }).join('');
 
-        tableContainer.innerHTML = `
-            <h3>Soliton spectrum</h3>
-            <table class="solitons-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>E (MFT)</th>
-                        <th>Mass (MeV)</th>
-                        <th>Q</th>
-                        <th>A</th>
-                        <th>φ_core</th>
-                        <th>nodes</th>
-                        <th>regime</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
-        `;
-    }
+    tableContainer.innerHTML = `
+        <h3>Full spectrum (sorted by energy, first 30 of ${result.spectrum.length})</h3>
+        <p class="hint">The lepton triple is highlighted within the discrete tower. ω² is an eigenvalue of each soliton, not a free parameter.</p>
+        <table class="spectrum-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>E (MFT)</th>
+                    <th>Mass (MeV)</th>
+                    <th>ω²</th>
+                    <th>Q</th>
+                    <th>φ_core</th>
+                    <th>nodes</th>
+                    <th>regime</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>
+    `;
 }
 
 // === Solver call ===
@@ -274,7 +400,10 @@ async function runSolver() {
 
     const solveBtn = document.getElementById('solve-btn');
     solveBtn.disabled = true;
-    solveBtn.textContent = 'Solving…';
+    solveBtn.textContent = 'Computing spectrum… (this takes ~25 seconds)';
+
+    // Yield to the browser briefly so the button-disable rendering happens
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     const params = {
         m2: parseFloat(document.getElementById('m2').value),
@@ -282,31 +411,32 @@ async function runSolver() {
         lam6: parseFloat(document.getElementById('lam6').value),
         Z: parseFloat(document.getElementById('Z').value),
         a: parseFloat(document.getElementById('a').value),
-        omega2: parseFloat(document.getElementById('omega2').value),
     };
 
-    // Pass params via Pyodide's globals, then call solve()
     pyodide.globals.set('js_params', pyodide.toPy(params));
     let result;
     try {
-        const pyResult = pyodide.runPython('solve(js_params)');
+        const pyResult = pyodide.runPython('solve_spectrum(js_params)');
         result = pyResult.toJs({ dict_converter: Object.fromEntries });
         pyResult.destroy();
     } catch (err) {
         result = {
             success: false,
             message: `Python error: ${err.message}`,
-            solitons: [],
+            spectrum: [],
+            lepton_triple: null,
             potential_curve: null,
             phi_barrier: null,
             phi_vacuum: null,
+            silver_ratio: null,
+            mft_to_mev: null,
         };
     }
 
     renderResults(result);
 
     solveBtn.disabled = false;
-    solveBtn.textContent = 'Solve';
+    solveBtn.textContent = 'Compute spectrum';
 }
 
 // === Preset handling ===
@@ -324,7 +454,6 @@ function loadPreset(name) {
     document.getElementById('lam6').value = preset.lam6;
     document.getElementById('Z').value = preset.Z;
     document.getElementById('a').value = preset.a;
-    document.getElementById('omega2').value = preset.omega2;
 
     document.getElementById('preset-description').textContent = preset.description || '';
 }

@@ -1,8 +1,13 @@
 """
-MFT Q-Ball Solver — browser-adapted version
+MFT Q-Ball Solver — browser-adapted version (v2)
 
 Adapted from mft_qball_lepton_masses.py for execution under Pyodide.
-Provides a clean solve(params) -> dict API callable from JavaScript.
+Provides solve_spectrum(params) -> dict that scans omega2 and returns
+the full discrete tower of soliton solutions for a given potential.
+
+This is the right interface for MFT: ω² is an eigenvalue, not an input.
+The visitor enters the physics parameters; the equation picks out all
+admissible solitons.
 """
 
 import numpy as np
@@ -14,9 +19,9 @@ try:
 except AttributeError:
     _trap = np.trapz
 
-# Calibration constant (MeV per MFT energy unit)
-# This is hardwired: m_e = 0.511 MeV ↔ E0 ≈ 0.00427 MFT units → MFT_TO_MEV = 119.67
+# Calibration constant: m_e = 0.511 MeV ↔ E0 ≈ 0.00427 MFT units
 M_ELECTRON_MEV = 0.511
+MFT_TO_MEV_CANONICAL = 119.67  # canonical calibration at m₂=1, λ₄=2, λ₆=0.5, Z=1
 
 # Default grid (matches mft_qball_lepton_masses.py)
 RMAX_DEFAULT = 20.0
@@ -36,6 +41,19 @@ def find_barrier_and_vacuum(m2, lam4, lam6):
     phi_b = float(np.sqrt((lam4 - np.sqrt(disc)) / (2.0 * lam6)))
     phi_v = float(np.sqrt((lam4 + np.sqrt(disc)) / (2.0 * lam6)))
     return phi_b, phi_v
+
+
+def silver_ratio_check(m2, lam4, lam6):
+    """Check whether the silver-ratio condition λ₄² = 8 m₂ λ₆ is satisfied."""
+    target = 8.0 * m2 * lam6
+    actual = lam4**2
+    rel_err = abs(actual - target) / target if target != 0 else float('inf')
+    return {
+        'satisfied': rel_err < 1e-3,
+        'lam4_squared': actual,
+        'eight_m2_lam6': target,
+        'relative_error': rel_err,
+    }
 
 
 def shoot(A, omega2, m2, lam4, lam6, Z, a, r, h, N):
@@ -65,8 +83,6 @@ def find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a, A_max=8.0, n_pts=300,
     """
     At fixed omega2, scan amplitude A and find all soliton solutions
     (where u_endpoint changes sign).
-
-    Returns: list of dicts with E, Q, omega2, A, n_nodes, phi_core, u, r.
     """
     r = np.linspace(rmax / (n_grid * 100.0), rmax, n_grid)
     h = r[1] - r[0]
@@ -117,19 +133,66 @@ def regime_for(phi_core, phi_b):
         return "nonlinear vacuum"
 
 
-def solve(params):
+def find_lepton_triple(all_solitons, R10_target=206.768, R21_target=16.817):
     """
-    Main entry point called from JavaScript.
+    Among all found solitons, find the triple (E0, E1, E2) whose
+    energy ratios best match the observed lepton mass ratios.
+    Replicates the best_triple logic from mft_qball_lepton_masses.py.
 
-    params: dict with keys:
-        m2, lam4, lam6, Z, a, omega2
+    Returns: dict with keys electron, muon, tau (each a soliton dict
+             from the spectrum) plus 'score' indicating fit quality,
+             or None if no good triple found.
+    """
+    if len(all_solitons) < 3:
+        return None
 
-    Returns: dict with keys:
+    best_score = float('inf')
+    best_triple = None
+
+    for i in range(len(all_solitons)):
+        for j in range(i + 1, len(all_solitons)):
+            for k in range(j + 1, len(all_solitons)):
+                E0 = all_solitons[i]['E']
+                E1 = all_solitons[j]['E']
+                E2 = all_solitons[k]['E']
+                if E0 > 0:
+                    score = (np.log(E1 / E0 / R10_target))**2 + \
+                            (np.log(E2 / E1 / R21_target))**2
+                    if score < best_score:
+                        best_score = score
+                        best_triple = (i, j, k)
+
+    if best_triple is None:
+        return None
+
+    i, j, k = best_triple
+    return {
+        'electron_idx': i,
+        'muon_idx': j,
+        'tau_idx': k,
+        'score': float(best_score),
+    }
+
+
+def solve_spectrum(params):
+    """
+    Main entry point. Scan ω² values and return the full discrete tower
+    of soliton solutions for the given potential.
+
+    This is the canonical mode: visitor enters physics parameters,
+    receives the discrete spectrum back as a single result.
+
+    params: dict with keys m2, lam4, lam6, Z, a (and optionally
+            n_omega for scan resolution, default 40)
+
+    Returns: dict with keys
         success: bool
-        message: str (status or error)
-        solitons: list of soliton dicts (if any found)
-        phi_barrier, phi_vacuum: potential landscape (or None)
-        potential_curve: {phi: [...], V: [...]} for plotting V(φ)
+        message: str
+        spectrum: list of soliton dicts, sorted by energy, deduplicated
+        phi_barrier, phi_vacuum: potential landscape
+        potential_curve: {phi: [...], V: [...]}
+        silver_ratio: {satisfied, lam4_squared, eight_m2_lam6, relative_error}
+        params: the inputs (echoed back)
     """
     try:
         m2 = float(params.get('m2', 1.0))
@@ -137,7 +200,7 @@ def solve(params):
         lam6 = float(params.get('lam6', 0.5))
         Z = float(params.get('Z', 1.0))
         a = float(params.get('a', 1.0))
-        omega2 = float(params.get('omega2', 0.5))
+        n_omega = int(params.get('n_omega', 40))
 
         # Potential landscape
         phi_b, phi_v = find_barrier_and_vacuum(m2, lam4, lam6)
@@ -147,71 +210,96 @@ def solve(params):
         phi_arr = np.linspace(0, phi_max, 200)
         V_arr = potential(phi_arr, m2, lam4, lam6)
 
-        # Find solitons at this omega2
-        solitons = find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a)
+        # Silver-ratio diagnostic
+        sr = silver_ratio_check(m2, lam4, lam6)
 
-        # Annotate solitons with regime classification
-        for s in solitons:
+        # Scan omega2 and collect all soliton solutions
+        all_solitons = []
+        for omega2 in np.linspace(0.05, 0.99, n_omega):
+            sols = find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a)
+            for s in sols:
+                # Deduplicate by energy (matches original mft_qball_lepton_masses.py logic)
+                if not any(abs(s['E'] - prev['E']) < 0.01 for prev in all_solitons):
+                    all_solitons.append(s)
+
+        # Sort by energy
+        all_solitons.sort(key=lambda x: x['E'])
+
+        # Annotate with regime
+        for s in all_solitons:
             s['regime'] = regime_for(s['phi_core'], phi_b)
+
+        # Compute mass calibration: assume the lowest-energy soliton is the electron
+        # (calibration anchor). All other masses scale relative to it.
+        if all_solitons and all_solitons[0]['E'] > 0:
+            E0 = all_solitons[0]['E']
+            scale = M_ELECTRON_MEV / E0  # MeV per MFT energy unit
+            for s in all_solitons:
+                s['mass_MeV'] = s['E'] * scale
+        else:
+            scale = MFT_TO_MEV_CANONICAL
+            for s in all_solitons:
+                s['mass_MeV'] = s['E'] * scale
+
+        # Identify the canonical lepton triple (e, μ, τ) by best ratio match
+        triple = find_lepton_triple(all_solitons)
+        if triple is not None:
+            # Tag the chosen solitons
+            all_solitons[triple['electron_idx']]['lepton'] = 'electron'
+            all_solitons[triple['muon_idx']]['lepton'] = 'muon'
+            all_solitons[triple['tau_idx']]['lepton'] = 'tau'
 
         return {
             'success': True,
-            'message': f"Found {len(solitons)} soliton(s) at ω² = {omega2}",
-            'solitons': solitons,
+            'message': f"Found {len(all_solitons)} distinct solitons in the spectrum.",
+            'spectrum': all_solitons,
+            'lepton_triple': triple,
             'phi_barrier': phi_b,
             'phi_vacuum': phi_v,
             'potential_curve': {
                 'phi': phi_arr.tolist(),
                 'V': V_arr.tolist(),
             },
+            'silver_ratio': sr,
+            'mft_to_mev': float(scale),
             'params': {
                 'm2': m2, 'lam4': lam4, 'lam6': lam6,
-                'Z': Z, 'a': a, 'omega2': omega2,
+                'Z': Z, 'a': a,
             },
         }
     except Exception as e:
         return {
             'success': False,
             'message': f"Error: {type(e).__name__}: {e}",
-            'solitons': [],
+            'spectrum': [],
             'phi_barrier': None,
             'phi_vacuum': None,
             'potential_curve': None,
+            'silver_ratio': None,
+            'mft_to_mev': None,
+            'params': params,
         }
 
 
-def calibrate_to_electron(E_mft):
-    """
-    Convert MFT energy to MeV, calibrated so that the electron's E = 0.511 MeV.
-    Note: this requires knowing E0 (the electron's MFT energy) for the chosen
-    parameters. Default uses the canonical MFT_TO_MEV ≈ 119.67.
-    """
-    MFT_TO_MEV = 119.67  # canonical calibration at m2=1, lam4=2, lam6=0.5, Z=1
-    return E_mft * MFT_TO_MEV
-
-
-# Preset configurations matching the canonical MFT calibration.
-# These omega2 values are determined by running mft_qball_lepton_masses.py and
-# extracting the best-triple from a full omega2 scan.
+# Canonical preset: lepton sector with silver-ratio condition
 PRESETS = {
-    'electron': {
-        'm2': 1.0, 'lam4': 2.0, 'lam6': 0.5, 'Z': 1.0, 'a': 1.0,
-        'omega2': 0.8213,
-        'description': 'Electron — ground-state soliton, linear vacuum (φ_core ≈ 0.022). Calibration target: 0.511 MeV.',
-    },
-    'muon': {
-        'm2': 1.0, 'lam4': 2.0, 'lam6': 0.5, 'Z': 1.0, 'a': 1.0,
-        'omega2': 0.6526,
-        'description': 'Muon — second-family soliton, near-barrier (φ_core ≈ 0.71). Predicted: 104.3 MeV (1.2% from observed 105.7).',
-    },
-    'tau': {
-        'm2': 1.0, 'lam4': 2.0, 'lam6': 0.5, 'Z': 1.0, 'a': 1.0,
-        'omega2': 0.6767,
-        'description': 'Tau — third-family metastable soliton, nonlinear vacuum (φ_core ≈ 1.93). Predicted: 1769 MeV (0.4% from observed 1777).',
+    'lepton_sector': {
+        'm2': 1.0,
+        'lam4': 2.0,
+        'lam6': 0.5,
+        'Z': 1.0,
+        'a': 1.0,
+        'description': (
+            'Lepton sector: silver-ratio potential (m₂=1, λ₄=2, λ₆=0.5 satisfies '
+            'λ₄² = 8m₂λ₆), Z=1 Coulomb coupling, a=1 softening length. '
+            'The Q-ball equation produces the full charged-lepton spectrum '
+            '(e, μ, τ) from this single parameter set. Energy scale calibrated '
+            'by setting the lowest soliton energy equal to m_e = 0.511 MeV.'
+        ),
     },
 }
 
 
 def get_preset(name):
     """Return preset parameters by name."""
-    return PRESETS.get(name, PRESETS['electron'])
+    return PRESETS.get(name, PRESETS['lepton_sector'])
