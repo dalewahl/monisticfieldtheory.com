@@ -1166,9 +1166,9 @@ main {
 }
 
 .paper-figure img {
-    width: 50%;
-    max-width: 480px;
-    min-width: 280px;
+    width: 70%;
+    max-width: 640px;
+    min-width: 320px;
     height: auto;
     border: 1px solid #e0e6ee;
     border-radius: 4px;
