@@ -39,9 +39,15 @@
                 <h2>Potential parameters</h2>
 
                 <div class="presets">
-                    <button class="preset" data-preset="lepton_sector">Load lepton sector preset</button>
+                    <p class="preset-label">Sector presets:</p>
+                    <div class="preset-buttons">
+                        <button class="preset" data-preset="lepton_sector">Charged leptons</button>
+                        <button class="preset" data-preset="up_quark_sector">Up-type quarks</button>
+                        <button class="preset" data-preset="down_quark_sector">Down-type quarks</button>
+                        <button class="preset" data-preset="boson_sector">Gauge bosons</button>
+                    </div>
                     <p class="preset-description" id="preset-description">
-                        Click the preset to load canonical values, or adjust manually.
+                        Same potential, different sectors. The Coulomb coupling Z varies between sectors; the quartic and sextic potential parameters do not.
                     </p>
                 </div>
 

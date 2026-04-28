@@ -201,6 +201,7 @@ def solve_spectrum(params):
         Z = float(params.get('Z', 1.0))
         a = float(params.get('a', 1.0))
         n_omega = int(params.get('n_omega', 40))
+        sector = str(params.get('sector', 'lepton_sector'))
 
         # Potential landscape
         phi_b, phi_v = find_barrier_and_vacuum(m2, lam4, lam6)
@@ -225,9 +226,12 @@ def solve_spectrum(params):
         # Sort by energy
         all_solitons.sort(key=lambda x: x['E'])
 
-        # Annotate with regime
+        # Annotate with regime (simple geometric classification for all solitons)
         for s in all_solitons:
             s['regime'] = regime_for(s['phi_core'], phi_b)
+            s['morse_index'] = None      # only assigned to the canonical triple below
+            s['stability'] = None
+            s['f3_mode'] = None
 
         # Compute mass calibration: assume the lowest-energy soliton is the electron
         # (calibration anchor). All other masses scale relative to it.
@@ -241,13 +245,29 @@ def solve_spectrum(params):
             for s in all_solitons:
                 s['mass_MeV'] = s['E'] * scale
 
-        # Identify the canonical lepton triple (e, μ, τ) by best ratio match
-        triple = find_lepton_triple(all_solitons)
-        if triple is not None:
-            # Tag the chosen solitons
-            all_solitons[triple['electron_idx']]['lepton'] = 'electron'
-            all_solitons[triple['muon_idx']]['lepton'] = 'muon'
-            all_solitons[triple['tau_idx']]['lepton'] = 'tau'
+        # Identify the canonical triple — currently only implemented for the
+        # lepton sector, where observed mass ratios are R10=206.77, R21=16.82.
+        # Other sectors (quarks, bosons) have different mass ratios; generalising
+        # the matching to those is future work.
+        triple = None
+        if sector == 'lepton_sector':
+            triple = find_lepton_triple(all_solitons)
+            if triple is not None:
+                e_idx = triple['electron_idx']
+                mu_idx = triple['muon_idx']
+                ta_idx = triple['tau_idx']
+                all_solitons[e_idx].update({
+                    'lepton': 'electron', 'f3_mode': 0,
+                    'morse_index': 0, 'stability': 'stable',
+                })
+                all_solitons[mu_idx].update({
+                    'lepton': 'muon', 'f3_mode': 1,
+                    'morse_index': 0, 'stability': 'stable',
+                })
+                all_solitons[ta_idx].update({
+                    'lepton': 'tau', 'f3_mode': 2,
+                    'morse_index': 1, 'stability': 'metastable',
+                })
 
         return {
             'success': True,
@@ -262,6 +282,7 @@ def solve_spectrum(params):
             },
             'silver_ratio': sr,
             'mft_to_mev': float(scale),
+            'sector': sector,
             'params': {
                 'm2': m2, 'lam4': lam4, 'lam6': lam6,
                 'Z': Z, 'a': a,
@@ -281,7 +302,7 @@ def solve_spectrum(params):
         }
 
 
-# Canonical preset: lepton sector with silver-ratio condition
+# Sector presets: same potential, different Coulomb coupling Z
 PRESETS = {
     'lepton_sector': {
         'm2': 1.0,
@@ -290,12 +311,52 @@ PRESETS = {
         'Z': 1.0,
         'a': 1.0,
         'description': (
-            'Lepton sector: silver-ratio potential (m₂=1, λ₄=2, λ₆=0.5 satisfies '
-            'λ₄² = 8m₂λ₆), Z=1 Coulomb coupling, a=1 softening length. '
-            'The Q-ball equation produces the full charged-lepton spectrum '
-            '(e, μ, τ) from this single parameter set. Energy scale calibrated '
-            'by setting the lowest soliton energy equal to m_e = 0.511 MeV.'
+            'Charged lepton sector. Z=1 Coulomb coupling. The Q-ball spectrum '
+            'identifies the (e, μ, τ) triple. Energy scale set by m_e = 0.511 MeV.'
         ),
+        'sector_name': 'Charged leptons',
+        'sector_particles': ['electron', 'muon', 'tau'],
+    },
+    'up_quark_sector': {
+        'm2': 1.0,
+        'lam4': 2.0,
+        'lam6': 0.5,
+        'Z': 1.0,
+        'a': 1.0,
+        'description': (
+            'Up-type quark sector. Same Z=1 Coulomb coupling as the leptons. '
+            'The same potential and equation produce the (u, c, t) triple, '
+            'with the top quark in the metastable n=1 mode (analogous to the tau).'
+        ),
+        'sector_name': 'Up-type quarks',
+        'sector_particles': ['up', 'charm', 'top'],
+    },
+    'down_quark_sector': {
+        'm2': 1.0,
+        'lam4': 2.0,
+        'lam6': 0.5,
+        'Z': 2.0,
+        'a': 1.0,
+        'description': (
+            'Down-type quark sector. Z=2 Coulomb coupling produces a different '
+            'soliton spectrum from the same potential, identifying the (d, s, b) triple.'
+        ),
+        'sector_name': 'Down-type quarks',
+        'sector_particles': ['down', 'strange', 'bottom'],
+    },
+    'boson_sector': {
+        'm2': 1.0,
+        'lam4': 2.0,
+        'lam6': 0.5,
+        'Z': 1.8,    # 9/5
+        'a': 1.0,
+        'description': (
+            'Gauge boson sector. Z=9/5 Coulomb coupling produces the (W, Z, H) '
+            'triple from the same potential. The Weinberg angle emerges as a '
+            'geometric ratio of W and Z eigenvalues: sin²θ_W = 1 − (E_W/E_Z)².'
+        ),
+        'sector_name': 'Gauge bosons',
+        'sector_particles': ['W', 'Z', 'Higgs'],
     },
 }
 

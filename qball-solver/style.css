@@ -206,20 +206,38 @@ hr {
     margin-bottom: 8px;
 }
 
+.preset-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #444;
+    margin: 0 0 6px;
+}
+
+.preset-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
 .preset {
-    width: 100%;
-    padding: 9px 12px;
+    padding: 8px 6px;
     border: 1px solid #2c5aa0;
     background: #fff;
     color: #2c5aa0;
     border-radius: 4px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
+    text-align: center;
 }
 
 .preset:hover {
+    background: #2c5aa0;
+    color: #fff;
+}
+
+.preset.active {
     background: #2c5aa0;
     color: #fff;
 }
@@ -427,6 +445,35 @@ hr {
     text-transform: lowercase;
 }
 
+.stab-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    margin-left: 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.stab-stable {
+    background: #d5f5e3;
+    color: #1e7e34;
+}
+
+.stab-metastable {
+    background: #fdebd0;
+    color: #b9770e;
+}
+
+.stab-unstable {
+    background: #f5b7b1;
+    color: #922b21;
+}
+
+.muted {
+    color: #ccc;
+}
+
 /* Plots */
 
 .plots {
@@ -465,12 +512,39 @@ hr {
 
 /* Spectrum table */
 
+.spectrum-table-wrapper {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+.spectrum-table-wrapper::-webkit-scrollbar {
+    width: 10px;
+}
+.spectrum-table-wrapper::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+.spectrum-table-wrapper::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 5px;
+}
+.spectrum-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
 .spectrum-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 8px;
     font-size: 12px;
     font-family: 'SF Mono', Monaco, Consolas, monospace;
+}
+
+.spectrum-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .spectrum-table th {

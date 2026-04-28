@@ -6,6 +6,7 @@
 
 let pyodide = null;
 let solverReady = false;
+let activeSector = 'lepton_sector';  // tracks which preset is active
 
 const statusText = document.getElementById('status-text');
 const progressFill = document.getElementById('progress-fill');
@@ -258,44 +259,48 @@ function renderResults(result) {
                 <thead>
                     <tr>
                         <th>Family</th>
+                        <th>F3 mode</th>
+                        <th>Morse</th>
                         <th>E (MFT units)</th>
                         <th>Predicted (MeV)</th>
                         <th>Observed (MeV)</th>
                         <th>Error</th>
                         <th>ω²</th>
-                        <th>φ_core</th>
                         <th>regime</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="lepton-row electron">
                         <td><span class="dot" style="background:${LEPTON_COLORS.electron}"></span> electron</td>
+                        <td>n=${e.f3_mode}</td>
+                        <td>${e.morse_index} <span class="stab-tag stab-${e.stability}">${e.stability}</span></td>
                         <td>${e.E.toFixed(5)}</td>
                         <td>${e.mass_MeV.toFixed(2)}</td>
                         <td>${LEPTON_OBSERVED_MEV.electron}</td>
                         <td>calibration</td>
                         <td>${e.omega2.toFixed(4)}</td>
-                        <td>${e.phi_core.toFixed(4)}</td>
                         <td>${e.regime}</td>
                     </tr>
                     <tr class="lepton-row muon">
                         <td><span class="dot" style="background:${LEPTON_COLORS.muon}"></span> muon</td>
+                        <td>n=${mu.f3_mode}</td>
+                        <td>${mu.morse_index} <span class="stab-tag stab-${mu.stability}">${mu.stability}</span></td>
                         <td>${mu.E.toFixed(5)}</td>
                         <td>${mu.mass_MeV.toFixed(2)}</td>
                         <td>${LEPTON_OBSERVED_MEV.muon}</td>
                         <td>${errorPct(mu.mass_MeV, LEPTON_OBSERVED_MEV.muon)}%</td>
                         <td>${mu.omega2.toFixed(4)}</td>
-                        <td>${mu.phi_core.toFixed(4)}</td>
                         <td>${mu.regime}</td>
                     </tr>
                     <tr class="lepton-row tau">
                         <td><span class="dot" style="background:${LEPTON_COLORS.tau}"></span> tau</td>
+                        <td>n=${ta.f3_mode}</td>
+                        <td>${ta.morse_index} <span class="stab-tag stab-${ta.stability}">${ta.stability}</span></td>
                         <td>${ta.E.toFixed(5)}</td>
                         <td>${ta.mass_MeV.toFixed(2)}</td>
                         <td>${LEPTON_OBSERVED_MEV.tau}</td>
                         <td>${errorPct(ta.mass_MeV, LEPTON_OBSERVED_MEV.tau)}%</td>
                         <td>${ta.omega2.toFixed(4)}</td>
-                        <td>${ta.phi_core.toFixed(4)}</td>
                         <td>${ta.regime}</td>
                     </tr>
                 </tbody>
@@ -312,7 +317,21 @@ function renderResults(result) {
             </table>
         `;
     } else {
-        tripleContainer.innerHTML = '<p class="hint">No three-soliton triple matching observed lepton ratios was found in the computed spectrum.</p>';
+        const sectorName = result.sector || 'this sector';
+        const isLeptonSector = result.sector === 'lepton_sector';
+        if (isLeptonSector) {
+            tripleContainer.innerHTML = '<p class="hint">No three-soliton triple matching observed lepton ratios was found in the computed spectrum.</p>';
+        } else {
+            tripleContainer.innerHTML = `
+                <h3>Spectrum for ${sectorName.replace('_', ' ')}</h3>
+                <p class="hint">
+                    The discrete soliton tower is shown below. Specific particle identification
+                    (matching to observed quark or boson masses) is currently implemented only for
+                    the charged lepton sector. The spectrum here uses Z = ${result.params.Z} from
+                    the loaded preset; the same potential parameters as all other sectors.
+                </p>
+            `;
+        }
     }
 
     // === Potential plot ===
@@ -355,9 +374,13 @@ function renderResults(result) {
     }
 
     // === Full spectrum table ===
-    const rows = result.spectrum.slice(0, 30).map((s, idx) => {
+    const rows = result.spectrum.map((s, idx) => {
         const isLepton = s.lepton ? `lepton-row ${s.lepton}` : '';
         const leptonLabel = s.lepton ? `<span class="lepton-tag" style="background:${LEPTON_COLORS[s.lepton]}">${s.lepton}</span>` : '';
+        const morseCell = (s.morse_index !== null && s.morse_index !== undefined)
+            ? `${s.morse_index} <span class="stab-tag stab-${s.stability}">${s.stability}</span>`
+            : '<span class="muted">—</span>';
+        const f3Cell = (s.f3_mode !== null && s.f3_mode !== undefined) ? `n=${s.f3_mode}` : '';
         return `
             <tr class="${isLepton}">
                 <td>${idx}${leptonLabel}</td>
@@ -367,29 +390,39 @@ function renderResults(result) {
                 <td>${s.Q.toFixed(4)}</td>
                 <td>${s.phi_core.toFixed(4)}</td>
                 <td>${s.n_nodes}</td>
+                <td>${f3Cell}</td>
+                <td>${morseCell}</td>
                 <td>${s.regime}</td>
             </tr>
         `;
     }).join('');
 
     tableContainer.innerHTML = `
-        <h3>Full spectrum (sorted by energy, first 30 of ${result.spectrum.length})</h3>
-        <p class="hint">The lepton triple is highlighted within the discrete tower. ω² is an eigenvalue of each soliton, not a free parameter.</p>
-        <table class="spectrum-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>E (MFT)</th>
-                    <th>Mass (MeV)</th>
-                    <th>ω²</th>
-                    <th>Q</th>
-                    <th>φ_core</th>
-                    <th>nodes</th>
-                    <th>regime</th>
-                </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-        </table>
+        <h3>Full discrete spectrum (${result.spectrum.length} solitons, sorted by energy)</h3>
+        <p class="hint">
+            ω² is an eigenvalue of each soliton, not a free parameter.
+            The canonical lepton triple is highlighted; F3 mode and Morse index columns
+            show the Family-of-Three Stability Theorem classification (e, μ stable; τ metastable; higher modes excluded as multiply unstable).
+        </p>
+        <div class="spectrum-table-wrapper">
+            <table class="spectrum-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>E (MFT)</th>
+                        <th>Mass (MeV)</th>
+                        <th>ω²</th>
+                        <th>Q</th>
+                        <th>φ_core</th>
+                        <th>nodes</th>
+                        <th>F3 mode</th>
+                        <th>Morse index</th>
+                        <th>regime</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        </div>
     `;
 }
 
@@ -411,6 +444,7 @@ async function runSolver() {
         lam6: parseFloat(document.getElementById('lam6').value),
         Z: parseFloat(document.getElementById('Z').value),
         a: parseFloat(document.getElementById('a').value),
+        sector: activeSector,
     };
 
     pyodide.globals.set('js_params', pyodide.toPy(params));
@@ -444,6 +478,7 @@ async function runSolver() {
 function loadPreset(name) {
     if (!solverReady) return;
 
+    activeSector = name;
     pyodide.globals.set('preset_name', name);
     const presetPy = pyodide.runPython('get_preset(preset_name)');
     const preset = presetPy.toJs({ dict_converter: Object.fromEntries });
@@ -456,6 +491,11 @@ function loadPreset(name) {
     document.getElementById('a').value = preset.a;
 
     document.getElementById('preset-description').textContent = preset.description || '';
+
+    // Mark active preset visually
+    document.querySelectorAll('.preset').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.preset === name);
+    });
 }
 
 // === Wiring ===
