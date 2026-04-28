@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papers — Monistic Field Theory</title>
+    <meta name="description" content="The complete MFT corpus: 16 papers (P0–P15) on Zenodo. Each paper is self-contained, with derivation chain and key results listed.">
+    <link rel="stylesheet" href="../style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'none'
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/">Foundations</a>
+                <a href="../particles/">Particles</a>
+                <a href="../gravity/">Gravity</a>
+                <a href="../quantum/">Quantum</a>
+                <a href="../qball-solver/">Solvers</a>
+                <a href="../papers/" class="active">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container guide-page">
+
+        <section class="hero">
+            <h1>Papers</h1>
+            <p class="hero-tagline">
+                The complete MFT corpus is published on Zenodo as 16 self-contained papers
+                (P0–P15) under one always-current DOI. Each paper is downloadable as a PDF
+                with full LaTeX source. Citing the corpus DOI ensures readers always get the
+                most recent version of every paper.
+            </p>
+            <div class="status-block">
+                <p class="status-label">Always-current corpus DOI</p>
+                <p style="margin: 6px 0 0; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px;">
+                    <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank" style="color: #2c5aa0; font-weight: 600;">10.5281/zenodo.19343255</a>
+                </p>
+                <p style="margin: 6px 0 0; font-size: 13px; color: #555;">
+                    This DOI always resolves to the latest version of the entire corpus. Individual paper DOIs (which change with each version) are not used; cite the corpus DOI to reference any paper.
+                </p>
+            </div>
+        </section>
+
+        <!-- Reading order -->
+        <section class="section">
+            <h2>How to read the corpus</h2>
+            <p>
+                The 16 papers form a single derivation chain: each step depends on the previous.
+                For first-time readers we recommend starting with the <a href="../guide/">Understanding Guide</a>
+                or the <a href="../synthesis/">Synthesis</a> page, then choosing one of three reading orders:
+            </p>
+            <ul>
+                <li><strong>Foundations-first</strong> (most rigorous): P0 → P1 → P2 → P9 (the
+                    flagship), then branch into the three sectors via the topic pages.</li>
+                <li><strong>Results-first</strong> (most accessible): P9 (flagship) → P4 (mass
+                    spectrum) → P3 (F3 theorem) → P5 (galactic) → P8 (microphysics).
+                    Theorems and quantum completions can come after.</li>
+                <li><strong>Topic-by-topic</strong> (most curated): use the
+                    <a href="../foundations/">Foundations</a>, <a href="../particles/">Particles</a>,
+                    <a href="../gravity/">Gravity</a>, <a href="../quantum/">Quantum</a> pages.
+                    Each weaves the relevant papers together.</li>
+            </ul>
+        </section>
+
+        <!-- The corpus -->
+        <section class="section">
+            <h2>The 16-paper corpus</h2>
+
+            <!-- P0 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P0
+                    <span class="paper-version">v2</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Gravitational Field Equations</h3>
+                    <p class="paper-summary">
+                        Derives the modified Einstein equations from the MFT action with
+                        non-minimal coupling. Establishes the scalar–tensor structure, the 3D
+                        spatial formulation, and the role of the ordering parameter $\tau$.
+                        The action's structural form before any specification of $F(\varphi)$,
+                        $V_6(\varphi)$, or matter content.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> The MFT action $S[h, \varphi] = \int d^3x \sqrt{h}\, [F(\varphi) R^{(3)} - \frac{\kappa}{2} D_i\varphi D^i\varphi - V_6(\varphi) + \mathcal{L}_{\text{matter}}]$ and its field equations.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../foundations/" class="topic-link">→ Foundations §2</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P1 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P1
+                    <span class="paper-version">v4</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Why $K_4 < 0$ — Sign Constraints from First Principles</h3>
+                    <p class="paper-summary">
+                        Proves all four sign constraints on the sextic potential coefficients
+                        from elementary physical requirements: $\lambda_6 > 0$ (energy bounded
+                        below), $m_2 > 0$ (localisation), $\lambda_4 > 0$ from Derrick's
+                        theorem in 3D, and $\lambda_4^2 > 4 m_2 \lambda_6$ for barrier
+                        existence. There are no choices.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> The answer to "why $K_4 &lt; 0$?" is "because particles exist in three dimensions" — Derrick's theorem applied to Q-ball solitons forces an attractive quartic.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../foundations/" class="topic-link">→ Foundations §3</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P2 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P2
+                    <span class="paper-version">v5</span>
+                </div>
+                <div class="paper-content">
+                    <h3>The Symmetric Back-Reaction Theorem</h3>
+                    <p class="paper-summary">
+                        Derives the potential shape condition $\lambda_4^2 = 8 m_2 \lambda_6$
+                        from the requirement that the contraction field's gravitational
+                        back-reaction is self-consistent at both vacua simultaneously
+                        ($\Sigma(\varphi_b) = \Sigma(\varphi_v)$). This is the origin of the
+                        silver ratio $\delta = 1 + \sqrt{2}$. The extended theorem then
+                        derives $F(\varphi) = F_0 e^{\beta\varphi}$ uniquely.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> The silver ratio is the unique fixed point of the back-reaction map $r \mapsto 2 + 1/r$. Everything else follows.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../foundations/" class="topic-link">→ Foundations §4</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P3 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P3
+                    <span class="paper-version">v3</span>
+                </div>
+                <div class="paper-content">
+                    <h3>The Family-of-Three Stability Theorem</h3>
+                    <p class="paper-summary">
+                        Proves that the constrained Morse index of the Q-ball energy
+                        functional in the silver-ratio sextic potential admits exactly three
+                        physically admissible radial modes: two stable ($n = 0, 1$) and one
+                        metastable ($n = 2$). All higher modes are multiply unstable. This
+                        is MFT's structural answer to "why three generations?"
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> $m_{\text{phys}}(u_0) = 0,\ m_{\text{phys}}(u_n) = n - 1$ for $n \ge 1$. Stable: electron, muon. Metastable: tau. $n \ge 3$: structurally excluded.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../particles/" class="topic-link">→ Particles §2</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P4 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P4
+                    <span class="paper-version">v9</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Lepton, Quark, and Gauge Boson Mass Hierarchies</h3>
+                    <p class="paper-summary">
+                        Solves the Q-ball soliton equation with sector-specific Coulomb
+                        coupling for charged leptons ($Z = 1$), quarks ($Z = 1$ up-type,
+                        $Z = 2$ down-type), and electroweak bosons ($Z = 9/5$). With one
+                        calibration ($m_e$), reproduces all mass ratios and the Weinberg angle.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key results:</strong> $m_\mu/m_e$ to 1.25%, $m_\tau/m_\mu$ to 0.81%, $m_Z/m_W$ to 0.11%, $m_H/m_W$ to 0.41%, $\sin^2\theta_W$ to 0.4%.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../particles/" class="topic-link">→ Particles §3</a>
+                        <a href="../qball-solver/" class="topic-link">→ Solver</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P5 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P5
+                    <span class="paper-version">v3</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Galactic Rotation Curves from the Silver Ratio</h3>
+                    <p class="paper-summary">
+                        Solves the nonlinear contraction-field BVP on galactic scales with
+                        baryon source. The contraction field forms halos whose density
+                        profiles reproduce observed rotation curves without dark-matter
+                        particles, using the same potential and same coupling $\beta$ as the
+                        microphysics sectors. The halo profile shape is derived from the SBR
+                        theorem, not fitted.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> $\Sigma\chi^2/\text{dof} = 1.17$ across six spirals (MW, M31, NGC 3198, NGC 2403, NGC 7793, UGC 2259) using two parameters per galaxy plus one global $\beta$.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../gravity/" class="topic-link">→ Gravity §2</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P6 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P6
+                    <span class="paper-version">v1</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Spin-½ Emergence from the Q-ball Internal Frequency</h3>
+                    <p class="paper-summary">
+                        Derives fermion vs boson classification from the Q-ball internal
+                        frequency $\omega^2$ via emergent Lorentz invariance and the
+                        Finkelstein–Rubinstein constraint. Includes five no-go theorems
+                        showing that no purely 3D-spatial-slice mechanism can derive spin-½ —
+                        emergent Lorentz invariance is essential.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> Fermions $\omega^2/m_2 \in [0.926, 0.958]$, bosons $\omega^2/m_2 \in [0.050, 0.066]$. Structural 14× gap with zero overlap. $g = 2$ follows by Weinberg's theorem.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../particles/" class="topic-link">→ Particles §4</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P7 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P7
+                    <span class="paper-version">v1</span>
+                </div>
+                <div class="paper-content">
+                    <h3>The Fractional-Charge Confinement Theorem</h3>
+                    <p class="paper-summary">
+                        Proves that the MFT–Skyrme reduction admits only integer-baryon-number
+                        solitons as finite-energy asymptotic states, via $\pi_3(SU(2)) \cong \mathbb{Z}$.
+                        Fractional-$B$ configurations require bridge winding with linear energy
+                        growth — an emergent string tension fixed by the same potential
+                        parameters that control the lepton spectrum. Confinement without
+                        a separate gauge sector.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> No isolated fractional-charge soliton can satisfy both finite energy and the Derrick virial; bridge tension $T(\lambda_4, \lambda_6) > 0$.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../particles/" class="topic-link">→ Particles §5</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P8 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P8
+                    <span class="paper-version">v4</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Microphysics: Hadrons, Neutrinos, and the Electroweak Boson Sector</h3>
+                    <p class="paper-summary">
+                        The most comprehensive companion paper. Extends MFT to all of
+                        microphysics from the same sextic potential. Includes the MFT–Skyrme
+                        reduction, the converged $B = 1$ hedgehog soliton, the chiral-stiffness
+                        closure, the neutral pion at $Z = 0$, the neutrino mass-hierarchy
+                        ratio $\delta^4 - 1$, the absolute neutrino masses from one-loop
+                        gravitational self-energy with universal screening, and the boson
+                        coupling $Z_{\text{boson}} = 9/5$ from SO(3) mode counting.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key results:</strong> $f_\pi^2 = \delta$ (0.03%); $m_{\pi^0}$ (0.2%); $m_\sigma = 2 f_\pi$; decuplet 1–6%; $\Delta m^2_{32}/\Delta m^2_{21} = \delta^4 - 1$ (1.2%); absolute neutrino masses $\sim$6%.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../particles/" class="topic-link">→ Particles §6</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P9 - flagship -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P9
+                    <span class="paper-version">v4</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Monistic Field Theory: The Complete Foundations <em>(flagship)</em></h3>
+                    <p class="paper-summary">
+                        The flagship paper. Presents the monistic principle, the benchmark
+                        action with every Lagrangian term, the parameter ledger (which
+                        parameters are free, which are derived), canonical normalisation
+                        connecting MFT to measured coupling constants, field equations in
+                        four physical regimes, and the step-by-step derivation of emergent
+                        Lorentz invariance and $E = mc^2$ from the contraction dynamics.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> $\sim 20$ free parameters of SM + $\Lambda$CDM replaced by $1$ calibration ($m_e$) + $1$ coupling ($\beta$). Lorentz invariance derived in five steps.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../synthesis/" class="topic-link">→ Synthesis</a>
+                        <a href="../foundations/" class="topic-link">→ Foundations §6–8</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P10 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P10
+                    <span class="paper-version">v1</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Quantum Completion: Hamiltonian, Constraints, and Fock Space</h3>
+                    <p class="paper-summary">
+                        Constructs the Hamiltonian formulation of MFT: canonical momenta,
+                        primary and secondary (Gauss-law) constraints, Coulomb gauge fixing,
+                        linearisation around the vacuum, free dispersion relations, and the
+                        Fock-space construction for scalar and photon-like quanta. Provides
+                        the framework for quantum field theory on the MFT medium.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> Standard QFT structure with constraint-reduced transverse Hilbert space; emergent speed of light $c_{\text{eff}} = \sqrt{Z_{B0}/Z_{E0}}$ shared by all low-energy excitations.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../quantum/" class="topic-link">→ Quantum §2</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P11 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P11
+                    <span class="paper-version">v2</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Linearised Propagators and Feynman Rules</h3>
+                    <p class="paper-summary">
+                        Derives the linearised propagators for the scalar contraction mode,
+                        the massless photon, and the massive gauge bosons ($W^\pm, Z$) in
+                        $(\omega, \mathbf{k})$ space. Provides the perturbative toolkit for
+                        loop corrections and scattering amplitudes. Shows that
+                        scalar–gauge–gauge couplings vanish under $\varepsilon = 1$.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> Three boxed propagators — scalar $\Delta_\varphi$, photon $D_{ij}^{(\gamma)}$, massive gauge $D_{ij}^{(a)}$. The framework that P14 uses to verify $F_{\text{MFT}} = F_{\text{QED}}$.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../quantum/" class="topic-link">→ Quantum §3</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P12 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P12
+                    <span class="paper-version">v2</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Cosmology from Spatial Contraction</h3>
+                    <p class="paper-summary">
+                        Derives cosmological expansion from the relaxation of the contraction
+                        field in cosmic voids, without a cosmological constant. Late-time
+                        acceleration emerges naturally with $w_\varphi \approx -1$. Under
+                        $\varepsilon(\varphi) = 1$, photons accumulate redshift only through
+                        the geometric expansion of the medium volume; $\alpha_{\text{EM}}$
+                        is automatically constant. The Hubble tension is flagged as an open
+                        problem requiring quantitative numerical work.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> Effective Friedmann equation $H_{\text{eff}}^2 = (8\pi G_{\text{eff}}/3)[\rho_{\text{matter}} + \rho_\varphi]$ with no $\Lambda$ added by hand.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../gravity/" class="topic-link">→ Gravity §3</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P13 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P13
+                    <span class="paper-version">v1</span>
+                </div>
+                <div class="paper-content">
+                    <h3>Compact Objects, Screening, and Singularity Resolution</h3>
+                    <p class="paper-summary">
+                        Derives the Yukawa screening mechanism for the contraction field in
+                        dense regions, the resulting PPN compatibility with Solar-System
+                        tests, and the saturation behaviour inside neutron stars and black
+                        holes. The elastic ceiling at $\varphi_v$ bounds the medium's density
+                        and prevents curvature singularities.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key results:</strong> $\omega_{\text{BD}} > 40{,}000$ at $\beta \sim 10^{-4}$ (Cassini bound passed); black holes saturate at the elastic ceiling — no singularity at the centre.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../gravity/" class="topic-link">→ Gravity §4</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P14 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P14
+                    <span class="paper-version">v2</span>
+                </div>
+                <div class="paper-content">
+                    <h3>The Electromagnetic Form Factor and $g = 2$</h3>
+                    <p class="paper-summary">
+                        Computes the electromagnetic form factor of the electron soliton.
+                        The classical soliton charge radius is shown to be a renormalisation
+                        artifact; after all-orders quantum dressing, S-matrix equivalence
+                        gives $F_{\text{MFT}}(q^2) = F_{\text{QED}}(q^2) + \mathcal{O}(m_e^2/M_{\text{Pl}}^2)$.
+                        Includes one-loop verification confirming the scalar-QED log
+                        coefficient. Derives $g = 2$ from the Weinberg theorem.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key results:</strong> $F_{\text{MFT}} = F_{\text{QED}} + \mathcal{O}(10^{-45})$; $g = 2$ from emergent Lorentz + FR-spin-½ + minimal coupling; $g - 2 = \alpha/(2\pi)$ at one loop (Schwinger).
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../quantum/" class="topic-link">→ Quantum §4</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- P15 -->
+            <div class="paper-row">
+                <div class="paper-id">
+                    P15
+                    <span class="paper-version">v1</span>
+                </div>
+                <div class="paper-content">
+                    <h3>3D Finiteness and Renormalisability</h3>
+                    <p class="paper-summary">
+                        Resolves the renormalisability question. Proves that the Q-ball ansatz
+                        $\Phi = \varphi(\mathbf{x}) e^{-i\omega\tau}$ exactly separates the
+                        ordering-parameter dependence from the spatial profile, reducing
+                        quantum corrections to a 3D spectral problem. In 3D, the sextic
+                        coupling $[\lambda_6] = 0$ is marginal; the one-loop effective
+                        potential is finite; no counterterms are needed. The silver-ratio
+                        condition is preserved under quantum corrections.
+                    </p>
+                    <p class="paper-keyresult">
+                        <strong>Key result:</strong> $V_{\text{1-loop}}^{(3D)}(\varphi) = -[V''(\varphi)]^{3/2}/(12\pi)$ — closed-form, finite, no counterterms. Silver ratio preserved under RG flow.
+                    </p>
+                    <p class="paper-actions">
+                        <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">PDF on Zenodo →</a>
+                        <a href="../quantum/" class="topic-link">→ Quantum §5</a>
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Citation -->
+        <section class="section">
+            <h2>How to cite</h2>
+            <p>
+                Cite the always-current corpus DOI rather than individual paper DOIs. This
+                ensures readers always retrieve the most recent version of each paper:
+            </p>
+
+            <div class="callout callout-info">
+                <p style="margin: 0; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.6;">
+Wahl, D. (2026). <em>Monistic Field Theory: The Complete Foundations and Companion Papers</em> (P0–P15). Zenodo. <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank" style="color: #2c5aa0;">https://doi.org/10.5281/zenodo.19343255</a>
+                </p>
+            </div>
+
+            <p>
+                When citing a specific result, reference the relevant paper number (e.g.,
+                "the Family-of-Three theorem (P3, in Wahl 2026)" or "the silver-ratio
+                identity $f_\pi^2 = \delta$ (P8 §3.2, in Wahl 2026)"). Within the
+                always-current DOI, P0–P15 are stable identifiers.
+            </p>
+        </section>
+
+        <!-- Source code -->
+        <section class="section">
+            <h2>Source code and reproducibility</h2>
+            <p>
+                Every numerical result in the corpus is reproducible from a Python script
+                bundled with the LaTeX source on Zenodo. Curated copies of the most relevant
+                scripts are also available directly from this site, organised by topic page:
+            </p>
+            <ul>
+                <li><a href="../foundations/">Foundations scripts</a> — gravitational verification, $\lambda$-ratio derivation, $F(\varphi)$ derivation, Lorentz verification, flagship cross-checks (P0, P2, P9).</li>
+                <li><a href="../particles/">Particles scripts</a> — F3 theorem, Q-ball mass spectrum, vector bosons, cross-sector, spin-½, confinement, microphysics, hadrons, neutrinos, Skyrme reduction, hedgehog BVP (P3, P4, P6, P7, P8).</li>
+                <li><a href="../gravity/">Gravity scripts</a> — galactic nonlinear BVP, cosmology, compact objects (P5, P12, P13).</li>
+                <li><a href="../quantum/">Quantum scripts</a> — quantum completion, propagators, scattering form factor and $g$-factor, 3D finiteness (P10, P11, P14, P15).</li>
+            </ul>
+            <p>
+                All scripts are pure Python (NumPy, SciPy, matplotlib). They run on a standard
+                scientific Python install with no special dependencies. Total runtime for the
+                full corpus is on the order of minutes.
+            </p>
+        </section>
+
+        <!-- Where to next -->
+        <section class="section">
+            <h2>Where to next</h2>
+            <div class="next-grid">
+                <a href="../guide/" class="next-card">
+                    <h3>← Understanding Guide</h3>
+                    <p>The eight-section overview of the entire framework, designed as the first-time reading entry point.</p>
+                    <p class="next-papers">summary</p>
+                </a>
+                <a href="../synthesis/" class="next-card">
+                    <h3>Synthesis →</h3>
+                    <p>The unifying view: parameter ledger, derivation chain, cross-sector connections, comparison with the Standard Model.</p>
+                    <p class="next-papers">P9</p>
+                </a>
+                <a href="../results/" class="next-card">
+                    <h3>Results →</h3>
+                    <p>20-card dashboard of MFT predictions plus the experiments that could falsify the theory.</p>
+                    <p class="next-papers">all sectors</p>
+                </a>
+                <a href="../foundations/" class="next-card">
+                    <h3>Foundations →</h3>
+                    <p>Action, sign constraints, SBR theorem, full benchmark Lagrangian, heavy Lorentz derivation.</p>
+                    <p class="next-papers">P0 · P1 · P2 · P9</p>
+                </a>
+                <a href="../particles/" class="next-card">
+                    <h3>Particles →</h3>
+                    <p>F3 theorem, mass spectrum, spin-½, confinement, hadrons, neutrinos.</p>
+                    <p class="next-papers">P3 · P4 · P6 · P7 · P8</p>
+                </a>
+                <a href="../qball-solver/" class="next-card">
+                    <h3>Q-ball Solver →</h3>
+                    <p>Compute the discrete soliton spectrum interactively in your browser.</p>
+                    <p class="next-papers">live</p>
+                </a>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+</body>
+</html>
