@@ -176,9 +176,12 @@ def find_boson_triple(all_solitons, M_W_obs, M_Z_obs, M_H_obs):
       - Higgs must be ℓ=0 scalar
       - W < Z < H by energy
       - Score by mZ/mW and mH/mW ratios.
+    The photon (Z=0, hardcoded entry, E=0) is excluded.
     """
-    sols_l1 = [(i, s) for i, s in enumerate(all_solitons) if s['ell'] == 1]
-    sols_l0 = [(i, s) for i, s in enumerate(all_solitons) if s['ell'] == 0]
+    sols_l1 = [(i, s) for i, s in enumerate(all_solitons)
+               if s['ell'] == 1 and not s.get('is_photon') and s['E'] > 0]
+    sols_l0 = [(i, s) for i, s in enumerate(all_solitons)
+               if s['ell'] == 0 and not s.get('is_photon') and s['E'] > 0]
     if len(sols_l1) < 2 or len(sols_l0) < 1:
         return None
 
@@ -329,12 +332,42 @@ def solve_spectrum(params):
 
         all_solitons.sort(key=lambda x: x['E'])
 
+        # Boson sector: prepend the photon as a hardcoded entry.
+        # The photon is a theorem result — at Z=0 the Q-ball equation has no
+        # normalizable bound state, so its rest energy is exactly 0. We do not
+        # shoot for it numerically; instead we synthesize an entry showing this.
+        # See MFT_Lepton_Mass_Paper_v9 §"Photon": ℓ=1, Z=0, mass=0 derived.
+        if sector == 'boson_sector':
+            photon = {
+                'E': 0.0,
+                'Q': 0.0,
+                'omega2': 1.0,           # ω² → m₂ as Z → 0 (paper §photon)
+                'A': 0.0,
+                'n_nodes': 0,
+                'phi_core': 0.0,
+                'ell': 1,
+                'u': [],
+                'r': [],
+                'is_photon': True,
+            }
+            all_solitons.insert(0, photon)
+
         for s in all_solitons:
             s['regime'] = regime_for(s['phi_core'], phi_b)
             s['morse_index'] = None
             s['stability'] = None
             s['f3_mode'] = None
             s['particle'] = None
+
+        # Tag the photon row explicitly
+        if sector == 'boson_sector':
+            for s in all_solitons:
+                if s.get('is_photon'):
+                    s['particle'] = 'photon'
+                    s['regime'] = 'linear vacuum (Z=0)'
+                    s['stability'] = 'stable'
+                    s['morse_index'] = 0
+                    break
 
         # Find canonical triple
         m1_obs, m2_obs, m3_obs = sector_def['masses']
@@ -400,6 +433,32 @@ def solve_spectrum(params):
                 'score': triple['score'],
             }
 
+        # Boson-specific: photon hardcoded entry for the triple table at top
+        photon_entry = None
+        if sector == 'boson_sector':
+            for idx, s in enumerate(all_solitons):
+                if s.get('is_photon'):
+                    photon_entry = {
+                        'idx': idx,
+                        'particle': 'photon',
+                        'symbol': 'γ',
+                        'E': 0.0,
+                        'mass_MeV': 0.0,
+                        'observed_mass': 0.0,
+                        'omega2': 1.0,
+                        'ell': 1,
+                        'Z': 0.0,
+                        'regime': 'linear vacuum (Z=0)',
+                        'note': (
+                            'Theorem (not numerically shot): at Z=0 the Q-ball equation '
+                            'has no normalizable bound state. ω² → m₂ and ∫u² dr → 0 '
+                            'simultaneously, so E = ω²·∫u² dr = 0 exactly. The photon is '
+                            'the linear-vacuum analogue of the electron, differing only in '
+                            'angular momentum (ℓ=1 vs ℓ=0) and Coulomb coupling (Z=0 vs Z=1).'
+                        ),
+                    }
+                    break
+
         # Boson-specific: Weinberg angle
         weinberg = None
         if sector == 'boson_sector' and triple is not None:
@@ -419,6 +478,7 @@ def solve_spectrum(params):
             'message': f"Found {len(all_solitons)} distinct solitons.",
             'spectrum': all_solitons,
             'triple': triple_data,
+            'photon': photon_entry,
             'weinberg': weinberg,
             'phi_barrier': phi_b,
             'phi_vacuum': phi_v,
@@ -445,6 +505,7 @@ def solve_spectrum(params):
             'message': f"Error: {type(e).__name__}: {e}",
             'spectrum': [],
             'triple': None,
+            'photon': None,
             'weinberg': None,
             'phi_barrier': None,
             'phi_vacuum': None,

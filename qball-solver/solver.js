@@ -241,6 +241,27 @@ function renderResults(result) {
     if (triple) {
         const idxs = [triple.idx0, triple.idx1, triple.idx2];
         const schemeIdx = sectorInfo.scheme_dependent_idx;
+
+        // Photon row (boson sector only, hardcoded above W/Z/H)
+        let photonRow = '';
+        if (result.photon) {
+            const ph = result.photon;
+            photonRow = `
+                <tr style="background: #fff8dc; border-left: 3px solid #d4a017;">
+                    <td><span class="dot" style="background:#d4a017"></span> ${ph.particle} (γ)</td>
+                    <td><span class="muted">—</span></td>
+                    <td>0 <span class="stab-tag stab-stable">stable</span></td>
+                    <td>0 <span class="muted">(theorem)</span></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td><span class="badge ok" title="Mass=0 derived from Q-ball equation at Z=0, not numerically shot">derived (theorem)</span></td>
+                    <td>1.0000 <span class="muted">(→m₂)</span></td>
+                    <td>ℓ=${ph.ell}, Z=${ph.Z}</td>
+                    <td>${ph.regime}</td>
+                </tr>
+            `;
+        }
+
         const rows = idxs.map((idx, slot) => {
             const s = result.spectrum[idx];
             const name = triple.particles[slot];
@@ -257,6 +278,10 @@ function renderResults(result) {
                 errorCell = `${errorPct(predicted, observed)}%`;
             }
             const color = SLOT_COLORS[slot];
+            // Adjust ℓ column to also show Z (matches photon row format for boson sector)
+            const ellCell = result.sector === 'boson_sector'
+                ? `ℓ=${s.ell}, Z=${sectorInfo.Z}`
+                : `ℓ=${s.ell}`;
             return `
                 <tr class="lepton-row" style="background: ${color}15">
                     <td><span class="dot" style="background:${color}"></span> ${name}</td>
@@ -267,7 +292,7 @@ function renderResults(result) {
                     <td>${observed.toLocaleString()}</td>
                     <td>${errorCell}</td>
                     <td>${s.omega2.toFixed(4)}</td>
-                    <td>ℓ=${s.ell}</td>
+                    <td>${ellCell}</td>
                     <td>${s.regime}</td>
                 </tr>
             `;
@@ -315,6 +340,15 @@ function renderResults(result) {
             `;
         }
 
+        let photonNote = '';
+        if (result.photon) {
+            photonNote = `
+                <div class="silver-ratio-note" style="margin-top: 16px; background: #fff8dc; border-left-color: #d4a017;">
+                    <p><strong>Note on the photon (γ):</strong> ${result.photon.note}</p>
+                </div>
+            `;
+        }
+
         tripleContainer.innerHTML = `
             <h3>Identified ${sectorInfo.name.toLowerCase()} triple</h3>
             <table class="lepton-triple-table">
@@ -328,11 +362,11 @@ function renderResults(result) {
                         <th>Observed (MeV)</th>
                         <th>Error</th>
                         <th>ω²</th>
-                        <th>ℓ</th>
+                        <th>${result.sector === 'boson_sector' ? 'ℓ, Z' : 'ℓ'}</th>
                         <th>regime</th>
                     </tr>
                 </thead>
-                <tbody>${rows}</tbody>
+                <tbody>${photonRow}${rows}</tbody>
             </table>
             <h4 style="margin-top: 16px;">Mass ratios</h4>
             <table class="lepton-ratios-table">
@@ -341,6 +375,7 @@ function renderResults(result) {
             </table>
             ${weinbergRow}
             ${schemeNote}
+            ${photonNote}
         `;
     } else {
         tripleContainer.innerHTML = `
@@ -398,6 +433,24 @@ function renderResults(result) {
 
     // === Full spectrum table ===
     const rows = result.spectrum.map((s, idx) => {
+        // Photon row: special-cased yellow row, hardcoded entry.
+        if (s.is_photon) {
+            return `
+                <tr style="background: #fff8dc; border-left: 3px solid #d4a017;">
+                    <td>${idx}<span class="lepton-tag" style="background:#d4a017">photon (γ)</span></td>
+                    <td>0 <span class="muted">(theorem)</span></td>
+                    <td>0</td>
+                    <td>1.0000 <span class="muted">(→m₂)</span></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>ℓ=1, Z=0</td>
+                    <td><span class="muted">—</span></td>
+                    <td>0 <span class="stab-tag stab-stable">stable</span></td>
+                    <td>${s.regime}</td>
+                </tr>
+            `;
+        }
         const isParticle = s.particle ? 'lepton-row' : '';
         const particleLabel = s.particle
             ? `<span class="lepton-tag" style="background:${SLOT_COLORS[s.f3_mode]}">${s.particle}</span>`
