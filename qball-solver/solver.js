@@ -240,7 +240,10 @@ function renderResults(result) {
     `;
 
     // === Lepton triple ===
-    const triple = result.lepton_triple;
+    // Only show the lepton-triple table when the user has loaded the lepton
+    // sector preset; for quark/boson sectors, even if triple-matching ran,
+    // the labels (electron/muon/tau) wouldn't make sense.
+    const triple = (result.sector === 'lepton_sector') ? result.lepton_triple : null;
     if (triple) {
         const e = result.spectrum[triple.electron_idx];
         const mu = result.spectrum[triple.muon_idx];
@@ -371,6 +374,13 @@ function renderResults(result) {
         ], { xlabel: 'r', ylabel: 'u(r) / norm', xmax: 12 });
     } else {
         clearCanvas(profCanvas);
+        const ctx = profCanvas.getContext('2d');
+        ctx.fillStyle = '#888';
+        ctx.font = '13px sans-serif';
+        ctx.textAlign = 'center';
+        const sectorLabel = (result.sector || 'this sector').replace('_', ' ');
+        ctx.fillText('Particle profile overlay not available for', profCanvas.width / 2, profCanvas.height / 2 - 10);
+        ctx.fillText(sectorLabel + ' (yet)', profCanvas.width / 2, profCanvas.height / 2 + 10);
     }
 
     // === Full spectrum table ===
@@ -434,6 +444,13 @@ async function runSolver() {
     const solveBtn = document.getElementById('solve-btn');
     solveBtn.disabled = true;
     solveBtn.textContent = 'Computing spectrum… (this takes ~25 seconds)';
+
+    // Clear all stale UI state up front so nothing from a previous sector lingers
+    document.getElementById('lepton-triple-container').innerHTML =
+        '<p class="hint" style="color:#888;">Computing spectrum…</p>';
+    document.getElementById('spectrum-table-container').innerHTML = '';
+    clearCanvas(document.getElementById('potential-canvas'));
+    clearCanvas(document.getElementById('profile-canvas'));
 
     // Yield to the browser briefly so the button-disable rendering happens
     await new Promise(resolve => setTimeout(resolve, 50));
