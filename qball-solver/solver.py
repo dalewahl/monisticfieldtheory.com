@@ -233,17 +233,15 @@ def solve_spectrum(params):
             s['stability'] = None
             s['f3_mode'] = None
 
-        # Compute mass calibration: assume the lowest-energy soliton is the electron
-        # (calibration anchor). All other masses scale relative to it.
-        if all_solitons and all_solitons[0]['E'] > 0:
-            E0 = all_solitons[0]['E']
-            scale = M_ELECTRON_MEV / E0  # MeV per MFT energy unit
-            for s in all_solitons:
-                s['mass_MeV'] = s['E'] * scale
-        else:
-            scale = MFT_TO_MEV_CANONICAL
-            for s in all_solitons:
-                s['mass_MeV'] = s['E'] * scale
+        # Mass calibration: MFT_TO_MEV is a global constant set by the lepton
+        # sector calibration (m_e = 0.511 MeV at the canonical lepton ground-state
+        # E ≈ 0.00427 in the canonical potential). Every sector uses this same
+        # conversion factor — sectors do not self-calibrate to their own lowest
+        # soliton, since that would obscure the framework's predicted mass scales
+        # for non-lepton sectors.
+        scale = MFT_TO_MEV_CANONICAL
+        for s in all_solitons:
+            s['mass_MeV'] = s['E'] * scale
 
         # Identify the canonical triple — currently only implemented for the
         # lepton sector, where observed mass ratios are R10=206.77, R21=16.82.

@@ -227,14 +227,19 @@ function renderResults(result) {
         ? '<span class="badge ok">silver-ratio satisfied</span>'
         : `<span class="badge warn">silver-ratio violated (λ₄²=${sr.lam4_squared.toFixed(3)}, 8m₂λ₆=${sr.eight_m2_lam6.toFixed(3)})</span>`;
 
+    const sectorIsLepton = result.sector === 'lepton_sector';
     summary.innerHTML = `
         <p>
             <strong>${result.spectrum.length}</strong> distinct solitons found in the spectrum.
             ${srBadge}
         </p>
         <p class="hint">
-            Energy scale calibrated by setting the lowest-energy soliton equal to
-            m_e = 0.511 MeV (MFT_TO_MEV = ${result.mft_to_mev.toFixed(2)}).
+            Mass column uses MFT_TO_MEV = ${result.mft_to_mev.toFixed(2)},
+            the global conversion factor anchored by the lepton ground-state at the canonical potential
+            (m_e = 0.511 MeV). ${sectorIsLepton
+                ? 'For the lepton sector this is the correct calibration.'
+                : 'Non-lepton sectors apply the same conversion; matching to observed masses in those sectors may require additional MFT-physics adjustments (sector-specific calibration anchors, mass-extraction formulas, or back-reaction corrections) not yet implemented here.'
+            }
             φ_barrier = ${result.phi_barrier.toFixed(4)}, φ_vacuum = ${result.phi_vacuum.toFixed(4)}.
         </p>
     `;
@@ -358,7 +363,9 @@ function renderResults(result) {
 
     // === Profile plot ===
     const profCanvas = document.getElementById('profile-canvas');
+    const profHeading = document.getElementById('profile-heading');
     if (triple) {
+        profHeading.textContent = 'Lepton soliton profiles u(r)';
         const e = result.spectrum[triple.electron_idx];
         const mu = result.spectrum[triple.muon_idx];
         const ta = result.spectrum[triple.tau_idx];
@@ -373,6 +380,7 @@ function renderResults(result) {
             { xs: ta.r, ys: normalize(ta.u, ta.r), color: LEPTON_COLORS.tau, label: 'tau' },
         ], { xlabel: 'r', ylabel: 'u(r) / norm', xmax: 12 });
     } else {
+        profHeading.textContent = 'Soliton profiles u(r)';
         clearCanvas(profCanvas);
         const ctx = profCanvas.getContext('2d');
         ctx.fillStyle = '#888';
@@ -411,8 +419,10 @@ function renderResults(result) {
         <h3>Full discrete spectrum (${result.spectrum.length} solitons, sorted by energy)</h3>
         <p class="hint">
             ω² is an eigenvalue of each soliton, not a free parameter.
-            The canonical lepton triple is highlighted; F3 mode and Morse index columns
-            show the Family-of-Three Stability Theorem classification (e, μ stable; τ metastable; higher modes excluded as multiply unstable).
+            ${triple
+                ? 'The canonical lepton triple is highlighted; F3 mode and Morse index columns show the Family-of-Three Stability Theorem classification (e, μ stable; τ metastable; higher modes excluded as multiply unstable).'
+                : 'Specific particle identification is not implemented for this sector yet — the full discrete tower is shown.'
+            }
         </p>
         <div class="spectrum-table-wrapper">
             <table class="spectrum-table">

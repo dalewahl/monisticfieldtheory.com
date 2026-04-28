@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Q-Ball Lepton Spectrum Solver — Monistic Field Theory</title>
+    <title>Q-Ball Spectrum Solver — Monistic Field Theory</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 </head>
@@ -21,12 +21,13 @@
     </header>
 
     <main class="container">
-        <h1>Q-Ball Lepton Spectrum Solver</h1>
+        <h1>Q-Ball Spectrum Solver</h1>
         <p class="lede">
             From the MFT potential parameters, compute the full discrete spectrum
-            of soliton solutions of the Q-ball equation. The charged lepton families
-            (e, μ, τ) emerge as specific entries in this spectrum from a single
-            parameter set, with energy scale calibrated by m_e = 0.511 MeV.
+            of soliton solutions of the Q-ball equation. The Standard Model
+            particle families emerge as specific entries in this spectrum from a
+            single parameter set, with energy scale calibrated by m_e = 0.511 MeV
+            (canonical lepton sector).
         </p>
 
         <section class="status" id="status">
@@ -104,7 +105,7 @@
                         <canvas id="potential-canvas" width="600" height="300"></canvas>
                     </div>
                     <div class="plot-container">
-                        <h3>Lepton soliton profiles u(r)</h3>
+                        <h3 id="profile-heading">Soliton profiles u(r)</h3>
                         <canvas id="profile-canvas" width="600" height="300"></canvas>
                     </div>
                 </div>
