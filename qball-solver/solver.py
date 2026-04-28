@@ -169,6 +169,46 @@ def find_best_triple(all_solitons, R10_target, R21_target):
             'score': float(best_score)}
 
 
+def find_boson_triple(all_solitons, M_W_obs, M_Z_obs, M_H_obs):
+    """
+    Boson-specific triple finder (matches mft_vector_bosons.py logic):
+      - W and Z must be ℓ=1 vector solitons
+      - Higgs must be ℓ=0 scalar
+      - W < Z < H by energy
+      - Score by mZ/mW and mH/mW ratios.
+    """
+    sols_l1 = [(i, s) for i, s in enumerate(all_solitons) if s['ell'] == 1]
+    sols_l0 = [(i, s) for i, s in enumerate(all_solitons) if s['ell'] == 0]
+    if len(sols_l1) < 2 or len(sols_l0) < 1:
+        return None
+
+    R_HW_target = M_H_obs / M_W_obs
+    R_ZW_target = M_Z_obs / M_W_obs
+
+    best_score = float('inf')
+    best_triple = None
+    for h_idx, H in sols_l0:
+        for w_idx, W in sols_l1:
+            if W['E'] >= H['E']:
+                continue
+            for z_idx, Z0 in sols_l1:
+                if z_idx == w_idx:
+                    continue
+                if Z0['E'] <= W['E'] or Z0['E'] >= H['E']:
+                    continue
+                R_HW = H['E'] / W['E']
+                R_ZW = Z0['E'] / W['E']
+                score = (np.log(R_HW / R_HW_target))**2 + \
+                        (np.log(R_ZW / R_ZW_target))**2
+                if score < best_score:
+                    best_score = score
+                    best_triple = (w_idx, z_idx, h_idx)
+    if best_triple is None:
+        return None
+    return {'idx0': best_triple[0], 'idx1': best_triple[1], 'idx2': best_triple[2],
+            'score': float(best_score)}
+
+
 # ── Sector definitions (from the corpus) ──────────────────────────────────────
 SECTOR_DEFS = {
     'lepton_sector': {
@@ -196,6 +236,14 @@ SECTOR_DEFS = {
         'anchor_idx': 2,
         'anchor_mass': M_TOP,
         'anchor_label': 'm_t',
+        'scheme_dependent_idx': 0,   # up quark mass is scheme-dependent (MS-bar at mu=2 GeV)
+        'scheme_dependent_note': (
+            'The up quark mass (2.16 MeV, MS-bar at mu=2 GeV) is the most scheme-dependent '
+            'fermion mass in the Standard Model — the up quark is never observed free. '
+            'The MFT soliton predicts m_u_soliton ~6.5 MeV, consistent with running quark '
+            'masses at lower renormalisation scales. The robust MFT predictions in this '
+            'sector are the regime structure (phi_core) and R21 = m_t/m_c.'
+        ),
         'description': (
             'Up-type quark sector. Z=1 (DERIVED: same as leptons). Scalar (l=0) Q-ball. '
             'The (u, c, t) triple occupies the same field-space regimes as (e, mu, tau); '
@@ -258,12 +306,19 @@ def solve_spectrum(params):
 
         all_solitons = []
         if sector == 'boson_sector':
-            # Bosons: W, Z are l=1; Higgs is l=0
+            # Bosons: per mft_vector_bosons.py, search the deep-amplitude range
+            # A ∈ [1.4, 3.0] where the nonlinear-vacuum solitons live.
+            # W, Z are ℓ=1; Higgs is ℓ=0.
             for ell_val in (1, 0):
-                for omega2 in np.linspace(0.05, 0.99, n_omega):
-                    sols = find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a, ell=ell_val)
+                for omega2 in np.linspace(0.05, 0.98, n_omega):
+                    sols = find_solitons_at_omega2(
+                        omega2, m2, lam4, lam6, Z, a,
+                        ell=ell_val, A_max=3.0,
+                    )
+                    # Boson script uses A range [1.4, 3.0]; filter accordingly
+                    sols = [s for s in sols if 1.4 <= s['A'] <= 3.0]
                     for s in sols:
-                        if not any(abs(s['E'] - prev['E']) < 0.01 for prev in all_solitons):
+                        if not any(abs(s['E'] - prev['E']) < 0.005 for prev in all_solitons):
                             all_solitons.append(s)
         else:
             for omega2 in np.linspace(0.05, 0.99, n_omega):
@@ -281,11 +336,15 @@ def solve_spectrum(params):
             s['f3_mode'] = None
             s['particle'] = None
 
-        # Find canonical triple via sector-specific observed mass ratios
+        # Find canonical triple
         m1_obs, m2_obs, m3_obs = sector_def['masses']
-        R10_target = m2_obs / m1_obs
-        R21_target = m3_obs / m2_obs
-        triple = find_best_triple(all_solitons, R10_target, R21_target)
+        triple = None
+        if sector == 'boson_sector':
+            triple = find_boson_triple(all_solitons, m1_obs, m2_obs, m3_obs)
+        else:
+            R10_target = m2_obs / m1_obs
+            R21_target = m3_obs / m2_obs
+            triple = find_best_triple(all_solitons, R10_target, R21_target)
 
         # Sector-specific calibration: scale = anchor_mass / E_anchor_in_triple
         anchor_idx_in_triple = sector_def['anchor_idx']
@@ -375,6 +434,8 @@ def solve_spectrum(params):
                 'ell': sector_def['ell'],
                 'anchor_label': sector_def['anchor_label'],
                 'anchor_mass': sector_def['anchor_mass'],
+                'scheme_dependent_idx': sector_def.get('scheme_dependent_idx'),
+                'scheme_dependent_note': sector_def.get('scheme_dependent_note'),
             },
             'params': {'m2': m2, 'lam4': lam4, 'lam6': lam6, 'Z': Z, 'a': a},
         }

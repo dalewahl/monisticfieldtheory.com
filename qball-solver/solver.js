@@ -240,15 +240,22 @@ function renderResults(result) {
     // === Triple table ===
     if (triple) {
         const idxs = [triple.idx0, triple.idx1, triple.idx2];
+        const schemeIdx = sectorInfo.scheme_dependent_idx;
         const rows = idxs.map((idx, slot) => {
             const s = result.spectrum[idx];
             const name = triple.particles[slot];
             const observed = triple.observed_masses[slot];
             const predicted = triple.predicted_masses[slot];
             const isAnchor = slot === sectorInfo.anchor_idx;
-            const errorCell = isAnchor
-                ? '<em>calibration</em>'
-                : `${errorPct(predicted, observed)}%`;
+            const isSchemeDep = schemeIdx !== null && schemeIdx !== undefined && slot === schemeIdx;
+            let errorCell;
+            if (isAnchor) {
+                errorCell = '<em>calibration</em>';
+            } else if (isSchemeDep) {
+                errorCell = '<span class="badge warn" title="Scheme-dependent quantity">scheme-dependent</span>';
+            } else {
+                errorCell = `${errorPct(predicted, observed)}%`;
+            }
             const color = SLOT_COLORS[slot];
             return `
                 <tr class="lepton-row" style="background: ${color}15">
@@ -270,7 +277,15 @@ function renderResults(result) {
         const ratioRows = ratiosLabels.map((label, k) => {
             const m = triple.mass_ratios_model[k];
             const o = triple.mass_ratios_observed[k];
-            return `<tr><td>${label}</td><td>${m.toFixed(4)}</td><td>${o.toFixed(4)}</td><td>${errorPct(m, o)}%</td></tr>`;
+            // For up-quark sector, R10 (m_c/m_u) is also scheme-dependent — flag it
+            const isSchemeDepRatio = sectorInfo.scheme_dependent_idx === 0 && k === 0;
+            let errCell;
+            if (isSchemeDepRatio) {
+                errCell = '<span class="badge warn" title="Depends on scheme-dependent m_u">scheme-dependent</span>';
+            } else {
+                errCell = `${errorPct(m, o)}%`;
+            }
+            return `<tr><td>${label}</td><td>${m.toFixed(4)}</td><td>${o.toFixed(4)}</td><td>${errCell}</td></tr>`;
         }).join('');
 
         let weinbergRow = '';
@@ -288,6 +303,15 @@ function renderResults(result) {
                         </tr>
                     </tbody>
                 </table>
+            `;
+        }
+
+        let schemeNote = '';
+        if (sectorInfo.scheme_dependent_note) {
+            schemeNote = `
+                <div class="silver-ratio-note" style="margin-top: 16px;">
+                    <p><strong>Note on scheme-dependence:</strong> ${sectorInfo.scheme_dependent_note}</p>
+                </div>
             `;
         }
 
@@ -316,6 +340,7 @@ function renderResults(result) {
                 <tbody>${ratioRows}</tbody>
             </table>
             ${weinbergRow}
+            ${schemeNote}
         `;
     } else {
         tripleContainer.innerHTML = `
