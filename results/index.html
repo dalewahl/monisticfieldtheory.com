@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results — Monistic Field Theory</title>
+    <meta name="description" content="The MFT results dashboard: 20 confirmed predictions across particle physics, gravity, and quantum field theory, plus the experiments that could falsify the theory.">
+    <link rel="stylesheet" href="../style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'none'
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/">Foundations</a>
+                <a href="../particles/">Particles</a>
+                <a href="../gravity/">Gravity</a>
+                <a href="../quantum/">Quantum</a>
+                <a href="../qball-solver/">Solvers</a>
+                <a href="../papers/">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container guide-page">
+
+        <section class="hero">
+            <h1>Results</h1>
+            <p class="hero-tagline">
+                Twenty MFT predictions across particle physics, gravity, and quantum field
+                theory, organised by sector. Each card shows the prediction, the measured
+                value (where applicable), and the agreement. From two MFT-specific inputs
+                ($\beta$, $m_e$) and a derived sextic potential — every entry below.
+            </p>
+        </section>
+
+        <!-- Legend -->
+        <section class="section">
+            <div class="results-legend">
+                <span class="legend-item"><span class="legend-swatch measurement"></span> Measured prediction (numerical comparison)</span>
+                <span class="legend-item"><span class="legend-swatch theorem"></span> Structural theorem (exact)</span>
+                <span class="legend-item"><span class="legend-swatch derived"></span> Derived identity (closed-form)</span>
+                <span class="legend-item"><span class="legend-swatch cross-check"></span> Cross-sector consistency</span>
+            </div>
+        </section>
+
+        <!-- Particle physics -->
+        <section class="section">
+            <h2 class="results-section-header">Particle physics</h2>
+
+            <div class="results-grid">
+
+                <!-- Card 1: Muon mass -->
+                <div class="result-card">
+                    <p class="result-label">Mass — calibration on $m_e$</p>
+                    <h3 class="result-title">Muon mass ratio</h3>
+                    <p class="result-formula">$m_\mu/m_e$ from the $n = 1$ Q-ball mode at $Z = 1$</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>204.19</span>
+                        <span><strong>Observed:</strong></span><span>206.77</span>
+                    </div>
+                    <span class="result-error">1.25%</span>
+                    <p class="result-paper">P4</p>
+                </div>
+
+                <!-- Card 2: Tau mass -->
+                <div class="result-card">
+                    <p class="result-label">Mass — calibration on $m_e$</p>
+                    <h3 class="result-title">Tau mass ratio</h3>
+                    <p class="result-formula">$m_\tau/m_\mu$ from the metastable $n = 2$ Q-ball mode at $Z = 1$</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>16.95</span>
+                        <span><strong>Observed:</strong></span><span>16.82</span>
+                    </div>
+                    <span class="result-error">0.81%</span>
+                    <p class="result-paper">P4</p>
+                </div>
+
+                <!-- Card 3: Z boson -->
+                <div class="result-card">
+                    <p class="result-label">Mass — calibration on $m_W$</p>
+                    <h3 class="result-title">Z boson mass</h3>
+                    <p class="result-formula">$m_Z/m_W$ from the $n = 1$ vector mode at $Z = 9/5$</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>91,087 MeV</span>
+                        <span><strong>Observed:</strong></span><span>91,188 MeV</span>
+                    </div>
+                    <span class="result-error">0.11%</span>
+                    <p class="result-paper">P4</p>
+                </div>
+
+                <!-- Card 4: Higgs -->
+                <div class="result-card">
+                    <p class="result-label">Mass — calibration on $m_W$</p>
+                    <h3 class="result-title">Higgs boson mass</h3>
+                    <p class="result-formula">$m_H$ from the metastable $n = 2$ scalar mode at $Z = 9/5$</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>124,582 MeV</span>
+                        <span><strong>Observed:</strong></span><span>125,090 MeV</span>
+                    </div>
+                    <span class="result-error">0.41%</span>
+                    <p class="result-paper">P4</p>
+                </div>
+
+                <!-- Card 5: Weinberg angle -->
+                <div class="result-card">
+                    <p class="result-label">Coupling — geometric ratio</p>
+                    <h3 class="result-title">Weinberg angle</h3>
+                    <p class="result-formula">$\sin^2\theta_W = 1 - (E_W/E_Z)^2$ from Q-ball eigenvalue ratio</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>0.2240</span>
+                        <span><strong>Observed:</strong></span><span>0.2232</span>
+                    </div>
+                    <span class="result-error">0.4%</span>
+                    <p class="result-paper">P4</p>
+                </div>
+
+                <!-- Card 6: f_pi -->
+                <div class="result-card derived">
+                    <p class="result-label">Derived identity</p>
+                    <h3 class="result-title">Pion decay constant</h3>
+                    <p class="result-formula">$f_\pi^2 = V''(\varphi_v)/4 = \delta = 1 + \sqrt{2}$ — silver ratio identity</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>185.9 MeV</span>
+                        <span><strong>Observed:</strong></span><span>186.0 MeV</span>
+                    </div>
+                    <span class="result-error">0.03%</span>
+                    <p class="result-paper">P8</p>
+                </div>
+
+                <!-- Card 7: Neutral pion -->
+                <div class="result-card">
+                    <p class="result-label">Mass</p>
+                    <h3 class="result-title">Neutral pion $\pi^0$</h3>
+                    <p class="result-formula">Lowest-energy mode at $Z = 0$ (no Coulomb binding)</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>135.3 MeV</span>
+                        <span><strong>Observed:</strong></span><span>135.0 MeV</span>
+                    </div>
+                    <span class="result-error">0.2%</span>
+                    <p class="result-paper">P8</p>
+                </div>
+
+                <!-- Card 8: Sigma meson -->
+                <div class="result-card derived">
+                    <p class="result-label">Derived identity</p>
+                    <h3 class="result-title">Sigma meson $f_0(500)$</h3>
+                    <p class="result-formula">$m_\sigma^2 = V''(\varphi_v) = 4 f_\pi^2 \Rightarrow m_\sigma = 2 f_\pi$</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>372 MeV</span>
+                        <span><strong>Observed:</strong></span><span>400–700 MeV (broad)</span>
+                    </div>
+                    <span class="result-error">consistent</span>
+                    <p class="result-paper">P8</p>
+                </div>
+
+                <!-- Card 9: Decuplet spacings -->
+                <div class="result-card">
+                    <p class="result-label">Mass spacings</p>
+                    <h3 class="result-title">Hadronic decuplet</h3>
+                    <p class="result-formula">Equal spacing from SU(3) rotational quantisation of the $B = 1$ Skyrmion</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>~147 MeV (equal)</span>
+                        <span><strong>Observed:</strong></span><span>142–153 MeV/step</span>
+                    </div>
+                    <span class="result-error">1–6%</span>
+                    <p class="result-paper">P8</p>
+                </div>
+
+                <!-- Card 10: Neutrino hierarchy -->
+                <div class="result-card derived">
+                    <p class="result-label">Derived identity — silver ratio at fourth power</p>
+                    <h3 class="result-title">Neutrino mass hierarchy</h3>
+                    <p class="result-formula">$\Delta m^2_{32}/\Delta m^2_{21} = \delta^4 - 1 = 16 + 12\sqrt{2}$</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>32.97</span>
+                        <span><strong>Observed:</strong></span><span>32.58 ± 0.3</span>
+                    </div>
+                    <span class="result-error">1.2%</span>
+                    <p class="result-paper">P8</p>
+                </div>
+
+                <!-- Card 11: Neutrino abs masses -->
+                <div class="result-card">
+                    <p class="result-label">Absolute masses from one-loop self-energy</p>
+                    <h3 class="result-title">Absolute neutrino masses</h3>
+                    <p class="result-formula">$m_{\nu, i} \propto \beta^2 |V(\varphi_i)|\, [\delta(\delta+2)]^{-3/4}$</p>
+                    <div class="result-numbers">
+                        <span><strong>$m_{\nu_2}$:</strong></span><span>~9 meV</span>
+                        <span><strong>$m_{\nu_3}$:</strong></span><span>~50 meV</span>
+                    </div>
+                    <span class="result-error">~6%</span>
+                    <p class="result-paper">P8</p>
+                </div>
+
+                <!-- Card 12: Spin-1/2 -->
+                <div class="result-card theorem">
+                    <p class="result-label">Structural — emergent</p>
+                    <h3 class="result-title">Spin-½ classification</h3>
+                    <p class="result-formula">Q-ball internal frequency $\omega^2/m_2$: fermions $\approx 0.93$–0.96, bosons $\approx 0.05$–0.07</p>
+                    <div class="result-numbers">
+                        <span><strong>Gap:</strong></span><span>14×, no overlap</span>
+                        <span><strong>Mechanism:</strong></span><span>Wigner + FR</span>
+                    </div>
+                    <span class="result-error">structural</span>
+                    <p class="result-paper">P6</p>
+                </div>
+
+                <!-- Card 13: F3 -->
+                <div class="result-card theorem">
+                    <p class="result-label">Structural theorem</p>
+                    <h3 class="result-title">Three families exist</h3>
+                    <p class="result-formula">Constrained Morse index: $m_{\text{phys}}(u_n) = \max(0, n-1)$</p>
+                    <div class="result-numbers">
+                        <span><strong>Stable:</strong></span><span>$n = 0, 1$ (electron, muon)</span>
+                        <span><strong>Metastable:</strong></span><span>$n = 2$ (tau)</span>
+                    </div>
+                    <span class="result-error">exact</span>
+                    <p class="result-paper">P3</p>
+                </div>
+
+                <!-- Card 14: Confinement -->
+                <div class="result-card theorem">
+                    <p class="result-label">Structural theorem</p>
+                    <h3 class="result-title">Fractional-charge confinement</h3>
+                    <p class="result-formula">$\pi_3(SU(2)) \cong \mathbb{Z}$ + finite-energy: only integer $B$ as asymptotic states</p>
+                    <div class="result-numbers">
+                        <span><strong>Mechanism:</strong></span><span>elastic topology</span>
+                        <span><strong>Tension:</strong></span><span>$T(\lambda_4, \lambda_6) > 0$</span>
+                    </div>
+                    <span class="result-error">exact</span>
+                    <p class="result-paper">P7</p>
+                </div>
+
+                <!-- Card 15: Photon massless -->
+                <div class="result-card theorem">
+                    <p class="result-label">Structural theorem</p>
+                    <h3 class="result-title">Photon masslessness</h3>
+                    <p class="result-formula">Massless transverse mode at $Z = 0, \ell = 1$ in the boson sector — no Coulomb binding</p>
+                    <div class="result-numbers">
+                        <span><strong>Mass:</strong></span><span>0 (theorem)</span>
+                        <span><strong>Speed:</strong></span><span>$c_{\text{eff}} = 1$</span>
+                    </div>
+                    <span class="result-error">exact</span>
+                    <p class="result-paper">P9 · P11</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Quantum field theory -->
+        <section class="section">
+            <h2 class="results-section-header">Quantum field theory</h2>
+
+            <div class="results-grid">
+
+                <!-- Card 16: g=2 -->
+                <div class="result-card theorem">
+                    <p class="result-label">Derived from Weinberg theorem</p>
+                    <h3 class="result-title">Electron $g$-factor</h3>
+                    <p class="result-formula">$g = 2$ from emergent Lorentz + FR-spin-½ + minimal coupling</p>
+                    <div class="result-numbers">
+                        <span><strong>Tree:</strong></span><span>$g = 2$</span>
+                        <span><strong>One-loop:</strong></span><span>$g - 2 = \alpha/(2\pi)$ (Schwinger)</span>
+                    </div>
+                    <span class="result-error">exact match QED</span>
+                    <p class="result-paper">P14</p>
+                </div>
+
+                <!-- Card 17: F_MFT = F_QED -->
+                <div class="result-card derived">
+                    <p class="result-label">All-orders S-matrix equivalence</p>
+                    <h3 class="result-title">Electromagnetic form factor</h3>
+                    <p class="result-formula">$F_{\text{MFT}}(q) = F_{\text{QED}}(q) + \mathcal{O}(m_e^2/M_{\text{Pl}}^2)$</p>
+                    <div class="result-numbers">
+                        <span><strong>Deviation:</strong></span><span>$\sim 10^{-45}$</span>
+                        <span><strong>Verified at:</strong></span><span>one-loop scalar QED</span>
+                    </div>
+                    <span class="result-error">undetectable</span>
+                    <p class="result-paper">P14</p>
+                </div>
+
+                <!-- Card 18: 3D finiteness -->
+                <div class="result-card derived">
+                    <p class="result-label">Closed-form, no counterterms</p>
+                    <h3 class="result-title">3D one-loop effective potential</h3>
+                    <p class="result-formula">$V_{\text{1-loop}}^{(3D)}(\varphi) = -[V''(\varphi)]^{3/2}/(12\pi)$</p>
+                    <div class="result-numbers">
+                        <span><strong>UV divergences:</strong></span><span>none</span>
+                        <span><strong>Silver ratio:</strong></span><span>preserved</span>
+                    </div>
+                    <span class="result-error">finite, exact</span>
+                    <p class="result-paper">P15</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Gravity -->
+        <section class="section">
+            <h2 class="results-section-header">Gravity</h2>
+
+            <div class="results-grid">
+
+                <!-- Card 19: Galactic rotation -->
+                <div class="result-card">
+                    <p class="result-label">Six-galaxy spiral fit</p>
+                    <h3 class="result-title">Galactic rotation curves</h3>
+                    <p class="result-formula">Halo profile shape derived from silver-ratio potential; 2 fit params per galaxy + 1 global $\beta$</p>
+                    <div class="result-numbers">
+                        <span><strong>Combined:</strong></span><span>$\Sigma\chi^2/\text{dof} = 1.17$</span>
+                        <span><strong>Galaxies:</strong></span><span>MW, M31, NGC 3198/2403/7793, UGC 2259</span>
+                    </div>
+                    <span class="result-error">data-quality fit</span>
+                    <p class="result-paper">P5</p>
+                </div>
+
+                <!-- Card 20: Solar System -->
+                <div class="result-card">
+                    <p class="result-label">PPN parameters via Yukawa screening</p>
+                    <h3 class="result-title">Solar System tests</h3>
+                    <p class="result-formula">$\omega_{\text{BD}} > 40{,}000$ at $\beta \sim 10^{-4}$</p>
+                    <div class="result-numbers">
+                        <span><strong>$|\gamma - 1|$:</strong></span><span>$\lesssim 10^{-8}$ (Cassini: $&lt;2.3 \times 10^{-5}$)</span>
+                        <span><strong>$|\beta - 1|$:</strong></span><span>$\lesssim 10^{-8}$ (LLR: $&lt;10^{-4}$)</span>
+                    </div>
+                    <span class="result-error">all bounds satisfied</span>
+                    <p class="result-paper">P13</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Cross-sector consistency -->
+        <section class="section">
+            <h2 class="results-section-header">Cross-sector consistency</h2>
+
+            <div class="results-grid">
+
+                <!-- Card: Beta consistency -->
+                <div class="result-card cross-check">
+                    <p class="result-label">Same number, three regimes</p>
+                    <h3 class="result-title">Gravitational coupling $\beta$</h3>
+                    <p class="result-formula">Independent measurements from Solar-System, galactic, and neutrino sectors</p>
+                    <div class="result-numbers">
+                        <span><strong>Galactic fit:</strong></span><span>$\beta = 10^{-4}$</span>
+                        <span><strong>Neutrino fit:</strong></span><span>$\beta = 1.016 \times 10^{-4}$</span>
+                    </div>
+                    <span class="result-error">1.6% agreement</span>
+                    <p class="result-paper">P5 · P8 · P13</p>
+                </div>
+
+                <!-- Card: Silver ratio across scales -->
+                <div class="result-card cross-check">
+                    <p class="result-label">Same constant, 37 orders of magnitude</p>
+                    <h3 class="result-title">Silver ratio universality</h3>
+                    <p class="result-formula">$\delta = 1 + \sqrt{2}$ controls neutrino masses, leptons, hadrons, EW bosons, compact objects, halos, cosmology</p>
+                    <div class="result-numbers">
+                        <span><strong>Lowest scale:</strong></span><span>$\sim 10^{-2}$ eV (neutrinos)</span>
+                        <span><strong>Highest scale:</strong></span><span>Hubble (cosmology)</span>
+                    </div>
+                    <span class="result-error">14 manifestations</span>
+                    <p class="result-paper">P9 · P2</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Falsifiability -->
+        <section class="section">
+            <h2>What would falsify MFT?</h2>
+            <p>
+                A scientific theory must be capable of being wrong. MFT makes specific
+                structural commitments — not just numerical fits — that experimental
+                discoveries could refute. The most important falsifiers:
+            </p>
+
+            <div class="falsif-grid">
+
+                <div class="falsif-card">
+                    <h4>A stable or singly-metastable fourth charged lepton</h4>
+                    <p class="falsif-criterion">
+                        The Family-of-Three Theorem (P3) proves that any $u_n$ with $n \ge 3$
+                        has $m_{\text{phys}} \ge 2$ — multiply unstable. A fourth charged
+                        lepton with phenomenology comparable to $e, \mu, \tau$ would refute
+                        the theorem and the entire MFT framework.
+                    </p>
+                    <p class="falsif-status">→ direct refutation of P3</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>An overlapping fermion–boson $\omega^2$ classification</h4>
+                    <p class="falsif-criterion">
+                        The 14× gap between fermion $\omega^2/m_2 \approx 0.93$–0.96 and boson
+                        $\omega^2/m_2 \approx 0.05$–0.07 (P6) is structural, not coincidental.
+                        A new fundamental particle whose Q-ball internal frequency falls in
+                        the gap would refute the spin-classification mechanism.
+                    </p>
+                    <p class="falsif-status">→ refutation of P6</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>A free fractional-charge particle</h4>
+                    <p class="falsif-criterion">
+                        The Confinement Theorem (P7) proves that no finite-energy soliton can
+                        carry fractional baryon charge — only integer-$B$ asymptotic states
+                        are admissible. Discovery of a free fractional-charge particle would
+                        refute the theorem.
+                    </p>
+                    <p class="falsif-status">→ refutation of P7</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>$f_\pi$ measured to deviate from $\sqrt{\delta} \times 119.67$ MeV</h4>
+                    <p class="falsif-criterion">
+                        $f_\pi^2 = \delta$ at 0.03% (P8) is a parameter-free identity. A
+                        higher-precision measurement of $f_\pi$ revealing a deviation beyond
+                        this 0.03% margin would refute the chiral-stiffness closure.
+                    </p>
+                    <p class="falsif-status">→ refutation of P8 chiral closure</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>$\Delta m^2_{32}/\Delta m^2_{21}$ measured to deviate from $\delta^4 - 1$</h4>
+                    <p class="falsif-criterion">
+                        The neutrino hierarchy ratio $\delta^4 - 1 \approx 32.97$ is a
+                        parameter-free prediction (P8) at $\delta^4$ — fourth power of the
+                        silver ratio. A measurement deviating beyond the current 1.2% margin
+                        would refute the V² splitting mechanism.
+                    </p>
+                    <p class="falsif-status">→ refutation of P8 hierarchy</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>Galactic halo profiles incompatible with the silver-ratio shape</h4>
+                    <p class="falsif-criterion">
+                        The MFT halo profile shape is derived from the SBR theorem (P5),
+                        not fitted. A galaxy whose rotation curve cannot be reproduced by
+                        any choice of two parameters $(\Upsilon, \rho_{\text{scale}})$ within
+                        the silver-ratio profile family would refute the structural prediction.
+                    </p>
+                    <p class="falsif-status">→ refutation of P5 mechanism</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>Cassini-class violations of $\omega_{\text{BD}} > 40{,}000$</h4>
+                    <p class="falsif-criterion">
+                        MFT requires $\omega_{\text{BD}} > 40{,}000$ in the Solar-System
+                        regime (P13) at $\beta \sim 10^{-4}$. A higher-precision measurement
+                        revealing $\omega_{\text{BD}}$ below this bound would force $\beta$
+                        to a value incompatible with the galactic and neutrino fits.
+                    </p>
+                    <p class="falsif-status">→ refutation of $\beta$ universality</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>Detection of a fundamental particle with non-trivial $\ell = 2$ shear coupling</h4>
+                    <p class="falsif-criterion">
+                        MFT's mode-counting argument for $Z_{\text{boson}} = 9/5$ (P8) assumes
+                        the $\ell = 2$ shear sector contains no fundamental particles — only
+                        the $\ell = 0, 1$ modes appear. Discovery of a fundamental
+                        spin-2 quantum (graviton aside) would refute the SO(3) decomposition.
+                    </p>
+                    <p class="falsif-status">→ refutation of $Z_{\text{boson}}$ derivation</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>Time variation of $\alpha_{\text{EM}}$</h4>
+                    <p class="falsif-criterion">
+                        Under $\varepsilon(\varphi) = 1$ (P9), the fine-structure constant
+                        is automatically constant in space and time. Detection of variation
+                        of $\alpha_{\text{EM}}$ across cosmic time at the part-per-million
+                        level or below would force $\varepsilon \neq 1$, opening up
+                        problems in the cosmology and neutrino sectors.
+                    </p>
+                    <p class="falsif-status">→ refutation of $\varepsilon = 1$</p>
+                </div>
+
+                <div class="falsif-card">
+                    <h4>Astrophysical evidence of black-hole singularities</h4>
+                    <p class="falsif-criterion">
+                        MFT predicts no curvature singularity at the centre of a black hole —
+                        $\varphi$ saturates at the elastic ceiling $\varphi_v$ (P13).
+                        Astrophysical signatures (gravitational-wave merger templates,
+                        accretion-disk models, horizon-scale imaging) revealing a true
+                        singularity would refute the saturation mechanism.
+                    </p>
+                    <p class="falsif-status">→ refutation of P13 saturation</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Where to next -->
+        <section class="section">
+            <h2>Where to next</h2>
+            <div class="next-grid">
+                <a href="../foundations/" class="next-card">
+                    <h3>Foundations →</h3>
+                    <p>The structural base: action, sign constraints, SBR theorem, full benchmark Lagrangian, heavy Lorentz derivation.</p>
+                    <p class="next-papers">P0 · P1 · P2 · P9</p>
+                </a>
+                <a href="../particles/" class="next-card">
+                    <h3>Particles →</h3>
+                    <p>The mass-spectrum derivations behind cards 1–15, plus the F3 theorem, spin-½ emergence, and confinement.</p>
+                    <p class="next-papers">P3 · P4 · P6 · P7 · P8</p>
+                </a>
+                <a href="../gravity/" class="next-card">
+                    <h3>Gravity →</h3>
+                    <p>The galactic, cosmological, and compact-object derivations behind cards 19–20.</p>
+                    <p class="next-papers">P5 · P12 · P13</p>
+                </a>
+                <a href="../quantum/" class="next-card">
+                    <h3>Quantum →</h3>
+                    <p>Canonical quantisation, propagators, and the derivations behind cards 16–18 (form factor, $g = 2$, 3D finiteness).</p>
+                    <p class="next-papers">P10 · P11 · P14 · P15</p>
+                </a>
+                <a href="../synthesis/" class="next-card">
+                    <h3>← Synthesis</h3>
+                    <p>The unifying view: parameter ledger, derivation chain, cross-sector connections, comparison with the Standard Model.</p>
+                    <p class="next-papers">P9</p>
+                </a>
+                <a href="../qball-solver/" class="next-card">
+                    <h3>Q-ball Solver →</h3>
+                    <p>Compute the discrete soliton spectrum interactively. Reproduces the predictions in cards 1–5 and 7.</p>
+                    <p class="next-papers">live</p>
+                </a>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+</body>
+</html>
