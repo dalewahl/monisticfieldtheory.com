@@ -1137,3 +1137,92 @@ main {
     font-weight: 600;
     margin: 0;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Topic-page-specific styles (foundations, particles, gravity, quantum)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Paper-number tag in section headings */
+.paper-tag {
+    display: inline-block;
+    margin-left: 12px;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #2c5aa0;
+    background: #e8eef8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    font-family: 'SF Mono', Monaco, Consolas, monospace;
+}
+
+/* Paper figure with caption */
+.paper-figure {
+    margin: 20px 0;
+    padding: 0;
+    text-align: center;
+}
+
+.paper-figure img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #e0e6ee;
+    border-radius: 4px;
+    background: white;
+}
+
+.paper-figure figcaption {
+    margin-top: 10px;
+    padding: 0 12px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    text-align: left;
+    font-style: italic;
+}
+
+.paper-figure figcaption strong {
+    color: #234a85;
+    font-style: normal;
+}
+
+/* Paper / script link strip */
+.paper-link {
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: #f7f9fc;
+    border-left: 3px solid #2c5aa0;
+    border-radius: 0 4px 4px 0;
+    font-size: 13.5px;
+    color: #555;
+}
+
+.paper-link a {
+    color: #2c5aa0;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.paper-link a:hover {
+    text-decoration: underline;
+}
+
+/* Power-of-δ row separator in silver ratio table */
+.chain-table tr td.power-row,
+.chain-table tr td[colspan] {
+    background: #e8eef8;
+    color: #234a85;
+    font-weight: 700;
+    text-align: left;
+    padding: 7px 14px;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+
+/* Info callout (vs. warn) */
+.callout-info {
+    background: #f0f4fa;
+    border-left: 4px solid #2c5aa0;
+}
