@@ -1166,33 +1166,23 @@ main {
 }
 
 .paper-figure img {
-    width: 70%;
-    max-width: 640px;
-    min-width: 320px;
+    width: 100%;
+    max-width: 100%;
     height: auto;
     border: 1px solid #e0e6ee;
     border-radius: 4px;
     background: white;
-}
-
-@media (max-width: 800px) {
-    .paper-figure img {
-        width: 100%;
-        max-width: 100%;
-    }
+    display: block;
 }
 
 .paper-figure figcaption {
     margin-top: 10px;
-    padding: 0 12px;
+    padding: 0 4px;
     font-size: 13px;
     color: #555;
     line-height: 1.5;
     text-align: left;
     font-style: italic;
-    max-width: 720px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .paper-figure figcaption strong {
