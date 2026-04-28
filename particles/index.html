@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particles — Monistic Field Theory</title>
+    <meta name="description" content="The particle sector of MFT: family-of-three theorem, lepton/quark/boson masses, spin-½ emergence, fractional-charge confinement, hadrons, neutrinos, and the electroweak boson sector.">
+    <link rel="stylesheet" href="../style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'none'
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/">Foundations</a>
+                <a href="../particles/" class="active">Particles</a>
+                <a href="../gravity/">Gravity</a>
+                <a href="../quantum/">Quantum</a>
+                <a href="../qball-solver/">Solvers</a>
+                <a href="../papers/">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container guide-page">
+
+        <section class="hero">
+            <h1>Particles</h1>
+            <p class="hero-tagline">
+                The Q-ball equation applied to the silver-ratio potential, plus its Skyrme
+                reduction in dense regimes, gives all of MFT microphysics: the family-of-three
+                theorem, the mass spectrum across all sectors, spin-½ emergence, confinement,
+                hadrons, and neutrinos. One potential — three sector couplings ($Z_{\text{lep}} = 1$,
+                $Z_{\text{down}} = 2$, $Z_{\text{boson}} = 9/5$) — every prediction.
+            </p>
+            <div class="status-block">
+                <p class="status-label">Papers covered</p>
+                <p style="margin: 0; font-size: 14px; color: #444;">
+                    P3 (Family-of-Three Stability Theorem) ·
+                    P4 (Lepton, Quark, and Gauge Boson Masses) ·
+                    P6 (Spin-½ Emergence) ·
+                    P7 (Fractional-Charge Confinement) ·
+                    P8 (Microphysics: hadrons, neutrinos, EW bosons).
+                </p>
+            </div>
+        </section>
+
+        <!-- The Q-ball equation, central computational tool -->
+        <section class="section">
+            <h2>1. The Q-ball equation — the central computational tool</h2>
+            <p>
+                Almost everything on this page comes from one equation. Substituting the
+                Q-ball ansatz into the MFT action and reducing to radial form gives:
+            </p>
+            <div class="equation-display">
+                $$u'' = \left[ m_2 - \omega^2 - \lambda_4 (u/r)^2 + \lambda_6 (u/r)^4 - \frac{Z}{\sqrt{r^2 + a^2}} + \frac{\ell(\ell+1)}{r^2} \right] u$$
+            </div>
+            <p>
+                with $m_2 = 1$, $\lambda_4 = 2$, $\lambda_6 = 1/2$ (the silver-ratio
+                normalised values from <a href="../foundations/">Foundations §4</a>),
+                $a = 1$ (softening length), and a sector-dependent Coulomb coupling $Z$.
+                The angular momentum $\ell$ takes the value 0 for scalar Q-balls (charged
+                leptons, scalar Higgs) and 1 for vector Q-balls ($W$, $Z$, photon).
+                You can <a href="../qball-solver/">compute the spectrum interactively in your
+                browser</a>.
+            </p>
+            <p>
+                Each solution is characterised by:
+            </p>
+            <ul>
+                <li><strong>$E = \omega^2 Q$</strong> — the soliton's energy, where
+                    $Q = \int u^2\, dr$ is the conserved Noether charge of the internal
+                    $U(1)$ phase symmetry.</li>
+                <li><strong>$\omega^2$</strong> — the internal frequency (an eigenvalue of
+                    the equation, not an input). This drives the spin-½ classification of §3.</li>
+                <li><strong>$\varphi_{\text{core}} = u(\delta r)/(\delta r)$</strong> at small $r$ —
+                    the central field amplitude, classifying the soliton's regime: linear
+                    vacuum, near-barrier, or nonlinear vacuum.</li>
+                <li><strong>$n$</strong> — the node count of $u(r)$ on $(0, \infty)$,
+                    matching the unconstrained Morse index.</li>
+            </ul>
+            <p>
+                The discrete spectrum supports a tower of soliton solutions for any given
+                $(Z, \ell)$ choice. The Family-of-Three Theorem of §2 selects exactly three
+                physically admissible modes from this tower; the rest are excluded.
+            </p>
+        </section>
+
+        <!-- P3 -->
+        <section class="section">
+            <h2>2. The Family-of-Three Stability Theorem <span class="paper-tag">P3</span></h2>
+            <p>
+                Why are there exactly three generations of leptons in nature? The family-of-three
+                theorem proves that the constrained Morse index of the energy functional on the
+                silver-ratio double-well admits exactly three admissible radial modes. Two are
+                stable, one is metastable, all higher modes are excluded.
+            </p>
+
+            <h3>Setup: the radial energy functional</h3>
+            <p>
+                For a Q-ball soliton in 3D, the relevant energy functional is:
+            </p>
+            <div class="equation-display">
+                $$E[u] = 4\pi \int_0^\infty \left[ \tfrac{1}{2}(u')^2 + V(u; r) \right] r^2\, dr$$
+            </div>
+            <p>
+                where $V(u; r)$ is an effective potential containing the sextic
+                self-interaction, the Coulomb binding, and (for $\ell > 0$) a centrifugal
+                term. The boundary conditions are $u'(0) = 0$ (regularity at the origin) and
+                $u(r) \to 0$ as $r \to \infty$.
+            </p>
+
+            <h3>Two physical constraints</h3>
+            <p>
+                Two constraints reduce the space of allowed perturbations:
+            </p>
+            <p>
+                <strong>(i) Contraction charge.</strong> The total contraction of the medium
+                is quantised:
+            </p>
+            <div class="equation-display">
+                $$Q[u] = 4\pi \int_0^\infty q(u; r)\, r^2\, dr = Q_0$$
+            </div>
+            <p>
+                Physically, $Q[u]$ encodes the total amount of spatial contraction carried by
+                the soliton. The constraint $Q = Q_0$ restricts perturbations to the tangent
+                space of the constraint surface.
+            </p>
+            <p>
+                <strong>(ii) Dilation redundancy.</strong> For each stationary mode $u_n$,
+                the direction $\hat g_{\text{dil}}$ corresponding to a global radial dilation
+                ($u_n(r) \to u_n(r/\mu)$ at $\mu = 1$) does not change the identity of the
+                particle species — it is a redundancy in the description, analogous to a
+                gauge direction. We project it out.
+            </p>
+
+            <h3>Three Morse indices</h3>
+            <p>
+                The second variation of $E$ at $u_n$ defines a self-adjoint operator $L_n$:
+            </p>
+            <div class="equation-display">
+                $$L_n v = -v'' - \frac{2}{r} v' + \partial_u^2 V(u_n; r)\, v$$
+            </div>
+            <p>
+                Three Morse indices count negative eigenvalues of $L_n$ on different subspaces:
+            </p>
+            <ul class="forced-moves">
+                <li><strong>Unconstrained:</strong> $m_{\text{un}}(u_n)$ on the full Hilbert space $H$.</li>
+                <li><strong>Charge-constrained:</strong> $m_Q(u_n)$ on the tangent space
+                    $\{v \in H : DQ[u_n](v) = 0\}$.</li>
+                <li><strong>Physical:</strong> $m_{\text{phys}}(u_n)$ on the further-restricted
+                    subspace orthogonal to the dilation direction $\hat g_{\text{dil}}$.</li>
+            </ul>
+
+            <h3>Three lemmas → the theorem</h3>
+            <p>
+                Three lemmas connect these:
+            </p>
+            <ol class="forced-moves">
+                <li><strong>Node number equals unconstrained index:</strong> $m_{\text{un}}(u_n) = n$.
+                    The $n$th radial mode has exactly $n$ negative directions in $L_n$ on the
+                    full space, by Sturm–Liouville theory.</li>
+                <li><strong>Charge constraint reduces by one:</strong> $m_Q(u_n) = m_{\text{un}}(u_n) - 1$ for $n \ge 1$,
+                    $m_Q(u_0) = 0$. The charge-constraint surface eliminates one negative
+                    direction by index theory.</li>
+                <li><strong>Dilation does not reduce further:</strong> $m_{\text{phys}}(u_n) = m_Q(u_n)$.
+                    The dilation mode is non-negative in $L_n$, so removing it from the
+                    domain cannot decrease the negative-eigenvalue count.</li>
+            </ol>
+
+            <h3>The theorem</h3>
+            <p>Combining the three lemmas:</p>
+            <div class="equation-display">
+                $$\boxed{m_{\text{phys}}(u_0) = 0, \qquad m_{\text{phys}}(u_n) = n - 1 \text{ for } n \ge 1}$$
+            </div>
+            <p>
+                In particular:
+            </p>
+            <ul>
+                <li>$u_0$ and $u_1$ are <strong>physically stable</strong>:
+                    $m_{\text{phys}} = 0$. Identified with the electron and muon.</li>
+                <li>$u_2$ is <strong>metastable</strong> with one decay direction:
+                    $m_{\text{phys}} = 1$. Identified with the tau.</li>
+                <li>All higher modes $u_n$ ($n \ge 3$) have $m_{\text{phys}} \ge 2$ and are
+                    <strong>strongly unstable</strong> — excluded as viable particle species.</li>
+            </ul>
+
+            <figure class="paper-figure">
+                <img src="../figures/fig_f3_morse.png" alt="Morse index spectrum from numerical verification of the family-of-three theorem.">
+                <figcaption>
+                    Numerical verification of the Family-of-Three Stability Theorem.
+                    Modes $u_0, u_1, u_2$ are physically admissible (Morse indices 0, 0, 1).
+                    Higher modes $u_3, u_4, \ldots$ are multiply unstable.
+                </figcaption>
+            </figure>
+
+            <h3>Tau metastability and fourth-family exclusion</h3>
+            <p>
+                The tau ($u_2$) is metastable: it has exactly one direction along which
+                $L_2$ has a negative eigenvalue. Physically, this corresponds to a single
+                decay channel — exactly the observed phenomenology of the tau, which decays
+                via the weak interaction to the muon and lighter states.
+            </p>
+            <p>
+                The fourth-family exclusion is a structural result, not a parameter
+                limitation: <strong>any $u_n$ with $n \ge 3$ has at least two unstable
+                directions</strong>, so any candidate fourth charged lepton would be
+                multiply unstable. This is the strongest falsification statement in MFT —
+                <em>discovery of a stable or singly-metastable fourth charged lepton would
+                refute the theorem</em>.
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P3: Family-of-Three Stability Theorem (Zenodo) →</a>
+                ·
+                <a href="../scripts/family_of_three_theorem.py">family_of_three_theorem.py</a>
+                ·
+                <a href="../scripts/figures_family_of_three.py">figures_family_of_three.py</a>
+            </p>
+        </section>
+
+        <!-- P4 -->
+        <section class="section">
+            <h2>3. Mass spectrum across all sectors <span class="paper-tag">P4</span></h2>
+            <p>
+                With the family-of-three structure established, P4 computes the actual
+                masses. The Q-ball equation is solved numerically for each sector at its
+                derived Coulomb coupling $Z$ and angular momentum $\ell$. The energy scale
+                is set by one calibration ($m_e = 0.511$ MeV) per sector; everything else
+                follows.
+            </p>
+
+            <h3>Charged leptons (Z = 1, ℓ = 0)</h3>
+            <p>
+                The lepton triple is identified with the three F3-admissible modes: $u_0$
+                (electron, ground state in linear vacuum), $u_1$ (muon, near-barrier mode),
+                $u_2$ (tau, metastable nonlinear-vacuum mode).
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Particle</th><th>F3 mode</th><th>$\omega^2$</th><th>$\varphi_{\text{core}}$</th><th>Predicted (MeV)</th><th>Observed (MeV)</th><th>Error</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>electron</td><td>$n=0$ stable</td><td>0.821</td><td>linear vacuum</td><td>0.51</td><td>0.511</td><td><em>calibration</em></td></tr>
+                        <tr><td>muon</td><td>$n=1$ stable</td><td>0.653</td><td>near barrier</td><td>104.34</td><td>105.66</td><td><strong>1.25%</strong></td></tr>
+                        <tr><td>tau</td><td>$n=2$ metastable</td><td>0.677</td><td>nonlinear vacuum</td><td>1768.99</td><td>1776.86</td><td><strong>0.44%</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                The mass ratios are <strong>$m_\mu / m_e = 204.19$</strong> (observed 206.77,
+                error 1.25%) and <strong>$m_\tau / m_\mu = 16.95$</strong> (observed 16.82,
+                error 0.81%).
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_qball_lepton_masses.png" alt="The lepton spectrum from the Q-ball equation: profiles, ω² values, and the silver-ratio potential.">
+                <figcaption>
+                    The MFT lepton spectrum from the Q-ball equation. The silver-ratio potential supports
+                    exactly three F3-admissible modes; their soliton profiles, internal frequencies
+                    $\omega^2$, and energies match the observed lepton masses.
+                </figcaption>
+            </figure>
+
+            <h3>Down-type quarks (Z = 2, ℓ = 0)</h3>
+            <p>
+                The Coulomb coupling $Z_{\text{down}} = 2$ is derived from the Vieta average
+                of the potential's critical-point field values:
+                $Z_{\text{down}} = (\varphi_b^2 + \varphi_v^2)/2 = \lambda_4/(2\lambda_6) = 2$.
+                Calibrating to $m_b$:
+            </p>
+            <ul>
+                <li>down: $m_d = 4.55$ MeV (observed 4.7, <strong>3.17%</strong>)</li>
+                <li>strange: $m_s = 90.1$ MeV (observed 93, <strong>3.08%</strong>)</li>
+                <li>bottom: $m_b = 4180$ MeV (calibration)</li>
+            </ul>
+
+            <h3>Up-type quarks (Z = 1, ℓ = 0)</h3>
+            <p>
+                The up-quark sector shares the lepton coupling ($Z = 1$) and field-space
+                regimes. The structural prediction is that $(u, c, t)$ occupy the same three
+                regimes as $(e, \mu, \tau)$, with the top quark identified as the metastable
+                $n = 2$ mode — its short lifetime is structural metastability, not coincidence.
+            </p>
+            <p>
+                Calibrating to $m_t = 173,100$ MeV gives $m_c = 1337$ MeV (observed 1270,
+                error 5.3%). The model gives $m_u \approx 6.5$ MeV; the observed
+                $\sim 2.16$ MeV is the most scheme-dependent fermion mass in the Standard
+                Model (the up quark is never observed free), and the MFT prediction is
+                consistent with running quark masses at lower renormalisation scales. The
+                <em>robust</em> MFT predictions in this sector are the regime structure and
+                the $m_t/m_c$ ratio.
+            </p>
+
+            <h3>Electroweak bosons (Z = 9/5, ℓ = 0 and 1)</h3>
+            <p>
+                The boson sector is the most precise test. With $Z_{\text{boson}} = 9/5 = 1.8$
+                (derivation in §6 below), $W$ and $Z$ are vector ($\ell = 1$) Q-balls and
+                the Higgs is a scalar ($\ell = 0$) Q-ball. Calibrating to $m_W$:
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Particle</th><th>F3 mode</th><th>$\ell$</th><th>Predicted (MeV)</th><th>Observed (MeV)</th><th>Error</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>$W$</td><td>$n=0$</td><td>1</td><td>80,370</td><td>80,370</td><td><em>calibration</em></td></tr>
+                        <tr><td>$Z$</td><td>$n=1$</td><td>1</td><td>91,087</td><td>91,188</td><td><strong>0.11%</strong></td></tr>
+                        <tr><td>Higgs</td><td>$n=2$</td><td>0</td><td>124,582</td><td>125,090</td><td><strong>0.41%</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>The Weinberg angle</h3>
+            <p>
+                $W$ and $Z$ share the same potential, the same coupling $Z = 9/5$, and the
+                same angular momentum $\ell = 1$. They are simply the $n = 0$ and $n = 1$
+                modes of the Q-ball equation. The Weinberg angle is therefore a geometric
+                ratio of their eigenvalues:
+            </p>
+            <div class="equation-display">
+                $$\boxed{\sin^2 \theta_W = 1 - \left(\frac{E_W}{E_Z}\right)^2 = 0.2240}$$
+            </div>
+            <p>
+                Compare the observed value $\sin^2\theta_W = 0.2232$ — error <strong>0.4%</strong>.
+                In the Standard Model, $\theta_W$ is a free parameter set by hand. In MFT it
+                is derived: a consequence of the Q-ball spectrum at the boson-sector coupling.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_vector_bosons.png" alt="The W, Z, Higgs spectrum from the boson-sector Q-ball equation at Z = 9/5.">
+                <figcaption>
+                    Electroweak boson spectrum from the boson-sector Q-ball equation at $Z = 9/5$.
+                    $W$ and $Z$ are $\ell = 1$ vector solitons; Higgs is the $\ell = 0$ scalar mode.
+                    The Weinberg angle emerges as the ratio of the $W$ and $Z$ eigenvalues.
+                </figcaption>
+            </figure>
+
+            <h3>Why all massive bosons are tau-like</h3>
+            <p>
+                In the boson sector, the F3 theorem still applies: only modes with
+                $m_{\text{phys}} \le 1$ are admissible. With three slots ($n = 0, 1, 2$)
+                shared between $\ell = 1$ vectors ($W$, $Z$) and the $\ell = 0$ scalar
+                (Higgs), the $W$ is the ground state, the $Z$ is the first excited state,
+                and the Higgs is the metastable $n = 2$ mode. The Higgs <em>is</em> the
+                tau-analogue of the boson sector — its short lifetime relative to its mass is
+                structural F3 metastability, not coincidence.
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P4: Lepton, Quark, and Gauge Boson Mass Hierarchies (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_qball_lepton_masses.py">mft_qball_lepton_masses.py</a>
+                ·
+                <a href="../scripts/mft_quark_sector.py">mft_quark_sector.py</a>
+                ·
+                <a href="../scripts/mft_vector_bosons.py">mft_vector_bosons.py</a>
+                ·
+                <a href="../scripts/mft_cross_sector.py">mft_cross_sector.py</a>
+                ·
+                <a href="../qball-solver/">interactive solver</a>
+            </p>
+        </section>
+
+        <!-- P6 -->
+        <section class="section">
+            <h2>4. Spin-½ emergence <span class="paper-tag">P6</span></h2>
+            <p>
+                P6 derives why some MFT solitons are fermions and others are bosons. The
+                answer is not a postulate of the action — it follows from the Q-ball
+                internal frequency $\omega^2$ via emergent Lorentz invariance and the
+                Finkelstein–Rubinstein constraint.
+            </p>
+
+            <h3>The 14× ω² gap</h3>
+            <div class="callout callout-info">
+                <p><strong>Theorem (Fermion–Boson Classification).</strong> For all six MFT
+                fundamental particle types (electron, muon, tau, $W$, $Z$, Higgs), the
+                Q-ball frequency ratio $\eta = \omega^2/m_2$ satisfies:</p>
+                <p style="text-align: center; margin-top: 8px;">
+                $\eta \in [0.926,\; 0.958]$ — fermions (all three leptons)<br>
+                $\eta \in [0.050,\; 0.066]$ — bosons ($W$, $Z$, Higgs)
+                </p>
+                <p style="margin-top: 8px;">with no overlap. The minimum fermion $\eta$
+                exceeds the maximum boson $\eta$ by a factor of $0.926/0.066 \approx 14$.</p>
+            </div>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_spin_4d_locking.png" alt="The 14× fermion–boson gap in ω²/m₂, separating leptons from bosons cleanly.">
+                <figcaption>
+                    The fermion–boson classification from the Q-ball internal frequency. All three leptons cluster
+                    at $\omega^2/m_2 \approx 0.93$–0.96 (fermions); all three electroweak bosons at
+                    $\omega^2/m_2 \approx 0.05$–0.07 (bosons). The 14× gap is structural and separates the two
+                    regimes cleanly.
+                </figcaption>
+            </figure>
+
+            <h3>Why the gap exists</h3>
+            <p>
+                The gap is a structural consequence of the Coulomb coupling values:
+            </p>
+            <ul>
+                <li><strong>Leptons</strong> ($Z = 1, \ell = 0$): weakly bound. The binding
+                    energy scales as $m_2 - \omega^2 \propto Z^2$, giving
+                    $\omega^2 \approx m_2 - \mathcal{O}(1) \approx 0.65$–$0.96$, close to
+                    the bare mass threshold.</li>
+                <li><strong>Bosons</strong> ($Z = 1.8, \ell = 0$ or $1$): deeply bound.
+                    $\omega^2 \approx m_2 - \mathcal{O}(Z^2) \approx 0.05$–$0.07$, far below
+                    the threshold. The larger $Z$ pulls $\omega^2$ down.</li>
+            </ul>
+            <p>
+                The silver-ratio potential amplifies the gap: the nonlinear vacuum
+                ($\varphi > \varphi_v$) is $4\delta \approx 9.66$ times stiffer than the
+                relaxed vacuum, so bosons sitting deep in the nonlinear vacuum are trapped
+                in a much deeper well, further suppressing their $\omega^2$.
+            </p>
+
+            <h3>The Wigner-rotation mechanism</h3>
+            <p>
+                Why does $\omega^2$ classify spin? The mechanism uses the
+                emergent-Lorentz-invariance derivation from <a href="../foundations/">Foundations §8</a>.
+                For a particle with internal frequency $\omega$ and mass parameter $m_2$, the
+                Wigner rotation angle for an infinitesimal boost followed by an infinitesimal
+                rotation is:
+            </p>
+            <div class="equation-display">
+                $$\delta \psi_W = \frac{\omega^2/m_2}{1 + \omega^2/m_2}\, \delta\phi$$
+            </div>
+            <p>
+                where $\delta\phi$ is the spatial rotation angle and $\delta\psi_W$ is the
+                induced phase rotation. Two limits:
+            </p>
+            <ul class="forced-moves">
+                <li><strong>Non-relativistic limit</strong> ($\omega^2/m_2 \to 0$):
+                    $\delta\psi_W \to 0$. Phase and spatial rotations decouple.</li>
+                <li><strong>Relativistic limit</strong> ($\omega^2/m_2 \to 1$):
+                    $\delta\psi_W \to \delta\phi/2$. The phase rotates at half the rate of the
+                    spatial rotation. A full $2\pi$ spatial rotation produces a $\pi$ phase
+                    shift, and the soliton wavefunction acquires a sign change:
+                    $\Phi \to -\Phi$ — <strong>the defining property of a spin-½ particle</strong>.</li>
+            </ul>
+
+            <h3>The Finkelstein–Rubinstein constraint</h3>
+            <p>
+                The Finkelstein–Rubinstein framework provides the mathematical setting. The
+                configuration space $\mathcal{C}$ of finite-energy solitons has a fundamental
+                group $\pi_1(\mathcal{C})$ that can be non-trivial. When $\pi_1(\mathcal{C})$
+                contains a $\mathbb{Z}_2$ element corresponding to $2\pi$ spatial rotation,
+                the quantum wavefunction can be either single-valued (boson) or sign-changing
+                (fermion).
+            </p>
+            <p>
+                For MFT solitons, the answer depends on the phase-rotation coupling:
+            </p>
+            <ul>
+                <li><strong>Leptons</strong> ($\eta \approx 1$): Wigner rotation couples
+                    phase and spatial rotation. The $2\pi$ rotation loop in $\mathcal{C}$ is
+                    non-contractible because it cannot be deformed to the identity without
+                    also unwinding the phase. FR forces the wavefunction to change sign.
+                    Result: <strong>spin-½, fermion</strong>.</li>
+                <li><strong>Bosons</strong> ($\eta \approx 0$): phase and spatial rotation
+                    are effectively decoupled. The $2\pi$ rotation loop is contractible. No
+                    sign change is forced. Result: <strong>integer spin, boson</strong>.</li>
+            </ul>
+
+            <h3>Five no-go theorems for the 3D spatial slice</h3>
+            <p>
+                To demonstrate that emergent Lorentz invariance is <em>essential</em> (not
+                merely convenient), P6 reports five independent computational approaches that
+                attempt to derive spin-½ from the 3D spatial slice alone. <strong>All
+                fail.</strong> Spectral asymmetry of fluctuation operators ($L_1$ vs $L_2$)
+                gives zero spectral flow. Squared-Dirac coupling with a $\varphi^2 - 2$
+                Yukawa mass identifies leptons as fermions but cannot distinguish them from
+                bosons (3/6 score). The first-order Dirac $\eta$-invariant vanishes
+                identically for any real scalar or pseudoscalar background in 3D, by
+                anti-unitary symmetry. The pattern of failure shows that Lorentz invariance
+                is the necessary ingredient — and in MFT, that invariance is itself derived
+                (<a href="../foundations/">Foundations §8</a>).
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P6: Spin-½ Emergence (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_spin_4d_locking.py">mft_spin_4d_locking.py</a>
+                ·
+                <a href="../scripts/mft_spin_half_emergence.py">mft_spin_half_emergence.py</a>
+            </p>
+        </section>
+
+        <!-- P7 -->
+        <section class="section">
+            <h2>5. Fractional-charge confinement <span class="paper-tag">P7</span></h2>
+            <p>
+                In the screened, dense regime where the contraction field is approximately
+                constant, the MFT action reduces to a Skyrme-type chiral field theory. P7
+                proves that within this regime, only integer-baryon-number solitons are
+                finite-energy. Fractional charges are <strong>structurally confined</strong>
+                — not by an external gauge force, but by the elastic topology of the medium itself.
+            </p>
+
+            <h3>The reduction to Skyrme</h3>
+            <p>
+                In dense regions (hadron interiors), the contraction field $\varphi$
+                approaches a constant. Substituting into the MFT action gives a Skyrme-type
+                action for a chiral $SU(2)$ (or $SU(3)$) field $U$:
+            </p>
+            <div class="equation-display">
+                $$S_{\text{Skyrme}} = \int d^3x \left[ \frac{f_\pi^2}{16}\, \text{Tr}(\partial_i U\, \partial_i U^\dagger) + \frac{1}{32 e^2}\, \text{Tr}([U^\dagger \partial_i U,\, U^\dagger \partial_j U]^2) \right]$$
+            </div>
+            <p>
+                with no new free parameters: both $f_\pi$ and $e$ are functions of the MFT
+                potential parameters $\lambda_4, \lambda_6$ through the screening reduction.
+            </p>
+
+            <h3>Integer baryon number from topology</h3>
+            <p>
+                Finite-energy configurations require $U(\mathbf{x}) \to \mathbf{1}$ as
+                $|\mathbf{x}| \to \infty$, which compactifies $\mathbb{R}^3 \cup \{\infty\} \cong S^3$.
+                Every finite-energy chiral field becomes a continuous map
+                $U: S^3 \to G$. The baryon number is the homotopy class:
+            </p>
+            <div class="equation-display">
+                $$B[U] \in \pi_3(SU(2)) \cong \mathbb{Z}, \qquad B[U] \in \pi_3(SU(3)) \cong \mathbb{Z}$$
+            </div>
+            <p>
+                <strong>Baryon number is strictly integer-valued by topology.</strong> No
+                continuous field configuration can carry fractional $B$.
+            </p>
+
+            <h3>The Confinement Theorem</h3>
+            <p>
+                P7 proves three statements:
+            </p>
+            <p>
+                <strong>(A) Integer topological charge and baryon stability.</strong>
+                Quantisation of baryon number from $\pi_3(G)$. Existence and stability of the
+                $B = 1$ hedgehog soliton in each integer-$B$ sector. Nonexistence of
+                fractional-$B$ solitons that satisfy both finite energy and the Derrick
+                virial identity.
+            </p>
+            <p>
+                <strong>(B) Energetic confinement of fractional baryon density.</strong> Any
+                finite-energy configuration with baryon density concentrated in two
+                well-separated regions $A$ and $B$, each carrying half a unit of $B$, must
+                create a bridge region connecting them along which the chiral field completes
+                a full topological winding. As the separation $\ell$ increases:
+            </p>
+            <div class="equation-display">
+                $$E(\ell) \gtrsim E_{B=1}(\lambda_4, \lambda_6) + T(\lambda_4, \lambda_6)\, \ell$$
+            </div>
+            <p>
+                where $T(\lambda_4, \lambda_6) > 0$ is the <strong>emergent string tension</strong>,
+                fixed by the same potential parameters that control the lepton spectrum.
+                There is no low-energy variational path to two isolated, fractional-$B$
+                objects.
+            </p>
+            <p>
+                <strong>(C) Dynamical recombination.</strong> Configurations with
+                fractional-looking baryon density relax to compact integer-$B$ solitons plus
+                radiation, or unwind to vacuum. On macroscopic scales, the resistance of the
+                medium to stretching incomplete winding appears as a confining, string-like
+                force that grows with separation, binds fractional proto-quark substructure
+                inside hadrons, and forbids free fractional-charge particles from appearing
+                as asymptotic states.
+            </p>
+
+            <div class="callout callout-warn">
+                <p><strong>Confinement without colour.</strong> This is confinement from
+                geometry, not from a running coupling. There is no asymptotic freedom — the
+                same elastic topology that confines fractional charges at hadronic scales
+                also confines them at all scales. SU(3) colour symmetry, if confirmed in
+                MFT, would arise as the natural compactification group; its specific
+                appearance is currently <a href="../guide/">an open problem</a> in the
+                framework.</p>
+            </div>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P7: Fractional-Charge Confinement Theorem (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_confinement_theorem.py">mft_confinement_theorem.py</a>
+            </p>
+        </section>
+
+        <!-- P8 - this is the long one -->
+        <section class="section">
+            <h2>6. Microphysics: hadrons, neutrinos, electroweak bosons <span class="paper-tag">P8</span></h2>
+            <p>
+                P8 is the largest paper in the corpus. It applies the MFT framework to all
+                of microphysics in three dense subsections: the hadronic sector (Skyrme
+                reduction, $f_\pi^2 = \delta$, decuplet spacings), the neutrino sector
+                (mass hierarchy from $\delta^4 - 1$, absolute scale from one-loop
+                gravitational self-energy), and the electroweak boson sector (dielectric
+                normalisation, $Z_{\text{boson}} = 9/5$ from SO(3) mode counting).
+            </p>
+
+            <!-- Hadrons -->
+            <h3>6a. The hadronic sector</h3>
+
+            <h4>The B = 1 hedgehog soliton</h4>
+            <p>
+                In the $B = 1$ sector, the unique minimum-energy solution is the hedgehog
+                ansatz:
+            </p>
+            <div class="equation-display">
+                $$U_0(\mathbf{x}) = \exp\left(i\, \boldsymbol{\tau} \cdot \hat{\mathbf{x}}\, f(r)\right)$$
+            </div>
+            <p>
+                where $f(r)$ is a radial profile satisfying $f(0) = \pi$, $f(\infty) = 0$.
+                The hedgehog mass and radius are fixed by $f_\pi(\lambda_4, \lambda_6)$ and
+                $e(\lambda_4, \lambda_6)$.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_hedgehog_bvp_v2.png" alt="The B=1 hedgehog soliton from the BVP solver: profile, energy densities, and verification of Derrick balance.">
+                <figcaption>
+                    The $B = 1$ hedgehog soliton from the BVP solver. The chiral profile $f(r)$ is monotonic with
+                    $f(0) = \pi$, $f(\infty) = 0$. Quadratic and quartic energies satisfy $E_2/E_4 = 0.99999$ (Derrick
+                    balance to $0.001\%$). Total energy $\varepsilon_0 = 145.85$ matches the standard Adkins–Nappi–Witten
+                    value to $0.1\%$.
+                </figcaption>
+            </figure>
+
+            <h4>The pion decay constant: $f_\pi^2 = \delta$ (0.03%)</h4>
+            <p>
+                A central result. From the chiral-stiffness closure at the nonlinear vacuum:
+            </p>
+            <div class="equation-display">
+                $$\boxed{f_\pi^2 = \frac{V''(\varphi_v)}{4} = \varphi_v^2 - m^2 = \delta = 1 + \sqrt{2}}$$
+            </div>
+            <p>
+                giving $f_\pi = \sqrt{\delta} \times 119.67 \text{ MeV} = 185.9 \text{ MeV}$,
+                a <strong>0.03% match</strong> to the observed 186.0 MeV. Zero free parameters.
+            </p>
+            <p>
+                The derivation: at the nonlinear vacuum, $V'(\varphi_v) = 0$ gives
+                $m^2 = \lambda_4 \varphi_v^2 - \lambda_6 \varphi_v^4$, or in normalised
+                units $\varphi_v^4 - 4\varphi_v^2 + 2 = 0$. The second derivative is:
+            </p>
+            <div class="equation-display">
+                $$V''(\varphi_v) = 4\varphi_v^2 - 4 = 4(\varphi_v^2 - m^2)$$
+            </div>
+            <p>
+                Therefore $f_\pi^2 = V''(\varphi_v)/4 = \varphi_v^2 - m^2 = (2 + \sqrt{2}) - 1 = 1 + \sqrt{2} = \delta$.
+            </p>
+            <p>
+                In the standard linear sigma model, $f_\pi^2 = \kappa \varphi_v^2$ because
+                the pion is a free Goldstone mode. In MFT, the chiral field is a constrained
+                mode of the contraction field, which lives in a potential with baseline
+                curvature $m^2 = V''(0) = 1$. Only the excess
+                $\varphi_v^2 - m^2 = \delta$ is available for chiral dynamics.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_skyrme_derivation.png" alt="The MFT→Skyrme reduction: f_π² = δ as a direct consequence of medium stiffness at the nonlinear vacuum.">
+                <figcaption>
+                    The MFT$\to$Skyrme reduction. $f_\pi^2 = V''(\varphi_v)/4 = \delta$ — the pion decay constant
+                    is a direct consequence of the medium stiffness at the nonlinear vacuum. Decuplet equal spacing
+                    matches the observed mass gaps to within $1$–$6\%$.
+                </figcaption>
+            </figure>
+
+            <h4>The neutral pion at Z = 0</h4>
+            <p>
+                The $\pi^0$ is identified with the lowest-mass entry in the $Z = 0$ Q-ball
+                spectrum (no Coulomb binding). Predicted: $m_{\pi^0} = 135.3$ MeV, observed
+                $135.0$ MeV — <strong>0.2% match</strong>.
+            </p>
+
+            <h4>The σ meson</h4>
+            <p>
+                The radial-mode mass at the nonlinear vacuum is:
+            </p>
+            <div class="equation-display">
+                $$m_\sigma^2 = V''(\varphi_v) = 4\delta = 4 f_\pi^2 \;\Rightarrow\; m_\sigma = 2 f_\pi = 372 \text{ MeV}$$
+            </div>
+            <p>
+                consistent with the observed $f_0(500)$ width of 400–700 MeV.
+            </p>
+
+            <h4>Hadronic decuplet</h4>
+            <p>
+                The Skyrme rotational quantisation in SU(3) embedding produces three equal
+                decuplet spacings ($\Sigma^* - \Delta$, $\Xi^* - \Sigma^*$, $\Omega - \Xi^*$).
+                Predicted: equal spacing at $\sim 147$ MeV. Observed: 142–153 MeV per step.
+                <strong>Errors 1–6%</strong> across the four-particle decuplet — a structural
+                prediction (equal spacing, no curvature) that is theorem-level result, with
+                numerical values using the chiral-stiffness closure for $f_\pi$ and one
+                extracted Skyrme coupling.
+            </p>
+
+            <!-- Neutrinos -->
+            <h3>6b. The neutrino sector</h3>
+
+            <h4>The mass hierarchy: $\delta^4 - 1$ (1.2%)</h4>
+            <p>
+                The neutrino sector emerges from neutral solitons at the three critical
+                points of the sextic potential ($\varphi = 0, \varphi_b, \varphi_v$). Each
+                critical point hosts one neutrino mass eigenstate. The mass-squared
+                splittings are proportional to $|V(\varphi_i)|^2$, giving:
+            </p>
+            <div class="equation-display">
+                $$\frac{\Delta m^2_{32}}{\Delta m^2_{21}} = \frac{V(\varphi_v)^2 - V(\varphi_b)^2}{V(\varphi_b)^2 - V(0)^2} = \frac{\delta^2/9 - 1/(9\delta^2)}{1/(9\delta^2)} = \boxed{\delta^4 - 1 = 16 + 12\sqrt{2} \approx 32.97}$$
+            </div>
+            <p>
+                Observed: $32.58 \pm 0.3$. <strong>Error 1.2%</strong>. This is the 14th
+                manifestation of the silver ratio in MFT, and the first parameter-free
+                prediction of the neutrino mass hierarchy from any theory. The Standard
+                Model treats the two mass-squared differences as independent free parameters.
+                The hierarchy ratio is independent of $\beta$.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_neutrino_hierarchy.png" alt="The neutrino mass hierarchy ratio δ⁴ - 1, derived from the silver-ratio potential.">
+                <figcaption>
+                    The $\delta^4 - 1$ neutrino hierarchy prediction. The three critical points of the sextic potential
+                    correspond to three neutrino mass eigenstates; the mass-squared splittings yield the ratio
+                    $\delta^4 - 1 = 16 + 12\sqrt{2} \approx 32.97$, matching the observed $32.58$ at 1.2%.
+                </figcaption>
+            </figure>
+
+            <h4>The absolute mass scale: derived from the action</h4>
+            <p>
+                The hierarchy gives the <em>shape</em>; the <em>scale</em> requires more.
+                The derivation proceeds in three steps using the one-loop gravitational
+                self-energy in the Einstein frame:
+            </p>
+            <p>
+                <strong>Step 1: Conformal mass correction.</strong> In the Einstein frame
+                $\tilde g_{ij} = (1 + \beta\varphi)\, g_{ij}$, the second derivative at a
+                critical point acquires a conformal correction
+                $\delta m^2(\varphi_i) = 6\beta^2\, V(\varphi_i)$, proportional to $V(\varphi_i)$
+                — the origin of the $V^2$ splitting that produces $\delta^4 - 1$.
+            </p>
+            <p>
+                <strong>Step 2: Universal screening.</strong> The neutral mode is generated
+                at a critical point (stiffness $V''(\varphi_v) = 4\delta$) but propagates
+                through the bulk medium (stiffness $V''(0) = 1$). The screening mass is:
+            </p>
+            <div class="equation-display">
+                $$M_s^2 = V''(\varphi_v) + V''(0) = 4\delta + 1 = \boxed{\delta(\delta + 2) \approx 10.66}$$
+            </div>
+            <p>
+                This is the 13th manifestation of the silver ratio. The screening is
+                <strong>universal</strong> across all three neutrinos because each neutral
+                mode propagates through the same bulk.
+            </p>
+            <p>
+                <strong>Step 3: Neutrino masses.</strong> Combining the conformal coupling,
+                universal screening, and the 3D one-loop integral
+                $\int d^3k/(2\pi)^3 \cdot (k^2 + M_s^2)^{-3} = M_s^{-3}/(32\pi)$:
+            </p>
+            <div class="equation-display">
+                $$\boxed{m_{\nu, i} = \frac{3\beta^2\, |V(\varphi_i)|}{\sqrt{32\pi}}\, [\delta(\delta + 2)]^{-3/4} \times \frac{m_e}{E_e}}$$
+            </div>
+            <p>
+                Every factor is derived: $\beta^2$ from the gravitational coupling,
+                $|V(\varphi_i)|$ from the sextic potential, $3/\sqrt{32\pi}$ from the 3D
+                one-loop integral, $[\delta(\delta + 2)]^{-3/4}$ from universal screening,
+                $m_e/E_e$ from the calibration. Three masses follow:
+                $m_{\nu_1} = 0$, $m_{\nu_2} = $ (derived), $m_{\nu_3} = $ (derived). At
+                $\beta \approx 10^{-4}$, the absolute masses match observed bounds to
+                <strong>$\sim 6\%$</strong>.
+            </p>
+
+            <!-- Bosons -->
+            <h3>6c. The electroweak boson sector — deriving $Z_{\text{boson}} = 9/5$</h3>
+            <p>
+                The Coulomb couplings for leptons ($Z_{\text{lep}} = 1$) and down quarks
+                ($Z_{\text{down}} = 2$) are derived directly from potential structure:
+                $Z_{\text{lep}} = V''(0) = m^2$, $Z_{\text{down}} = (\varphi_b^2 + \varphi_v^2)/2 = \lambda_4/(2\lambda_6)$.
+                The boson coupling $Z_{\text{boson}} = 9/5$ is conjectured from SO(3) mode
+                counting in three dimensions.
+            </p>
+
+            <h4>The mode-counting argument</h4>
+            <p>
+                In three dimensions, the displacement gradient $\partial_i u_j$ of the
+                elastic medium has $3^2 = 9$ independent components. Under SO(3), these
+                decompose into irreducible representations:
+            </p>
+            <div class="equation-display">
+                $$\mathbf{3} \otimes \mathbf{3} = \mathbf{1} \oplus \mathbf{3} \oplus \mathbf{5}$$
+            </div>
+            <p>
+                corresponding to:
+            </p>
+            <ul>
+                <li>The trace (compression, $\ell = 0$, 1 component)</li>
+                <li>The antisymmetric part (rotation, $\ell = 1$, 3 components)</li>
+                <li>The traceless symmetric part (shear, $\ell = 2$, 5 components)</li>
+            </ul>
+            <p>
+                The bosonic sector occupies $\ell = 0$ (Higgs) and $\ell = 1$ ($W$, $Z$,
+                photon): a total of $1 + 3 = 4$ polarisation modes. The $\ell = 2$ shear
+                modes (5 components) do not appear as particles.
+            </p>
+            <p>
+                The conjecture: the effective Coulomb coupling for the bosonic sector is
+                determined by the ratio of the medium's total distortion capacity to the
+                number of unoccupied modes:
+            </p>
+            <div class="equation-display">
+                $$\boxed{Z_{\text{boson}} = \frac{N_{\text{total}}}{N_{\text{total}} - N_{\text{boson}}} = \frac{9}{9 - 4} = \frac{9}{5}}$$
+            </div>
+
+            <h4>Numerical verification: 9/5 vs alternatives</h4>
+            <p>
+                Three candidate values were tested against the boson masses and Weinberg
+                angle:
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>$Z_{\text{boson}}$</th><th>$m_Z/m_W$ error</th><th>$m_H/m_W$ error</th><th>$\sin^2\theta_W$ error</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>$9/5 = 1.800$</strong></td><td><strong>0.07%</strong></td><td><strong>0.02%</strong></td><td><strong>0.48%</strong></td></tr>
+                        <tr><td>$(4 + \sqrt{2})/3 \approx 1.805$</td><td>0.09%</td><td>0.07%</td><td>0.61%</td></tr>
+                        <tr><td>$2\sqrt{2} - 1 \approx 1.828$</td><td>0.32%</td><td>0.09%</td><td>2.21%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                The rational value $9/5$ is preferred on every metric. <strong>$Z_{\text{boson}}$
+                is a rational number arising from the medium's tensor structure in $d = 3$,
+                not from the silver ratio.</strong> A full derivation requires writing the
+                MFT action in Cosserat (micropolar) elastic form and showing that integrating
+                out the unoccupied $\ell = 2$ shear sector produces the effective Coulomb
+                coupling enhanced by $9/5$. If confirmed, the three sector couplings would
+                join the potential shape as derived consequences of the medium's structure.
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P8: Microphysics (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_microphysics.py">mft_microphysics.py</a>
+                ·
+                <a href="../scripts/mft_hadronic_v2.py">mft_hadronic_v2.py</a>
+                ·
+                <a href="../scripts/mft_neutrino_masses.py">mft_neutrino_masses.py</a>
+                ·
+                <a href="../scripts/mft_neutrino_hierarchy.py">mft_neutrino_hierarchy.py</a>
+                ·
+                <a href="../scripts/mft_skyrme_derivation.py">mft_skyrme_derivation.py</a>
+                ·
+                <a href="../scripts/mft_hedgehog_bvp_v2.py">mft_hedgehog_bvp_v2.py</a>
+            </p>
+        </section>
+
+        <!-- Cross-sector synthesis -->
+        <section class="section">
+            <h2>7. Cross-sector synthesis: one potential, all sectors</h2>
+            <p>
+                The MFT particle programme uses a single potential and three sector couplings
+                to control all matter sectors:
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Sector</th><th>Mechanism</th><th>$Z$, $\ell$</th><th>Free params</th><th>Key result</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Charged leptons</td><td>Q-ball</td><td>$Z=1, \ell=0$</td><td>$m_e$ calibration</td><td>Masses to $&lt;$1.2%</td></tr>
+                        <tr><td>Up-type quarks</td><td>Q-ball</td><td>$Z=1, \ell=0$</td><td>$Z$ only</td><td>Regime structure + $R_{21}$</td></tr>
+                        <tr><td>Down-type quarks</td><td>Q-ball</td><td>$Z=2, \ell=0$</td><td>$Z$ only</td><td>$R_{21}$ to 5%</td></tr>
+                        <tr><td>Electroweak bosons</td><td>Q-ball</td><td>$Z=9/5, \ell=0,1$</td><td>$Z$ only</td><td>$m_Z$ to 0.1%</td></tr>
+                        <tr><td>Hadrons</td><td>Skyrme</td><td>$B=1$</td><td>$e$ only</td><td>$f_\pi$ to 0.03%</td></tr>
+                        <tr><td>Neutral mesons</td><td>$Z=0$ Q-ball</td><td>$\ell=0$</td><td>None</td><td>$\pi^0$ to 0.2%</td></tr>
+                        <tr><td>Neutrinos</td><td>Neutral soliton</td><td>—</td><td>$\beta$</td><td>Hierarchy to 1.2%</td></tr>
+                        <tr><td>Confinement</td><td>Bridge tension</td><td>—</td><td>None</td><td>$T(\lambda_4, \lambda_6) > 0$</td></tr>
+                        <tr><td>Spin-½</td><td>$\omega^2$ classification</td><td>—</td><td>None</td><td>14$\times$ gap</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>The "three-ness" of nature</h3>
+            <p>
+                The repeated appearance of three across MFT sectors is not coincidence. It
+                is how the constrained Morse index of P3 truncates each spectrum:
+            </p>
+            <ul>
+                <li><strong>Leptons:</strong> three F3-admissible Q-ball modes.</li>
+                <li><strong>Neutrinos:</strong> three critical points of the sextic potential
+                    host three mass eigenstates.</li>
+                <li><strong>Hadrons:</strong> the $B = 1$ Skyrmion's $SU(3)$ embedding gives
+                    three equal decuplet spacings.</li>
+                <li><strong>Bosons:</strong> $\ell = 0$ + $\ell = 1$ gauge invariance with
+                    $\varepsilon = 1$ gives three slots: photon (massless), $\{W^\pm, Z\}$,
+                    Higgs.</li>
+            </ul>
+
+            <h3>Comparison with the Standard Model</h3>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Feature</th><th>SM + GR + ΛCDM</th><th>MFT</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Lepton masses (3)</td><td>Free Yukawa couplings</td><td>Derived from one equation</td></tr>
+                        <tr><td>Quark masses (6)</td><td>Free Yukawa couplings</td><td>Same equation, different $Z$</td></tr>
+                        <tr><td>Boson masses (3)</td><td>Higgs vev + gauge couplings</td><td>Same equation, $\ell = 0, 1$</td></tr>
+                        <tr><td>Weinberg angle</td><td>Free parameter</td><td>Derived (0.4% error)</td></tr>
+                        <tr><td>Why 3 families?</td><td>Unexplained</td><td>Constrained Morse index</td></tr>
+                        <tr><td>Why confinement?</td><td>QCD (separate gauge theory)</td><td>Elastic topology</td></tr>
+                        <tr><td>Spin-½</td><td>Input (Dirac spinor)</td><td>Emergent ($\omega^2$ classification)</td></tr>
+                        <tr><td>Neutrino hierarchy</td><td>2 free $\Delta m^2$</td><td>$\delta^4 - 1$ (1.2%)</td></tr>
+                        <tr><td>Free parameters</td><td>$\sim$19–25</td><td>1 calibration + derived shape</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Where to next -->
+        <section class="section">
+            <h2>Where to next</h2>
+            <div class="next-grid">
+                <a href="../foundations/" class="next-card">
+                    <h3>← Foundations</h3>
+                    <p>Step back to the structural base: the action, the silver-ratio condition, the benchmark Lagrangian, and the derivation of emergent Lorentz invariance.</p>
+                    <p class="next-papers">P0 · P1 · P2 · P9</p>
+                </a>
+                <a href="../gravity/" class="next-card">
+                    <h3>Gravity →</h3>
+                    <p>The same potential mapped to galactic and cosmological scales: rotation curves, halos as field relaxation, cosmological expansion, compact objects.</p>
+                    <p class="next-papers">P5 · P12 · P13</p>
+                </a>
+                <a href="../quantum/" class="next-card">
+                    <h3>Quantum →</h3>
+                    <p>Promotion to a quantum field theory: canonical quantisation, propagators, electromagnetic form factor matching QED to $10^{-45}$, 3D finiteness.</p>
+                    <p class="next-papers">P10 · P11 · P14 · P15</p>
+                </a>
+                <a href="../qball-solver/" class="next-card">
+                    <h3>Q-ball Solver →</h3>
+                    <p>Compute the discrete soliton spectrum for any sector in your browser. Reproduces lepton, quark, and boson masses including the photon and Weinberg angle.</p>
+                    <p class="next-papers">live</p>
+                </a>
+                <a href="../synthesis/" class="next-card">
+                    <h3>Synthesis →</h3>
+                    <p>The flagship paper as a single synthesis page: principle, action, parameter ledger, derivation chain across all sectors.</p>
+                    <p class="next-papers">P9</p>
+                </a>
+                <a href="../guide/" class="next-card">
+                    <h3>Understanding Guide</h3>
+                    <p>The eight-section overview of the entire framework, designed as the first-time reading entry point.</p>
+                    <p class="next-papers">summary</p>
+                </a>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+</body>
+</html>
