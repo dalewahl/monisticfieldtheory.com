@@ -23,11 +23,12 @@
     <main class="container">
         <h1>Q-Ball Spectrum Solver</h1>
         <p class="lede">
-            From the MFT potential parameters, compute the full discrete spectrum
-            of soliton solutions of the Q-ball equation. The Standard Model
-            particle families emerge as specific entries in this spectrum from a
-            single parameter set, with energy scale calibrated by m_e = 0.511 MeV
-            (canonical lepton sector).
+            From the MFT potential parameters and the sector-specific Coulomb coupling Z,
+            compute the full discrete spectrum of soliton solutions of the generalised
+            ℓ-dependent Q-ball equation. Each Standard Model sector — charged leptons,
+            up-type quarks, down-type quarks, gauge bosons — is identified by its derived
+            Z value and angular momentum ℓ. The corresponding particle triple is found
+            automatically by matching observed mass ratios.
         </p>
 
         <section class="status" id="status">
@@ -117,11 +118,13 @@
         <section class="explanatory">
             <h2>About this calculation</h2>
             <p>
-                The Q-ball equation u″ = [m₂ − ω² − λ₄(u/r)² + λ₆(u/r)⁴ − Z/√(r²+a²)] · u
+                The generalised ℓ-dependent Q-ball equation,
+                u″ = [m₂ − ω² − λ₄(u/r)² + λ₆(u/r)⁴ − Z/√(r²+a²) + ℓ(ℓ+1)/r²] · u,
                 admits a discrete spectrum of soliton solutions for any given potential.
-                Each solution is characterised by its node count, central amplitude φ_core,
-                internal frequency ω², and energy E = ω²·Q (where Q = ∫u² dr is the
-                Noether charge).
+                Each solution is characterised by its node count, angular momentum ℓ,
+                central amplitude φ_core, internal frequency ω², and energy E = ω²·Q
+                (where Q = ∫u² dr is the Noether charge). ℓ = 0 produces scalar solitons
+                (leptons, quarks, Higgs); ℓ = 1 produces vector solitons (W, Z, photon).
             </p>
             <p>
                 <strong>ω² is not a free parameter</strong> — it is an eigenvalue of the
@@ -130,20 +133,37 @@
                 soliton solutions automatically.
             </p>
             <p>
-                The charged lepton sector of the Standard Model is identified with three
-                specific entries in this spectrum: the n=0 ground state in linear vacuum
-                (electron, φ_core ≈ 0.02), an n=0 mode at the barrier (muon, φ_core ≈ 0.71),
-                and an n=1 metastable mode in the nonlinear vacuum (tau, φ_core ≈ 1.93).
-                The Family-of-Three Stability Theorem (P3 of the corpus) shows that this
-                count is a structural consequence of constrained Morse-index analysis.
+                The Standard Model particle families are identified with specific entries
+                in this spectrum, by sector:
+            </p>
+            <ul style="color:#444;">
+                <li><strong>Charged leptons</strong> (Z=1, ℓ=0): the (e, μ, τ) triple. Z=1 is
+                derived from the potential curvature m² = V″(0) = 1.</li>
+                <li><strong>Up-type quarks</strong> (Z=1, ℓ=0): the (u, c, t) triple. Same Z
+                as leptons; same field-space regimes.</li>
+                <li><strong>Down-type quarks</strong> (Z=2, ℓ=0): the (d, s, b) triple. Z=2 is
+                derived as λ₄/(2λ₆), the Vieta average of the potential's critical-point field
+                values.</li>
+                <li><strong>Gauge bosons</strong> (Z=9/5, ℓ=1 for W,Z; ℓ=0 for Higgs): the
+                (W, Z, H) triple. Z=9/5 is conjectured from SO(3) mode counting. The Weinberg
+                angle emerges as sin²θ_W = 1 − (E_W/E_Z)².</li>
+                <li><strong>Photon</strong>: ℓ=1, Z=0 — masslessness derived from the Q-ball
+                equation (no Coulomb well → no bound state).</li>
+            </ul>
+            <p>
+                The Family-of-Three Stability Theorem (P3 of the corpus) shows that the
+                three-family structure is a structural consequence of constrained Morse-index
+                analysis: only the n=0 and n=1 modes are stable, n=2 is metastable, and
+                n≥3 modes are multiply unstable.
             </p>
             <p>
-                <strong>Free parameter count.</strong> The lepton sector operates with
-                effectively one free parameter: m_e = 0.511 MeV calibrates the energy
-                scale. The potential parameters m₂, λ₄, λ₆ are linked by the silver-ratio
-                condition λ₄² = 8 m₂ λ₆. Z = 1 and a = 1 are fixed by physics within MFT.
-                m₂ = 1 is a unit choice. All three lepton masses, plus the predictions
-                for the up-type quark sector, follow.
+                <strong>Free parameter count.</strong> The MFT framework operates with two
+                ingredients per sector: the universal potential ratio λ₄/λ₆ = 4 (derived from
+                the Symmetric Back-Reaction Theorem), and the Coulomb coupling Z (derived
+                per sector except Z_boson which is conjectured). One overall energy scale
+                per sector is set by anchoring to one observed mass (m_e for leptons, m_t for
+                up-quarks, m_b for down-quarks, m_W for bosons). All other masses in each
+                sector — plus the Weinberg angle — emerge from the Q-ball equation.
             </p>
         </section>
 

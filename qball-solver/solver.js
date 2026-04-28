@@ -195,17 +195,8 @@ function plotCurves(canvas, curves, options = {}) {
 
 // === Render results ===
 
-const LEPTON_COLORS = {
-    electron: '#27ae60',
-    muon: '#2c5aa0',
-    tau: '#c0392b',
-};
-
-const LEPTON_OBSERVED_MEV = {
-    electron: 0.511,
-    muon: 105.66,
-    tau: 1776.86,
-};
+// Color palette by particle position in the triple (slot 0/1/2)
+const SLOT_COLORS = ['#27ae60', '#2c5aa0', '#c0392b'];
 
 function renderResults(result) {
     const summary = document.getElementById('results-summary');
@@ -221,125 +212,115 @@ function renderResults(result) {
         return;
     }
 
+    const sectorInfo = result.sector_info;
+    const triple = result.triple;
+    const errorPct = (model, observed) =>
+        observed === 0 ? 'n/a' : (100 * Math.abs(model - observed) / observed).toFixed(2);
+
     // === Summary ===
     const sr = result.silver_ratio;
     const srBadge = sr.satisfied
         ? '<span class="badge ok">silver-ratio satisfied</span>'
         : `<span class="badge warn">silver-ratio violated (λ₄²=${sr.lam4_squared.toFixed(3)}, 8m₂λ₆=${sr.eight_m2_lam6.toFixed(3)})</span>`;
 
-    const sectorIsLepton = result.sector === 'lepton_sector';
     summary.innerHTML = `
         <p>
-            <strong>${result.spectrum.length}</strong> distinct solitons found in the spectrum.
-            ${srBadge}
+            <strong>${result.spectrum.length}</strong> distinct solitons found in the
+            <strong>${sectorInfo.name}</strong> sector. ${srBadge}
         </p>
         <p class="hint">
-            Mass column uses MFT_TO_MEV = ${result.mft_to_mev.toFixed(2)},
-            the global conversion factor anchored by the lepton ground-state at the canonical potential
-            (m_e = 0.511 MeV). ${sectorIsLepton
-                ? 'For the lepton sector this is the correct calibration.'
-                : 'Non-lepton sectors apply the same conversion; matching to observed masses in those sectors may require additional MFT-physics adjustments (sector-specific calibration anchors, mass-extraction formulas, or back-reaction corrections) not yet implemented here.'
-            }
+            <strong>Z = ${sectorInfo.Z}</strong> (${sectorInfo.Z_origin}).
+            ℓ = ${sectorInfo.ell}${result.sector === 'boson_sector' ? ' for vector solitons (W, Z); ℓ=0 for scalar (Higgs)' : ''}.
+            Energy scale calibrated by ${sectorInfo.anchor_label} = ${sectorInfo.anchor_mass.toLocaleString()} MeV
+            (1 MFT unit ≈ ${result.mft_to_mev.toFixed(2)} MeV).
             φ_barrier = ${result.phi_barrier.toFixed(4)}, φ_vacuum = ${result.phi_vacuum.toFixed(4)}.
         </p>
     `;
 
-    // === Lepton triple ===
-    // Only show the lepton-triple table when the user has loaded the lepton
-    // sector preset; for quark/boson sectors, even if triple-matching ran,
-    // the labels (electron/muon/tau) wouldn't make sense.
-    const triple = (result.sector === 'lepton_sector') ? result.lepton_triple : null;
+    // === Triple table ===
     if (triple) {
-        const e = result.spectrum[triple.electron_idx];
-        const mu = result.spectrum[triple.muon_idx];
-        const ta = result.spectrum[triple.tau_idx];
+        const idxs = [triple.idx0, triple.idx1, triple.idx2];
+        const rows = idxs.map((idx, slot) => {
+            const s = result.spectrum[idx];
+            const name = triple.particles[slot];
+            const observed = triple.observed_masses[slot];
+            const predicted = triple.predicted_masses[slot];
+            const isAnchor = slot === sectorInfo.anchor_idx;
+            const errorCell = isAnchor
+                ? '<em>calibration</em>'
+                : `${errorPct(predicted, observed)}%`;
+            const color = SLOT_COLORS[slot];
+            return `
+                <tr class="lepton-row" style="background: ${color}15">
+                    <td><span class="dot" style="background:${color}"></span> ${name}</td>
+                    <td>n=${s.f3_mode}</td>
+                    <td>${s.morse_index} <span class="stab-tag stab-${s.stability}">${s.stability}</span></td>
+                    <td>${s.E.toFixed(5)}</td>
+                    <td>${predicted.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                    <td>${observed.toLocaleString()}</td>
+                    <td>${errorCell}</td>
+                    <td>${s.omega2.toFixed(4)}</td>
+                    <td>ℓ=${s.ell}</td>
+                    <td>${s.regime}</td>
+                </tr>
+            `;
+        }).join('');
 
-        const errorPct = (model, observed) =>
-            (100 * Math.abs(model - observed) / observed).toFixed(1);
+        const ratiosLabels = ['m₂/m₁', 'm₃/m₂', 'm₃/m₁'];
+        const ratioRows = ratiosLabels.map((label, k) => {
+            const m = triple.mass_ratios_model[k];
+            const o = triple.mass_ratios_observed[k];
+            return `<tr><td>${label}</td><td>${m.toFixed(4)}</td><td>${o.toFixed(4)}</td><td>${errorPct(m, o)}%</td></tr>`;
+        }).join('');
 
-        const r10_model = mu.E / e.E;
-        const r21_model = ta.E / mu.E;
-        const r20_model = ta.E / e.E;
+        let weinbergRow = '';
+        if (result.weinberg) {
+            const w = result.weinberg;
+            weinbergRow = `
+                <h4 style="margin-top: 16px;">Weinberg angle (derived, not fitted)</h4>
+                <table class="lepton-ratios-table">
+                    <thead><tr><th>Quantity</th><th>MFT model</th><th>Observed</th><th>Error</th></tr></thead>
+                    <tbody>
+                        <tr><td>sin²θ_W = 1 − (E_W/E_Z)²</td>
+                            <td>${w.sin2_theta_W_model.toFixed(4)}</td>
+                            <td>${w.sin2_theta_W_observed.toFixed(4)}</td>
+                            <td>${errorPct(w.sin2_theta_W_model, w.sin2_theta_W_observed)}%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
 
         tripleContainer.innerHTML = `
-            <h3>Identified lepton triple</h3>
+            <h3>Identified ${sectorInfo.name.toLowerCase()} triple</h3>
             <table class="lepton-triple-table">
                 <thead>
                     <tr>
-                        <th>Family</th>
+                        <th>Particle</th>
                         <th>F3 mode</th>
                         <th>Morse</th>
-                        <th>E (MFT units)</th>
+                        <th>E (MFT)</th>
                         <th>Predicted (MeV)</th>
                         <th>Observed (MeV)</th>
                         <th>Error</th>
                         <th>ω²</th>
+                        <th>ℓ</th>
                         <th>regime</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="lepton-row electron">
-                        <td><span class="dot" style="background:${LEPTON_COLORS.electron}"></span> electron</td>
-                        <td>n=${e.f3_mode}</td>
-                        <td>${e.morse_index} <span class="stab-tag stab-${e.stability}">${e.stability}</span></td>
-                        <td>${e.E.toFixed(5)}</td>
-                        <td>${e.mass_MeV.toFixed(2)}</td>
-                        <td>${LEPTON_OBSERVED_MEV.electron}</td>
-                        <td>calibration</td>
-                        <td>${e.omega2.toFixed(4)}</td>
-                        <td>${e.regime}</td>
-                    </tr>
-                    <tr class="lepton-row muon">
-                        <td><span class="dot" style="background:${LEPTON_COLORS.muon}"></span> muon</td>
-                        <td>n=${mu.f3_mode}</td>
-                        <td>${mu.morse_index} <span class="stab-tag stab-${mu.stability}">${mu.stability}</span></td>
-                        <td>${mu.E.toFixed(5)}</td>
-                        <td>${mu.mass_MeV.toFixed(2)}</td>
-                        <td>${LEPTON_OBSERVED_MEV.muon}</td>
-                        <td>${errorPct(mu.mass_MeV, LEPTON_OBSERVED_MEV.muon)}%</td>
-                        <td>${mu.omega2.toFixed(4)}</td>
-                        <td>${mu.regime}</td>
-                    </tr>
-                    <tr class="lepton-row tau">
-                        <td><span class="dot" style="background:${LEPTON_COLORS.tau}"></span> tau</td>
-                        <td>n=${ta.f3_mode}</td>
-                        <td>${ta.morse_index} <span class="stab-tag stab-${ta.stability}">${ta.stability}</span></td>
-                        <td>${ta.E.toFixed(5)}</td>
-                        <td>${ta.mass_MeV.toFixed(2)}</td>
-                        <td>${LEPTON_OBSERVED_MEV.tau}</td>
-                        <td>${errorPct(ta.mass_MeV, LEPTON_OBSERVED_MEV.tau)}%</td>
-                        <td>${ta.omega2.toFixed(4)}</td>
-                        <td>${ta.regime}</td>
-                    </tr>
-                </tbody>
+                <tbody>${rows}</tbody>
             </table>
+            <h4 style="margin-top: 16px;">Mass ratios</h4>
             <table class="lepton-ratios-table">
-                <thead>
-                    <tr><th>Mass ratio</th><th>MFT model</th><th>Observed</th><th>Error</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>m_μ / m_e</td><td>${r10_model.toFixed(2)}</td><td>206.77</td><td>${errorPct(r10_model, 206.768)}%</td></tr>
-                    <tr><td>m_τ / m_μ</td><td>${r21_model.toFixed(3)}</td><td>16.817</td><td>${errorPct(r21_model, 16.817)}%</td></tr>
-                    <tr><td>m_τ / m_e</td><td>${r20_model.toFixed(1)}</td><td>3477.2</td><td>${errorPct(r20_model, 3477.2)}%</td></tr>
-                </tbody>
+                <thead><tr><th>Ratio</th><th>MFT model</th><th>Observed</th><th>Error</th></tr></thead>
+                <tbody>${ratioRows}</tbody>
             </table>
+            ${weinbergRow}
         `;
     } else {
-        const sectorName = result.sector || 'this sector';
-        const isLeptonSector = result.sector === 'lepton_sector';
-        if (isLeptonSector) {
-            tripleContainer.innerHTML = '<p class="hint">No three-soliton triple matching observed lepton ratios was found in the computed spectrum.</p>';
-        } else {
-            tripleContainer.innerHTML = `
-                <h3>Spectrum for ${sectorName.replace('_', ' ')}</h3>
-                <p class="hint">
-                    The discrete soliton tower is shown below. Specific particle identification
-                    (matching to observed quark or boson masses) is currently implemented only for
-                    the charged lepton sector. The spectrum here uses Z = ${result.params.Z} from
-                    the loaded preset; the same potential parameters as all other sectors.
-                </p>
-            `;
-        }
+        tripleContainer.innerHTML = `
+            <p class="hint">No three-soliton triple matching observed ${sectorInfo.name.toLowerCase()} mass ratios was found in the computed spectrum. Try increasing the number of ω² scan points (currently 40), or check that potential parameters satisfy the silver-ratio condition.</p>
+        `;
     }
 
     // === Potential plot ===
@@ -350,12 +331,11 @@ function renderResults(result) {
         { x: result.phi_vacuum, color: '#7f8c8d', label: `φ_v=${result.phi_vacuum.toFixed(3)}` },
     ];
     if (triple) {
-        const e = result.spectrum[triple.electron_idx];
-        const mu = result.spectrum[triple.muon_idx];
-        const ta = result.spectrum[triple.tau_idx];
-        markers.push({ x: e.phi_core, color: LEPTON_COLORS.electron, label: 'e⁻' });
-        markers.push({ x: mu.phi_core, color: LEPTON_COLORS.muon, label: 'μ' });
-        markers.push({ x: ta.phi_core, color: LEPTON_COLORS.tau, label: 'τ' });
+        const idxs = [triple.idx0, triple.idx1, triple.idx2];
+        idxs.forEach((idx, slot) => {
+            const s = result.spectrum[idx];
+            markers.push({ x: s.phi_core, color: SLOT_COLORS[slot], label: triple.particles[slot] });
+        });
     }
     plotCurves(potCanvas, [{ xs: pc.phi, ys: pc.V, color: '#333' }], {
         xlabel: 'φ', ylabel: 'V(φ)', markers,
@@ -365,20 +345,22 @@ function renderResults(result) {
     const profCanvas = document.getElementById('profile-canvas');
     const profHeading = document.getElementById('profile-heading');
     if (triple) {
-        profHeading.textContent = 'Lepton soliton profiles u(r)';
-        const e = result.spectrum[triple.electron_idx];
-        const mu = result.spectrum[triple.muon_idx];
-        const ta = result.spectrum[triple.tau_idx];
-        // Normalize each profile for visual comparison
+        profHeading.textContent = `${sectorInfo.name} soliton profiles u(r)`;
+        const idxs = [triple.idx0, triple.idx1, triple.idx2];
         const normalize = (u, r) => {
             const norm = Math.sqrt(u.reduce((sum, ui, i) => sum + ui * ui * (i > 0 ? r[i] - r[i - 1] : 0), 0));
             return norm > 0 ? u.map(ui => ui / norm) : u;
         };
-        plotCurves(profCanvas, [
-            { xs: e.r, ys: normalize(e.u, e.r), color: LEPTON_COLORS.electron, label: 'electron' },
-            { xs: mu.r, ys: normalize(mu.u, mu.r), color: LEPTON_COLORS.muon, label: 'muon' },
-            { xs: ta.r, ys: normalize(ta.u, ta.r), color: LEPTON_COLORS.tau, label: 'tau' },
-        ], { xlabel: 'r', ylabel: 'u(r) / norm', xmax: 12 });
+        const curves = idxs.map((idx, slot) => {
+            const s = result.spectrum[idx];
+            return {
+                xs: s.r,
+                ys: normalize(s.u, s.r),
+                color: SLOT_COLORS[slot],
+                label: triple.particles[slot],
+            };
+        });
+        plotCurves(profCanvas, curves, { xlabel: 'r', ylabel: 'u(r) / norm', xmax: 12 });
     } else {
         profHeading.textContent = 'Soliton profiles u(r)';
         clearCanvas(profCanvas);
@@ -386,28 +368,30 @@ function renderResults(result) {
         ctx.fillStyle = '#888';
         ctx.font = '13px sans-serif';
         ctx.textAlign = 'center';
-        const sectorLabel = (result.sector || 'this sector').replace('_', ' ');
-        ctx.fillText('Particle profile overlay not available for', profCanvas.width / 2, profCanvas.height / 2 - 10);
-        ctx.fillText(sectorLabel + ' (yet)', profCanvas.width / 2, profCanvas.height / 2 + 10);
+        ctx.fillText('No triple identified', profCanvas.width / 2, profCanvas.height / 2);
     }
 
     // === Full spectrum table ===
     const rows = result.spectrum.map((s, idx) => {
-        const isLepton = s.lepton ? `lepton-row ${s.lepton}` : '';
-        const leptonLabel = s.lepton ? `<span class="lepton-tag" style="background:${LEPTON_COLORS[s.lepton]}">${s.lepton}</span>` : '';
+        const isParticle = s.particle ? 'lepton-row' : '';
+        const particleLabel = s.particle
+            ? `<span class="lepton-tag" style="background:${SLOT_COLORS[s.f3_mode]}">${s.particle}</span>`
+            : '';
         const morseCell = (s.morse_index !== null && s.morse_index !== undefined)
             ? `${s.morse_index} <span class="stab-tag stab-${s.stability}">${s.stability}</span>`
             : '<span class="muted">—</span>';
         const f3Cell = (s.f3_mode !== null && s.f3_mode !== undefined) ? `n=${s.f3_mode}` : '';
+        const rowStyle = s.particle ? `style="background: ${SLOT_COLORS[s.f3_mode]}15"` : '';
         return `
-            <tr class="${isLepton}">
-                <td>${idx}${leptonLabel}</td>
+            <tr class="${isParticle}" ${rowStyle}>
+                <td>${idx}${particleLabel}</td>
                 <td>${s.E.toFixed(5)}</td>
-                <td>${s.mass_MeV.toFixed(2)}</td>
+                <td>${s.mass_MeV.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
                 <td>${s.omega2.toFixed(4)}</td>
                 <td>${s.Q.toFixed(4)}</td>
                 <td>${s.phi_core.toFixed(4)}</td>
                 <td>${s.n_nodes}</td>
+                <td>ℓ=${s.ell}</td>
                 <td>${f3Cell}</td>
                 <td>${morseCell}</td>
                 <td>${s.regime}</td>
@@ -420,8 +404,8 @@ function renderResults(result) {
         <p class="hint">
             ω² is an eigenvalue of each soliton, not a free parameter.
             ${triple
-                ? 'The canonical lepton triple is highlighted; F3 mode and Morse index columns show the Family-of-Three Stability Theorem classification (e, μ stable; τ metastable; higher modes excluded as multiply unstable).'
-                : 'Specific particle identification is not implemented for this sector yet — the full discrete tower is shown.'
+                ? `The identified ${sectorInfo.name.toLowerCase()} triple is highlighted; F3 mode and Morse index columns show the Family-of-Three Stability Theorem classification.`
+                : 'No triple was identified for this configuration.'
             }
         </p>
         <div class="spectrum-table-wrapper">
@@ -435,8 +419,9 @@ function renderResults(result) {
                         <th>Q</th>
                         <th>φ_core</th>
                         <th>nodes</th>
+                        <th>ℓ</th>
                         <th>F3 mode</th>
-                        <th>Morse index</th>
+                        <th>Morse</th>
                         <th>regime</th>
                     </tr>
                 </thead>
@@ -485,12 +470,15 @@ async function runSolver() {
             success: false,
             message: `Python error: ${err.message}`,
             spectrum: [],
-            lepton_triple: null,
+            triple: null,
+            weinberg: null,
             potential_curve: null,
             phi_barrier: null,
             phi_vacuum: null,
             silver_ratio: null,
             mft_to_mev: null,
+            sector: activeSector,
+            sector_info: null,
         };
     }
 

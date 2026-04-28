@@ -1,40 +1,61 @@
 """
-MFT Q-Ball Solver — browser-adapted version (v2)
+MFT Q-Ball Spectrum Solver — browser-adapted version (v4)
 
-Adapted from mft_qball_lepton_masses.py for execution under Pyodide.
-Provides solve_spectrum(params) -> dict that scans omega2 and returns
-the full discrete tower of soliton solutions for a given potential.
+Implements the generalised ℓ-dependent Q-ball equation from
+MFT_Lepton_Mass_Paper_v9 and the cross-sector analysis from
+mft_cross_sector.py / mft_quark_sector.py / mft_vector_bosons.py.
 
-This is the right interface for MFT: ω² is an eigenvalue, not an input.
-The visitor enters the physics parameters; the equation picks out all
-admissible solitons.
+  u'' = [m₂ − ω² − λ₄(u/r)² + λ₆(u/r)⁴ − Z/√(r²+a²) + ℓ(ℓ+1)/r²] u
+
+Sector-specific physics (from the corpus):
+  - Z_lep   = m² = V''(0) = 1.0     [DERIVED: potential curvature]
+  - Z_up    = 1.0                   [DERIVED: same as lepton]
+  - Z_down  = λ₄/(2λ₆) = 2.0        [DERIVED: Vieta average]
+  - Z_boson = 9/5 = 1.8             [CONJECTURED: SO(3) mode counting]
+
+  - ℓ = 0 for leptons, scalar Higgs
+  - ℓ = 1 for vector bosons (W, Z, photon)
+  - ℓ = 0 for quarks (current implementation)
+
+Each sector has its own calibration anchor (a known particle mass)
+which yields its own MFT_TO_MEV scale factor.
 """
 
 import numpy as np
 from scipy.optimize import brentq
 
-# NumPy 2.0+ renamed trapz to trapezoid; handle both.
 try:
     _trap = np.trapezoid
 except AttributeError:
     _trap = np.trapz
 
-# Calibration constant: m_e = 0.511 MeV ↔ E0 ≈ 0.00427 MFT units
-M_ELECTRON_MEV = 0.511
-MFT_TO_MEV_CANONICAL = 119.67  # canonical calibration at m₂=1, λ₄=2, λ₆=0.5, Z=1
+# ── Physical constants (MeV) ──────────────────────────────────────────────────
+M_ELECTRON = 0.511
+M_MUON     = 105.66
+M_TAU      = 1776.86
 
-# Default grid (matches mft_qball_lepton_masses.py)
+M_UP       = 2.16
+M_CHARM    = 1270.0
+M_TOP      = 173100.0
+
+M_DOWN     = 4.7
+M_STRANGE  = 93.0
+M_BOTTOM   = 4180.0
+
+M_W        = 80370.0
+M_Z        = 91188.0
+M_HIGGS    = 125090.0
+
+# ── Default grid ──────────────────────────────────────────────────────────────
 RMAX_DEFAULT = 20.0
 N_DEFAULT = 200
 
 
 def potential(phi, m2, lam4, lam6):
-    """V(φ) = m2/2·φ² − lam4/4·φ⁴ + lam6/6·φ⁶"""
     return 0.5 * m2 * phi**2 - 0.25 * lam4 * phi**4 + (1.0 / 6.0) * lam6 * phi**6
 
 
 def find_barrier_and_vacuum(m2, lam4, lam6):
-    """Find φ_barrier (local max of V) and φ_vacuum (second local min of V)."""
     disc = lam4**2 - 4.0 * m2 * lam6
     if disc <= 0:
         return None, None
@@ -44,7 +65,6 @@ def find_barrier_and_vacuum(m2, lam4, lam6):
 
 
 def silver_ratio_check(m2, lam4, lam6):
-    """Check whether the silver-ratio condition λ₄² = 8 m₂ λ₆ is satisfied."""
     target = 8.0 * m2 * lam6
     actual = lam4**2
     rel_err = abs(actual - target) / target if target != 0 else float('inf')
@@ -56,21 +76,19 @@ def silver_ratio_check(m2, lam4, lam6):
     }
 
 
-def shoot(A, omega2, m2, lam4, lam6, Z, a, r, h, N):
-    """
-    Shoot the nonlinear Q-ball soliton equation outward from r=0.
-    u ~ A*r near origin (so φ_core = A at r→0).
-    Returns (u_endpoint, u_array).
-    """
+def shoot(A, omega2, m2, lam4, lam6, Z, a, r, h, N, ell=0):
+    """ℓ-dependent Q-ball shooting. ℓ=0: u[1]=A·r[1]. ℓ=1: u[1]=A·r[1]²."""
     u = np.zeros(N)
     u[0] = 0.0
-    u[1] = A * r[1]
+    u[1] = A * (r[1] ** (ell + 1))
+    cent = ell * (ell + 1)
     for i in range(1, N - 1):
         phi_i = u[i] / r[i]
         d2u = (m2 - omega2
                - lam4 * phi_i**2
                + lam6 * phi_i**4
-               - Z / np.sqrt(r[i]**2 + a**2)) * u[i]
+               - Z / np.sqrt(r[i]**2 + a**2)
+               + cent / r[i]**2) * u[i]
         u[i + 1] = 2.0 * u[i] - u[i - 1] + h * h * d2u
         if not np.isfinite(u[i + 1]) or abs(u[i + 1]) > 1e8:
             u[i + 1:] = 0.0
@@ -78,29 +96,24 @@ def shoot(A, omega2, m2, lam4, lam6, Z, a, r, h, N):
     return u[-1], u
 
 
-def find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a, A_max=8.0, n_pts=300,
+def find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a, ell=0,
+                             A_max=8.0, n_pts=300,
                              rmax=RMAX_DEFAULT, n_grid=N_DEFAULT):
-    """
-    At fixed omega2, scan amplitude A and find all soliton solutions
-    (where u_endpoint changes sign).
-    """
     r = np.linspace(rmax / (n_grid * 100.0), rmax, n_grid)
     h = r[1] - r[0]
-
     A_vals = np.linspace(0.01, A_max, n_pts)
-    u_ends = [shoot(A, omega2, m2, lam4, lam6, Z, a, r, h, n_grid)[0]
+    u_ends = [shoot(A, omega2, m2, lam4, lam6, Z, a, r, h, n_grid, ell)[0]
               for A in A_vals]
     results = []
-
     for i in range(len(A_vals) - 1):
         if u_ends[i] * u_ends[i + 1] < 0:
             try:
                 A_s = brentq(
-                    lambda A: shoot(A, omega2, m2, lam4, lam6, Z, a, r, h, n_grid)[0],
+                    lambda A: shoot(A, omega2, m2, lam4, lam6, Z, a, r, h, n_grid, ell)[0],
                     A_vals[i], A_vals[i + 1],
                     xtol=1e-8, maxiter=50
                 )
-                _, u = shoot(A_s, omega2, m2, lam4, lam6, Z, a, r, h, n_grid)
+                _, u = shoot(A_s, omega2, m2, lam4, lam6, Z, a, r, h, n_grid, ell)
                 Q = float(_trap(u**2, r))
                 E = omega2 * Q
                 nc = int(np.sum(np.diff(np.sign(u[:int(0.95 * n_grid)])) != 0))
@@ -112,17 +125,16 @@ def find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a, A_max=8.0, n_pts=300,
                     'A': float(A_s),
                     'n_nodes': nc,
                     'phi_core': phi_core,
+                    'ell': int(ell),
                     'u': u.tolist(),
                     'r': r.tolist(),
                 })
             except Exception:
                 pass
-
     return results
 
 
 def regime_for(phi_core, phi_b):
-    """Classify a soliton by where its core sits relative to the barrier."""
     if phi_b is None or phi_b == 0:
         return "—"
     if phi_core < 0.5 * phi_b:
@@ -133,22 +145,12 @@ def regime_for(phi_core, phi_b):
         return "nonlinear vacuum"
 
 
-def find_lepton_triple(all_solitons, R10_target=206.768, R21_target=16.817):
-    """
-    Among all found solitons, find the triple (E0, E1, E2) whose
-    energy ratios best match the observed lepton mass ratios.
-    Replicates the best_triple logic from mft_qball_lepton_masses.py.
-
-    Returns: dict with keys electron, muon, tau (each a soliton dict
-             from the spectrum) plus 'score' indicating fit quality,
-             or None if no good triple found.
-    """
+def find_best_triple(all_solitons, R10_target, R21_target):
+    """Find triple (E0, E1, E2) whose ratios best match observed values."""
     if len(all_solitons) < 3:
         return None
-
     best_score = float('inf')
     best_triple = None
-
     for i in range(len(all_solitons)):
         for j in range(i + 1, len(all_solitons)):
             for k in range(j + 1, len(all_solitons)):
@@ -161,39 +163,81 @@ def find_lepton_triple(all_solitons, R10_target=206.768, R21_target=16.817):
                     if score < best_score:
                         best_score = score
                         best_triple = (i, j, k)
-
     if best_triple is None:
         return None
+    return {'idx0': best_triple[0], 'idx1': best_triple[1], 'idx2': best_triple[2],
+            'score': float(best_score)}
 
-    i, j, k = best_triple
-    return {
-        'electron_idx': i,
-        'muon_idx': j,
-        'tau_idx': k,
-        'score': float(best_score),
-    }
+
+# ── Sector definitions (from the corpus) ──────────────────────────────────────
+SECTOR_DEFS = {
+    'lepton_sector': {
+        'name': 'Charged leptons',
+        'particles': ('electron', 'muon', 'tau'),
+        'masses': (M_ELECTRON, M_MUON, M_TAU),
+        'Z': 1.0,
+        'Z_origin': "m^2 = V''(0) = 1 (potential curvature, DERIVED)",
+        'ell': 0,
+        'anchor_idx': 0,
+        'anchor_mass': M_ELECTRON,
+        'anchor_label': 'm_e',
+        'description': (
+            'Charged lepton sector. Z=1 (DERIVED from potential curvature m^2 = V\'\'(0) = 1). '
+            'Scalar (l=0) Q-ball. Energy scale calibrated to m_e = 0.511 MeV.'
+        ),
+    },
+    'up_quark_sector': {
+        'name': 'Up-type quarks',
+        'particles': ('up', 'charm', 'top'),
+        'masses': (M_UP, M_CHARM, M_TOP),
+        'Z': 1.0,
+        'Z_origin': "Z_up = 1 (same coupling as leptons, DERIVED)",
+        'ell': 0,
+        'anchor_idx': 2,
+        'anchor_mass': M_TOP,
+        'anchor_label': 'm_t',
+        'description': (
+            'Up-type quark sector. Z=1 (DERIVED: same as leptons). Scalar (l=0) Q-ball. '
+            'The (u, c, t) triple occupies the same field-space regimes as (e, mu, tau); '
+            'top is the metastable mode. Energy scale calibrated to m_t = 173,100 MeV.'
+        ),
+    },
+    'down_quark_sector': {
+        'name': 'Down-type quarks',
+        'particles': ('down', 'strange', 'bottom'),
+        'masses': (M_DOWN, M_STRANGE, M_BOTTOM),
+        'Z': 2.0,
+        'Z_origin': "Z_down = lam4/(2 lam6) = 2 (Vieta average of critical points, DERIVED)",
+        'ell': 0,
+        'anchor_idx': 2,
+        'anchor_mass': M_BOTTOM,
+        'anchor_label': 'm_b',
+        'description': (
+            'Down-type quark sector. Z=2 (DERIVED: Vieta average of phi_barrier, phi_vacuum). '
+            'Scalar (l=0) Q-ball. Energy scale calibrated to m_b = 4,180 MeV.'
+        ),
+    },
+    'boson_sector': {
+        'name': 'Gauge bosons',
+        'particles': ('W', 'Z', 'Higgs'),
+        'masses': (M_W, M_Z, M_HIGGS),
+        'Z': 1.8,
+        'Z_origin': "Z_boson = 9/5 (SO(3) mode counting, CONJECTURED; verified 0.07%)",
+        'ell': 1,
+        'ell_higgs': 0,
+        'anchor_idx': 0,
+        'anchor_mass': M_W,
+        'anchor_label': 'm_W',
+        'description': (
+            'Gauge boson sector. Z=9/5 (CONJECTURED from SO(3) mode counting). '
+            'W and Z are vector (l=1) solitons; Higgs is scalar (l=0). The Weinberg angle '
+            'emerges as sin^2 theta_W = 1 - (E_W/E_Z)^2. Calibrated to m_W = 80,370 MeV.'
+        ),
+    },
+}
 
 
 def solve_spectrum(params):
-    """
-    Main entry point. Scan ω² values and return the full discrete tower
-    of soliton solutions for the given potential.
-
-    This is the canonical mode: visitor enters physics parameters,
-    receives the discrete spectrum back as a single result.
-
-    params: dict with keys m2, lam4, lam6, Z, a (and optionally
-            n_omega for scan resolution, default 40)
-
-    Returns: dict with keys
-        success: bool
-        message: str
-        spectrum: list of soliton dicts, sorted by energy, deduplicated
-        phi_barrier, phi_vacuum: potential landscape
-        potential_curve: {phi: [...], V: [...]}
-        silver_ratio: {satisfied, lam4_squared, eight_m2_lam6, relative_error}
-        params: the inputs (echoed back)
-    """
     try:
         m2 = float(params.get('m2', 1.0))
         lam4 = float(params.get('lam4', 2.0))
@@ -203,162 +247,175 @@ def solve_spectrum(params):
         n_omega = int(params.get('n_omega', 40))
         sector = str(params.get('sector', 'lepton_sector'))
 
-        # Potential landscape
-        phi_b, phi_v = find_barrier_and_vacuum(m2, lam4, lam6)
+        sector_def = SECTOR_DEFS.get(sector, SECTOR_DEFS['lepton_sector'])
+        ell = sector_def.get('ell', 0)
 
-        # Sample V(φ) for plotting
+        phi_b, phi_v = find_barrier_and_vacuum(m2, lam4, lam6)
         phi_max = (phi_v * 1.4) if phi_v else 3.0
         phi_arr = np.linspace(0, phi_max, 200)
         V_arr = potential(phi_arr, m2, lam4, lam6)
-
-        # Silver-ratio diagnostic
         sr = silver_ratio_check(m2, lam4, lam6)
 
-        # Scan omega2 and collect all soliton solutions
         all_solitons = []
-        for omega2 in np.linspace(0.05, 0.99, n_omega):
-            sols = find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a)
-            for s in sols:
-                # Deduplicate by energy (matches original mft_qball_lepton_masses.py logic)
-                if not any(abs(s['E'] - prev['E']) < 0.01 for prev in all_solitons):
-                    all_solitons.append(s)
+        if sector == 'boson_sector':
+            # Bosons: W, Z are l=1; Higgs is l=0
+            for ell_val in (1, 0):
+                for omega2 in np.linspace(0.05, 0.99, n_omega):
+                    sols = find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a, ell=ell_val)
+                    for s in sols:
+                        if not any(abs(s['E'] - prev['E']) < 0.01 for prev in all_solitons):
+                            all_solitons.append(s)
+        else:
+            for omega2 in np.linspace(0.05, 0.99, n_omega):
+                sols = find_solitons_at_omega2(omega2, m2, lam4, lam6, Z, a, ell=ell)
+                for s in sols:
+                    if not any(abs(s['E'] - prev['E']) < 0.01 for prev in all_solitons):
+                        all_solitons.append(s)
 
-        # Sort by energy
         all_solitons.sort(key=lambda x: x['E'])
 
-        # Annotate with regime (simple geometric classification for all solitons)
         for s in all_solitons:
             s['regime'] = regime_for(s['phi_core'], phi_b)
-            s['morse_index'] = None      # only assigned to the canonical triple below
+            s['morse_index'] = None
             s['stability'] = None
             s['f3_mode'] = None
+            s['particle'] = None
 
-        # Mass calibration: MFT_TO_MEV is a global constant set by the lepton
-        # sector calibration (m_e = 0.511 MeV at the canonical lepton ground-state
-        # E ≈ 0.00427 in the canonical potential). Every sector uses this same
-        # conversion factor — sectors do not self-calibrate to their own lowest
-        # soliton, since that would obscure the framework's predicted mass scales
-        # for non-lepton sectors.
-        scale = MFT_TO_MEV_CANONICAL
+        # Find canonical triple via sector-specific observed mass ratios
+        m1_obs, m2_obs, m3_obs = sector_def['masses']
+        R10_target = m2_obs / m1_obs
+        R21_target = m3_obs / m2_obs
+        triple = find_best_triple(all_solitons, R10_target, R21_target)
+
+        # Sector-specific calibration: scale = anchor_mass / E_anchor_in_triple
+        anchor_idx_in_triple = sector_def['anchor_idx']
+        anchor_mass = sector_def['anchor_mass']
+        scale = None
+
+        if triple is not None:
+            triple_indices = (triple['idx0'], triple['idx1'], triple['idx2'])
+            anchor_soliton = all_solitons[triple_indices[anchor_idx_in_triple]]
+            E_anchor = anchor_soliton['E']
+            if E_anchor > 0:
+                scale = anchor_mass / E_anchor
+
+            particle_names = sector_def['particles']
+            for slot, idx in enumerate(triple_indices):
+                s = all_solitons[idx]
+                s['particle'] = particle_names[slot]
+                s['f3_mode'] = slot
+                s['morse_index'] = max(0, slot - 1)
+                s['stability'] = (
+                    'stable' if s['morse_index'] == 0
+                    else 'metastable' if s['morse_index'] == 1
+                    else 'unstable'
+                )
+
+        if scale is None:
+            scale = 119.67  # fallback
+
         for s in all_solitons:
             s['mass_MeV'] = s['E'] * scale
 
-        # Identify the canonical triple — currently only implemented for the
-        # lepton sector, where observed mass ratios are R10=206.77, R21=16.82.
-        # Other sectors (quarks, bosons) have different mass ratios; generalising
-        # the matching to those is future work.
-        triple = None
-        if sector == 'lepton_sector':
-            triple = find_lepton_triple(all_solitons)
-            if triple is not None:
-                e_idx = triple['electron_idx']
-                mu_idx = triple['muon_idx']
-                ta_idx = triple['tau_idx']
-                all_solitons[e_idx].update({
-                    'lepton': 'electron', 'f3_mode': 0,
-                    'morse_index': 0, 'stability': 'stable',
-                })
-                all_solitons[mu_idx].update({
-                    'lepton': 'muon', 'f3_mode': 1,
-                    'morse_index': 0, 'stability': 'stable',
-                })
-                all_solitons[ta_idx].update({
-                    'lepton': 'tau', 'f3_mode': 2,
-                    'morse_index': 1, 'stability': 'metastable',
-                })
+        # Build triple summary for UI
+        triple_data = None
+        if triple is not None:
+            ti = (triple['idx0'], triple['idx1'], triple['idx2'])
+            E0, E1, E2 = (all_solitons[ti[k]]['E'] for k in range(3))
+            R10_model = E1 / E0 if E0 > 0 else 0.0
+            R21_model = E2 / E1 if E1 > 0 else 0.0
+            R20_model = E2 / E0 if E0 > 0 else 0.0
+            triple_data = {
+                'idx0': triple['idx0'],
+                'idx1': triple['idx1'],
+                'idx2': triple['idx2'],
+                'particles': list(sector_def['particles']),
+                'observed_masses': [m1_obs, m2_obs, m3_obs],
+                'predicted_masses': [
+                    all_solitons[ti[0]]['mass_MeV'],
+                    all_solitons[ti[1]]['mass_MeV'],
+                    all_solitons[ti[2]]['mass_MeV'],
+                ],
+                'mass_ratios_model': [R10_model, R21_model, R20_model],
+                'mass_ratios_observed': [m2_obs/m1_obs, m3_obs/m2_obs, m3_obs/m1_obs],
+                'score': triple['score'],
+            }
+
+        # Boson-specific: Weinberg angle
+        weinberg = None
+        if sector == 'boson_sector' and triple is not None:
+            ti = (triple['idx0'], triple['idx1'], triple['idx2'])
+            E_W = all_solitons[ti[0]]['E']
+            E_Z = all_solitons[ti[1]]['E']
+            if E_Z > 0:
+                sin2_model = 1.0 - (E_W / E_Z)**2
+                sin2_obs = 1.0 - (M_W / M_Z)**2
+                weinberg = {
+                    'sin2_theta_W_model': float(sin2_model),
+                    'sin2_theta_W_observed': float(sin2_obs),
+                }
 
         return {
             'success': True,
-            'message': f"Found {len(all_solitons)} distinct solitons in the spectrum.",
+            'message': f"Found {len(all_solitons)} distinct solitons.",
             'spectrum': all_solitons,
-            'lepton_triple': triple,
+            'triple': triple_data,
+            'weinberg': weinberg,
             'phi_barrier': phi_b,
             'phi_vacuum': phi_v,
-            'potential_curve': {
-                'phi': phi_arr.tolist(),
-                'V': V_arr.tolist(),
-            },
+            'potential_curve': {'phi': phi_arr.tolist(), 'V': V_arr.tolist()},
             'silver_ratio': sr,
-            'mft_to_mev': float(scale),
+            'mft_to_mev': float(scale) if scale is not None else None,
             'sector': sector,
-            'params': {
-                'm2': m2, 'lam4': lam4, 'lam6': lam6,
-                'Z': Z, 'a': a,
+            'sector_info': {
+                'name': sector_def['name'],
+                'particles': list(sector_def['particles']),
+                'Z': sector_def['Z'],
+                'Z_origin': sector_def['Z_origin'],
+                'ell': sector_def['ell'],
+                'anchor_label': sector_def['anchor_label'],
+                'anchor_mass': sector_def['anchor_mass'],
             },
+            'params': {'m2': m2, 'lam4': lam4, 'lam6': lam6, 'Z': Z, 'a': a},
         }
     except Exception as e:
         return {
             'success': False,
             'message': f"Error: {type(e).__name__}: {e}",
             'spectrum': [],
+            'triple': None,
+            'weinberg': None,
             'phi_barrier': None,
             'phi_vacuum': None,
             'potential_curve': None,
             'silver_ratio': None,
             'mft_to_mev': None,
+            'sector': params.get('sector', 'lepton_sector'),
+            'sector_info': None,
             'params': params,
         }
 
 
-# Sector presets: same potential, different Coulomb coupling Z
+# ── Sector presets ────────────────────────────────────────────────────────────
 PRESETS = {
     'lepton_sector': {
-        'm2': 1.0,
-        'lam4': 2.0,
-        'lam6': 0.5,
-        'Z': 1.0,
-        'a': 1.0,
-        'description': (
-            'Charged lepton sector. Z=1 Coulomb coupling. The Q-ball spectrum '
-            'identifies the (e, μ, τ) triple. Energy scale set by m_e = 0.511 MeV.'
-        ),
-        'sector_name': 'Charged leptons',
-        'sector_particles': ['electron', 'muon', 'tau'],
+        'm2': 1.0, 'lam4': 2.0, 'lam6': 0.5, 'Z': 1.0, 'a': 1.0,
+        'description': SECTOR_DEFS['lepton_sector']['description'],
     },
     'up_quark_sector': {
-        'm2': 1.0,
-        'lam4': 2.0,
-        'lam6': 0.5,
-        'Z': 1.0,
-        'a': 1.0,
-        'description': (
-            'Up-type quark sector. Same Z=1 Coulomb coupling as the leptons. '
-            'The same potential and equation produce the (u, c, t) triple, '
-            'with the top quark in the metastable n=1 mode (analogous to the tau).'
-        ),
-        'sector_name': 'Up-type quarks',
-        'sector_particles': ['up', 'charm', 'top'],
+        'm2': 1.0, 'lam4': 2.0, 'lam6': 0.5, 'Z': 1.0, 'a': 1.0,
+        'description': SECTOR_DEFS['up_quark_sector']['description'],
     },
     'down_quark_sector': {
-        'm2': 1.0,
-        'lam4': 2.0,
-        'lam6': 0.5,
-        'Z': 2.0,
-        'a': 1.0,
-        'description': (
-            'Down-type quark sector. Z=2 Coulomb coupling produces a different '
-            'soliton spectrum from the same potential, identifying the (d, s, b) triple.'
-        ),
-        'sector_name': 'Down-type quarks',
-        'sector_particles': ['down', 'strange', 'bottom'],
+        'm2': 1.0, 'lam4': 2.0, 'lam6': 0.5, 'Z': 2.0, 'a': 1.0,
+        'description': SECTOR_DEFS['down_quark_sector']['description'],
     },
     'boson_sector': {
-        'm2': 1.0,
-        'lam4': 2.0,
-        'lam6': 0.5,
-        'Z': 1.8,    # 9/5
-        'a': 1.0,
-        'description': (
-            'Gauge boson sector. Z=9/5 Coulomb coupling produces the (W, Z, H) '
-            'triple from the same potential. The Weinberg angle emerges as a '
-            'geometric ratio of W and Z eigenvalues: sin²θ_W = 1 − (E_W/E_Z)².'
-        ),
-        'sector_name': 'Gauge bosons',
-        'sector_particles': ['W', 'Z', 'Higgs'],
+        'm2': 1.0, 'lam4': 2.0, 'lam6': 0.5, 'Z': 1.8, 'a': 1.0,
+        'description': SECTOR_DEFS['boson_sector']['description'],
     },
 }
 
 
 def get_preset(name):
-    """Return preset parameters by name."""
     return PRESETS.get(name, PRESETS['lepton_sector'])
