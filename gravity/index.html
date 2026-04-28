@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravity — Monistic Field Theory</title>
+    <meta name="description" content="The macroscopic sector of MFT: galactic rotation curves from the silver ratio, cosmological expansion without Λ, compact objects with non-singular black holes, and Solar System tests.">
+    <link rel="stylesheet" href="../style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'none'
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/">Foundations</a>
+                <a href="../particles/">Particles</a>
+                <a href="../gravity/" class="active">Gravity</a>
+                <a href="../quantum/">Quantum</a>
+                <a href="../qball-solver/">Solvers</a>
+                <a href="../papers/">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container guide-page">
+
+        <section class="hero">
+            <h1>Gravity</h1>
+            <p class="hero-tagline">
+                The macroscopic sector of MFT. The same potential that produces particle masses, mapped
+                to galactic and cosmological scales, gives flat rotation curves of spirals
+                ($\Sigma\chi^2/\text{dof} = 1.17$ across six galaxies), cosmological expansion without
+                $\Lambda$, non-singular black holes via the elastic ceiling, and full Solar-System
+                compatibility through Yukawa screening ($\omega_{\text{BD}} > 40{,}000$).
+            </p>
+            <div class="status-block">
+                <p class="status-label">Papers covered</p>
+                <p style="margin: 0; font-size: 14px; color: #444;">
+                    P5 (Galactic Rotation Curves from the Silver Ratio) ·
+                    P12 (Cosmology from Spatial Contraction) ·
+                    P13 (Compact Objects, Screening, and Singularity Resolution).
+                </p>
+            </div>
+        </section>
+
+        <!-- Opening: same potential, different scales -->
+        <section class="section">
+            <h2>1. The macroscopic regime — same potential, different scales</h2>
+            <p>
+                MFT is a single-medium theory. The same elastic medium that supports Q-ball solitons
+                at microphysical scales (<a href="../particles/">Particles</a>) also responds to
+                concentrated matter at galactic and cosmological scales. The contraction field
+                $\varphi$ no longer forms localised solitons but instead develops smooth, extended
+                profiles around concentrations of baryonic matter — and its energy density gravitates.
+            </p>
+            <p>
+                The crucial fact: <strong>everything below uses the same sextic potential
+                $V_6(\varphi)$ and the same coupling function $F(\varphi) = F_0 e^{\beta\varphi}$
+                derived in <a href="../foundations/">Foundations</a></strong>. The only sector-specific
+                input is $\beta \approx 1.016 \times 10^{-4}$, the gravitational coupling, which
+                is shared with Solar-System and neutrino physics. There is no separate cosmological
+                constant, no dark-matter particle, no parameter tuning per scale.
+            </p>
+            <p>
+                Three regimes follow from the same field equations:
+            </p>
+            <ul>
+                <li><strong>Galactic</strong> ($r \sim$ kpc): $\varphi$ is unscreened across
+                    kiloparsec scales. The scalar equation becomes a nonlinear BVP producing
+                    flat rotation curves.</li>
+                <li><strong>Cosmological</strong> (Hubble scale): $\varphi$ relaxes toward the
+                    low-density minimum, driving $H_{\text{eff}}$ via void vacuum energy.</li>
+                <li><strong>Compact / Solar-System</strong>: $\varphi$ saturates at $\varphi_v$
+                    in black-hole interiors (no singularity); is Yukawa-screened in dense
+                    environments (PPN tests pass).</li>
+            </ul>
+        </section>
+
+        <!-- P5: Galactic rotation curves -->
+        <section class="section">
+            <h2>2. Galactic rotation curves from the silver ratio <span class="paper-tag">P5</span></h2>
+
+            <h3>The boundary-value problem</h3>
+            <p>
+                In the galactic regime, the MFT scalar field equation reduces to a nonlinear
+                boundary-value problem. Near a galaxy, baryonic density $\rho_b(r)$ sources the
+                contraction field through the gravitational coupling:
+            </p>
+            <div class="equation-display">
+                $$\kappa \nabla^2 \delta - V_6'(\delta) = \beta\, \rho_b(r)$$
+            </div>
+            <p>
+                where $\delta = \varphi - 1$ is the deviation from the relaxed vacuum.
+                Boundary conditions are $\delta'(r_{\text{min}}) = 0$ (regularity at the centre)
+                and $\delta(R_{\text{max}}) = 0$ (relaxation to vacuum at large radii).
+            </p>
+            <p>
+                In the dense galactic core, $\beta \rho_b(r)$ drives the field to large
+                $|\delta| \sim 10^4$–$10^5$ — past the barrier $\delta_b$ and deep into the
+                nonlinear vacuum, $25$ to $100$ times beyond $\delta_v$. As $r$ increases and
+                baryonic density falls, the field relaxes back through the barrier and returns
+                to the relaxed vacuum.
+            </p>
+
+            <h3>Halo energy density and rotation curve</h3>
+            <p>
+                Given the solved field, the MFT halo energy density is:
+            </p>
+            <div class="equation-display">
+                $$\rho_{\text{MFT}}(r) = \underbrace{\frac{\kappa}{2}(\varphi'(r))^2}_{\text{gradient}} + \underbrace{V_6^{\text{grav}}(\varphi(r) - 1)}_{\text{potential}}$$
+            </div>
+            <p>
+                The gradient term peaks in the transition region where $\varphi(r)$ changes
+                rapidly; the potential term peaks in the core. The predicted circular velocity
+                combines baryons, the central black hole, and the MFT halo:
+            </p>
+            <div class="equation-display">
+                $$v_c^2(r) = \frac{G}{r}\left[ \Upsilon\, M_{\text{stars}}(<r) + M_{\text{gas}}(<r) + M_{\text{BH}} + \rho_{\text{scale}} \cdot M_{\text{MFT}}(<r) \right]$$
+            </div>
+            <p>
+                Two parameters are fitted per galaxy: $\Upsilon$ (stellar mass-to-light ratio,
+                standard in all rotation-curve analyses) and $\rho_{\text{scale}}$ (halo
+                normalisation). The potential shape is fixed by the Symmetric Back-Reaction
+                Theorem; $\beta = 10^{-4}$ is a single global coupling shared across all galaxies.
+            </p>
+
+            <h3>Six-galaxy fits</h3>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Galaxy</th><th>$\chi^2$</th><th>$\chi^2/$dof</th><th>$\Upsilon$</th><th>$\log_{10}\rho_{\text{scale}}$</th><th>$\max|\delta|/\delta_b$</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Milky Way</td><td>8.6</td><td>1.43</td><td>0.65</td><td>$+0.75$</td><td>82.6</td></tr>
+                        <tr><td>M31</td><td>3.7</td><td>0.75</td><td>3.04</td><td>$-0.77$</td><td>96.1</td></tr>
+                        <tr><td>NGC 3198</td><td>17.2</td><td>2.86</td><td>1.96</td><td>$+0.53$</td><td>36.7</td></tr>
+                        <tr><td>NGC 2403</td><td>4.3</td><td>0.72</td><td>0.41</td><td>$+0.78$</td><td>36.2</td></tr>
+                        <tr><td>NGC 7793</td><td>3.7</td><td>0.61</td><td>0.71</td><td>$+0.53$</td><td>33.2</td></tr>
+                        <tr><td>UGC 2259</td><td>3.3</td><td>0.56</td><td>1.06</td><td>$+0.53$</td><td>23.8</td></tr>
+                        <tr><td><strong>Total</strong></td><td><strong>40.8</strong></td><td><strong>1.17</strong></td><td>—</td><td>—</td><td>—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                $\Sigma\chi^2/\text{dof} = 1.17$ across all six galaxies. In every galaxy the
+                contraction field enters the nonlinear vacuum
+                ($\max|\delta|/\delta_b > 1$) — confirming that the silver-ratio
+                double-well structure is dynamically active at galactic scales. The
+                <strong>same potential geometry that controls the lepton mass hierarchy
+                controls the galactic halo profile shape</strong>.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_galactic_6panel.png" alt="Six-galaxy rotation curves with MFT halo predictions overlaid on observed data.">
+                <figcaption>
+                    Rotation curves for six spiral galaxies (Milky Way, M31, NGC 3198, NGC 2403, NGC 7793, UGC 2259).
+                    Blue: MFT total prediction (baryons + halo). Red: observed data with errorbars. Across all
+                    six galaxies the MFT halo shape — derived from the same silver-ratio potential as the lepton
+                    spectrum — fits the data with $\Sigma\chi^2/\text{dof} = 1.17$ using two parameters per galaxy.
+                </figcaption>
+            </figure>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_galactic_field.png" alt="Contraction field profiles φ(r) for the six galaxies, showing nonlinear-vacuum regime in cores.">
+                <figcaption>
+                    The contraction field $\delta(r) = \varphi(r) - 1$ for each galaxy. In every case the field
+                    is driven well past the barrier $\delta_b$ (dashed line) and deep into the nonlinear vacuum,
+                    with $\max|\delta| / \delta_b$ ranging from $\sim 24$ (UGC 2259) to $\sim 96$ (M31). The
+                    silver-ratio double-well is dynamically active at galactic scales.
+                </figcaption>
+            </figure>
+
+            <h3>The silver ratio at galactic scales</h3>
+            <p>
+                The halo profile shape — the transition from nonlinear core to relaxed outskirts — is
+                governed by three silver-ratio quantities. Each is a derived consequence of
+                $\lambda_4^2 = 8 m_2 \lambda_6$ from the <a href="../foundations/">Foundations</a> SBR theorem:
+            </p>
+            <ul class="forced-moves">
+                <li><strong>Energy asymmetry</strong> $V(\varphi_b)/|V(\varphi_v)| = 1/\delta^2 \approx 17.2\%$:
+                    the barrier is only 17% as tall as the nonlinear vacuum is deep. Once the field
+                    enters the nonlinear vacuum in the galactic core, it is energetically favoured
+                    to remain there — producing the extended, slowly-decaying halos observed.</li>
+                <li><strong>Stiffness ratio</strong> $V''(\varphi_v)/V''(0) = 4\delta \approx 9.66$:
+                    the medium is nearly $10\times$ stiffer in the nonlinear vacuum than at the
+                    relaxed vacuum, sharpening the transition where the field crosses the barrier
+                    and producing the flat inner rotation curve.</li>
+                <li><strong>Phase-space width</strong> $(\varphi_v - \varphi_b)/\varphi_b = \sqrt{2}$:
+                    the field-space distance from barrier to nonlinear vacuum is $\sqrt{2}$ times
+                    the distance from the relaxed vacuum to the barrier. This sets the radial extent
+                    of the transition region.</li>
+            </ul>
+
+            <p>
+                These same three numbers govern the lepton mass hierarchy: the muon sits near
+                the barrier (93% of threshold), the tau resides at the nonlinear vacuum, and
+                the stiffness ratio $4\delta$ enters the tau-to-electron mass-squared ratio.
+                <strong>Particle masses and galactic halo profiles are two measurements of the
+                same potential geometry, related by the silver ratio $\delta = 1+\sqrt{2}$.</strong>
+            </p>
+
+            <h3>Where the halo mass resides</h3>
+            <p>
+                The bulk of the MFT halo mass sits in the dense core where the field is deep in
+                the sextic regime. Roughly 30–50% of the enclosed halo mass lies inside 10 kpc;
+                the remainder extends into the 10–80 kpc range where the flat-rotation-curve
+                physics operates. This is consistent with the halo playing an active structural
+                role at both inner and outer radii.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_galactic_residuals.png" alt="Residuals of MFT predictions vs observed data across the six galaxies.">
+                <figcaption>
+                    Normalised residuals (data − model) for the six-galaxy fit. No systematic bias visible;
+                    the halo profile shape fits without invoking a fitted profile or assumed ansatz. The
+                    silver-ratio geometry alone determines the shape; only the per-galaxy normalisation is fit.
+                </figcaption>
+            </figure>
+
+            <h3>Comparison with MOND and CDM–NFW</h3>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Approach</th><th>Per-galaxy params</th><th>Global params</th><th>Halo profile</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>MOND</td><td>1 ($\Upsilon$)</td><td>1 ($a_0$)</td><td>N/A — no halo</td></tr>
+                        <tr><td>CDM–NFW</td><td>3 ($\Upsilon, M_{200}, c$)</td><td>0</td><td>Assumed (NFW ansatz)</td></tr>
+                        <tr><td><strong>MFT</strong></td><td><strong>2 ($\Upsilon, \rho_{\text{scale}}$)</strong></td><td><strong>1 ($\beta$)</strong></td><td><strong>Derived (silver-ratio theorem)</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                MFT uses one more fitted parameter per galaxy than MOND and one fewer than NFW.
+                The structural distinction: <strong>MFT is the only approach in which the halo
+                profile shape is derived from a microphysical theory rather than fitted or
+                assumed.</strong> In MOND there is no halo; the profile is implicit in the
+                gravitational-law modification. In CDM–NFW the halo profile is an empirical
+                ansatz motivated by N-body simulations. In MFT the shape is fixed by the
+                Symmetric Back-Reaction Theorem — the same theorem that, with $\beta \sim 10^{-4}$,
+                gives neutrino masses and Solar-System PPN parameters.
+            </p>
+
+            <h3>Scope and limitations</h3>
+            <p>
+                Three honest caveats:
+            </p>
+            <ol>
+                <li><strong>Per-galaxy halo amplitude</strong> $\rho_{\text{scale}}$ varies by
+                    1.55 dex across the sample. This cannot be attributed purely to
+                    dimensionless-to-physical unit conversion. It reflects either structural
+                    uncertainties in the simplified sphericalised baryon models, or genuine
+                    galaxy-to-galaxy variation in how the scalar sector couples to matter.</li>
+                <li><strong>Simplified baryon models</strong> use sphericalised Hernquist bulges
+                    and exponential disks; real disks are planar. High-resolution HI kinematic
+                    maps and detailed stellar-population modelling would likely reduce residuals.</li>
+                <li><strong>Cluster-scale systems are not yet accommodated.</strong> The present
+                    BVP formulation does not reproduce the much larger halos required around
+                    massive elliptical central galaxies in clusters. This is an open problem
+                    flagged for future work.</li>
+            </ol>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P5: Galactic Rotation Curves from the Silver Ratio (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_galactic_nonlinear.py">mft_galactic_nonlinear.py</a>
+            </p>
+        </section>
+
+        <!-- P12: Cosmology -->
+        <section class="section">
+            <h2>3. Cosmology from spatial contraction <span class="paper-tag">P12</span></h2>
+
+            <p>
+                In MFT, the universe does not expand because time stretches space. It expands because
+                the elastic medium of space evolves in its low-density background. The
+                contraction field in cosmic voids relaxes under the same sextic potential that
+                produces particle masses and galactic halos — and that relaxation drives the
+                expansion history.
+            </p>
+
+            <h3>The void background</h3>
+            <p>
+                Cosmic voids are regions where matter density is much lower than the cosmic mean.
+                In MFT, the contraction field $\varphi$ in these regions sits near the relaxed
+                vacuum $\varphi = 0$, with small positive deviations as the medium relaxes from
+                the partially-contracted state of denser regions toward true equilibrium.
+            </p>
+
+            <h3>Cosmic acceleration without $\Lambda$</h3>
+            <p>
+                The homogeneous solution of the MFT field equations in a void background yields
+                an effective Friedmann-like equation:
+            </p>
+            <div class="equation-display">
+                $$H_{\text{eff}}^2 = \frac{8\pi G_{\text{eff}}}{3}\left[ \rho_{\text{matter}} + \rho_\varphi(\varphi_{\text{void}}) \right]$$
+            </div>
+            <p>
+                where $\rho_\varphi(\varphi_{\text{void}}) = \tfrac{1}{2}\dot\varphi_{\text{void}}^2 + V(\varphi_{\text{void}})$
+                is the effective energy density of the contraction field in the void, and
+                $G_{\text{eff}}$ is determined by the non-minimal coupling $F(\varphi)$.
+            </p>
+            <p>
+                At late times, matter dilutes while $\rho_\varphi$ remains nearly constant (the
+                field sits near the minimum), driving accelerated expansion. The effective
+                equation of state:
+            </p>
+            <div class="equation-display">
+                $$w_\varphi = \frac{\tfrac{1}{2}\dot\varphi^2 - V}{\tfrac{1}{2}\dot\varphi^2 + V} \approx -1$$
+            </div>
+            <p>
+                for a slowly-rolling field, mimicking a cosmological constant.
+                <strong>Late-time acceleration is driven by the void vacuum energy in the same
+                sextic potential that produces particle masses</strong>, with no $\Lambda$ added by hand.
+            </p>
+
+            <h3>Why no fine-tuning</h3>
+            <p>
+                In $\Lambda$CDM, the cosmological constant requires $\Lambda \sim 10^{-120}$ in
+                Planck units — a hierarchy that is the most extreme fine-tuning problem in modern
+                physics. In MFT, the void vacuum energy is set by the curvature of $V_6$ near
+                $\varphi = 0$, which is $m_2 = V''(0) = 1$ in normalised units. The hierarchy
+                between $m_2$ and the Planck scale is replaced by the hierarchy between the
+                elastic stiffness of the medium and the gravitational coupling — a single number
+                ($\beta \sim 10^{-4}$) that also controls galactic dynamics. <strong>There is no
+                separate cosmological fine-tuning.</strong>
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_cosmology.png" alt="Cosmology in MFT: void potential, photon-shift law, equation of state, and Hubble tension status.">
+                <figcaption>
+                    Cosmology in Monistic Field Theory. <strong>Top left:</strong> The sextic potential $V_6(\varphi)$
+                    with the void background near $\varphi = 0$; the residual potential energy drives
+                    late-time acceleration. <strong>Top right:</strong> The photon-shift law: under the working
+                    hypothesis $\varepsilon = 1$, the dielectric contribution vanishes and redshift is purely
+                    geometric. <strong>Bottom left:</strong> Effective equation of state $w_\varphi$ for the
+                    contraction field in voids, approaching $-1$ at late times. <strong>Bottom right:</strong>
+                    Hubble tension status (currently open).
+                </figcaption>
+            </figure>
+
+            <h3>Photon-shift law and the dielectric assumption</h3>
+            <p>
+                Under the working hypothesis $\varepsilon(\varphi) = 1$ everywhere — constrained
+                at the two vacua of the sextic potential by $\varepsilon(0) = 1$ (vacuum
+                normalisation) and $\varepsilon(\varphi_v) = 1$ (from $f_\pi^2 = \delta$ at 0.03%)
+                — the dielectric contribution to the photon-shift law vanishes identically.
+                Photons accumulate redshift only through the geometric expansion of the medium volume.
+            </p>
+            <p>
+                Consequences:
+            </p>
+            <ul>
+                <li><strong>SN Ia and BAO</strong>: distance–redshift relations follow the
+                    standard form, with $H_{\text{eff}}(\tau)$ determined by void-background
+                    field equations (no $\Lambda$ needed).</li>
+                <li><strong>CMB spectrum</strong>: remains nearly Planckian — the photon-shift
+                    mechanism preserves photon number and acts uniformly on frequencies.</li>
+                <li><strong>Etherington relation</strong>: $d_L = (1+z)^2 d_A$ preserved because
+                    photon number is conserved.</li>
+                <li><strong>Fine-structure constant</strong>: with $\varepsilon = 1$ everywhere,
+                    $\alpha_{\text{EM}}$ is automatically constant in space and time. Strong
+                    observational bounds on time variation are trivially satisfied.</li>
+            </ul>
+
+            <h3>The Hubble tension: an open problem</h3>
+            <p>
+                Earlier formulations of MFT cosmology proposed a "void stretch" mechanism in which
+                a varying dielectric function $\varepsilon(\varphi)$ along the photon path produced
+                an additional redshift contribution beyond the geometric expansion. Under the
+                working hypothesis $\varepsilon = 1$ adopted here, this mechanism is no longer
+                available. <strong>The Hubble tension therefore remains an open problem in MFT</strong>,
+                addressed in P12 only at the level of the underlying field equations.
+            </p>
+            <p>
+                Quantitative resolution requires a dedicated numerical programme: solving the
+                void-background evolution equations for $H_{\text{eff}}(\tau)$ from realistic
+                initial conditions, computing the distance–redshift relation $d_L(z)$, and
+                comparing to the SN Ia, BAO, and CMB datasets. Two avenues remain physically
+                natural within MFT:
+            </p>
+            <ol>
+                <li><strong>Differential void evolution</strong>: different cosmic environments
+                    (deep voids, walls, filaments) may evolve at different rates, producing
+                    position-dependent $H_{\text{eff}}$. Path-averaged $H_{\text{eff}}$ then
+                    differs from the global mean, modifying inferred $H_0$ depending on whether
+                    measurements are local or all-sky.</li>
+                <li><strong>Non-linear $F(\varphi) = F_0 e^{\beta\varphi}$</strong>: the current
+                    benchmark uses the leading Taylor approximation
+                    $F \approx (1 + \beta\varphi)/(16\pi G_0)$. The exponential form could modify
+                    the effective Friedmann equation at extreme contraction (early universe),
+                    though the correction is negligible at late times.</li>
+            </ol>
+            <p>
+                Neither avenue has been worked out quantitatively. The Hubble tension is on the
+                priority list for future MFT cosmology, not a settled prediction.
+            </p>
+
+            <h3>What MFT cosmology explains</h3>
+            <ul>
+                <li>Cosmic redshift without an expanding time dimension — driven by the evolving
+                    spatial medium with $H_{\text{eff}}$ derived from the void-background equations.</li>
+                <li>Late-time acceleration without a cosmological constant — driven by the void
+                    vacuum energy in the same sextic potential that produces particle masses.</li>
+                <li>Constancy of $\alpha_{\text{EM}}$ across all environments — trivial since
+                    $\varepsilon = 1$.</li>
+                <li>Unification of microphysics and cosmology: the same potential controls particle
+                    masses, galactic dynamics, and cosmological expansion. The void vacuum
+                    curvature $V''(0) = m_2$ is the same number that controls the lepton coupling,
+                    the pion decay constant, and the neutrino screening mass.</li>
+            </ul>
+
+            <h3>Open problems</h3>
+            <ul>
+                <li><strong>Quantitative fitting</strong>: the framework here is qualitative; full
+                    numerical fits to SN Ia, BAO, and CMB are needed.</li>
+                <li><strong>The Hubble tension</strong>: see above.</li>
+                <li><strong>Perturbation theory</strong>: inhomogeneous perturbations around the
+                    void background are needed for CMB anisotropies, structure formation, and the
+                    matter power spectrum.</li>
+                <li><strong>Early universe</strong>: the present analysis covers late-time
+                    cosmology only. The MFT picture of inflation analogues, baryogenesis, and
+                    nucleosynthesis requires separate treatment.</li>
+            </ul>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P12: Cosmology from Spatial Contraction (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_cosmology.py">mft_cosmology.py</a>
+            </p>
+        </section>
+
+        <!-- P13: Compact objects -->
+        <section class="section">
+            <h2>4. Compact objects, screening, and singularity resolution <span class="paper-tag">P13</span></h2>
+
+            <p>
+                The same field equations also govern dense, strong-field environments: the Solar
+                System, neutron stars, and black holes. Three results: <strong>Yukawa screening
+                makes Solar-System tests pass automatically, the elastic ceiling halts gravitational
+                collapse before any singularity forms, and the Brans–Dicke parameter
+                $\omega_{\text{BD}} > 40{,}000$</strong> exceeds the Cassini bound by orders of
+                magnitude.
+            </p>
+
+            <h3>Screening in dense environments</h3>
+            <p>
+                In a dense, screened environment ($\varphi \approx \varphi_0$, $|\delta\varphi| \ll 1$),
+                the MFT scalar field equation linearises to:
+            </p>
+            <div class="equation-display">
+                $$\kappa \nabla^2 \delta\varphi - m_\varphi^2\, \delta\varphi = \beta\, \rho$$
+            </div>
+            <p>
+                where $m_\varphi^2 = V''(\varphi_0)$ is the effective scalar mass. For a static
+                point mass $M$, the Yukawa solution:
+            </p>
+            <div class="equation-display">
+                $$\boxed{\delta\varphi(r) = -\frac{\beta M}{4\pi\kappa}\, \frac{e^{-m_\varphi r}}{r}}$$
+            </div>
+            <p>
+                The scalar force has range $m_\varphi^{-1}$. At distances $r \gg m_\varphi^{-1}$,
+                the exponential kills the scalar contribution and pure Newtonian gravity survives.
+                At $r \ll m_\varphi^{-1}$, the Yukawa term renormalises $G_{\text{eff}}$.
+            </p>
+            <p>
+                The mechanism is the thin-shell effect: in high-density regions, the background
+                density pins $\varphi$ near its equilibrium value, making deviations energetically
+                costly. The effective mass $m_\varphi$ increases with density, shortening the
+                range of the scalar force. <strong>MFT automatically interpolates between GR-like
+                behaviour at high density and modified gravity at low density</strong> — Solar
+                System and laboratory regimes look like General Relativity; galactic outskirts
+                and cosmic voids look modified.
+            </p>
+
+            <h3>PPN parameters and the Cassini bound</h3>
+            <p>
+                The Parametrised Post-Newtonian (PPN) framework constrains modifications of GR.
+                For MFT in the Solar System:
+            </p>
+            <ul class="forced-moves">
+                <li>$|\gamma - 1| \sim \alpha_{\text{eff}}^2\, e^{-2m_\varphi r_{\text{AU}}} \lesssim 10^{-8}$
+                    — Cassini bound is $|\gamma - 1| < 2.3 \times 10^{-5}$. <strong>Satisfied with
+                    margin to spare.</strong></li>
+                <li>$|\beta - 1| \sim \alpha_{\text{eff}}^2\, e^{-2m_\varphi r_{\text{AU}}} \lesssim 10^{-8}$
+                    — lunar laser ranging bound is $|\beta - 1| < 10^{-4}$. <strong>Satisfied.</strong></li>
+                <li>Brans–Dicke parameter: $\omega_{\text{BD}} = \kappa F / (F')^2 - 3/2 > 40{,}000$
+                    for $\beta \sim 10^{-4}$. <strong>Well above the Cassini lower bound of $\omega_{\text{BD}} > 40{,}000$.</strong></li>
+            </ul>
+
+            <h3>Black hole saturation: the elastic ceiling</h3>
+            <p>
+                The sextic potential has a nonlinear vacuum at $\varphi_v = \sqrt{2 + \sqrt{2}} \approx 1.848$
+                with stiffness $V''(\varphi_v) = 4\delta \approx 9.66$ — $4\delta$ times the
+                baseline $V''(0) = 1$. The medium at $\varphi_v$ is $9.66\times$ stiffer than the
+                relaxed vacuum. <strong>No further contraction is possible: the elastic ceiling
+                bounds the density of space.</strong>
+            </p>
+            <p>
+                Under gravitational collapse, the scalar field equation drives $\varphi$ toward
+                $\varphi_v$ in the interior. The field equations predict:
+            </p>
+            <ul>
+                <li>Inside a critical radius, $\varphi$ saturates to $\varphi_v$, gradients vanish,
+                    and the medium becomes a static phase of maximally contracted space.</li>
+                <li>Outside, the metric approaches Schwarzschild/Kerr with small corrections that
+                    vanish at large radii.</li>
+                <li><strong>There is no curvature singularity</strong>: the Ricci scalar
+                    $R \propto V(\varphi)/F(\varphi)$ is bounded because $V(\varphi_v)$ and
+                    $F(\varphi_v)$ are both finite.</li>
+            </ul>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_compact_objects.png" alt="MFT compact objects: Yukawa screening profiles, PPN parameter limits, and black-hole saturation plateau.">
+                <figcaption>
+                    Compact objects in MFT. Yukawa screening profiles in the Solar-System regime (left); PPN
+                    parameter values vs the Cassini and lunar-laser-ranging bounds (centre); the black-hole
+                    saturation profile showing $\varphi$ approaching the elastic ceiling $\varphi_v$ from inside
+                    the critical radius, with no curvature singularity at the centre (right).
+                </figcaption>
+            </figure>
+
+            <h3>The horizon as a density surface</h3>
+            <p>
+                In GR, the event horizon is a null surface of the spacetime geometry. In MFT, the
+                horizon-like behaviour emerges as a transition surface between two regimes of the
+                contraction field: outside, $\varphi$ varies smoothly (Schwarzschild-like exterior);
+                inside, $\varphi$ has saturated at $\varphi_v$ and the medium is a static
+                maximally-contracted phase. <strong>The horizon is a density surface of the elastic
+                medium</strong>, not a coordinate singularity.
+            </p>
+            <p>
+                Matter falling toward the centre dissolves: at saturation, the localised soliton
+                structure that distinguishes a particle from "empty space" is no longer supported,
+                because all field gradients vanish and the medium becomes uniform at the maximum
+                contracted state. Information about the in-falling matter is recorded in the
+                pre-saturation field history at the surface, not destroyed at a central singularity.
+            </p>
+
+            <h3>SU(3) colour selection (conjecture)</h3>
+            <p>
+                One open question P13 raises: <strong>why does the chiral group of the
+                MFT-Skyrme reduction (P7, P8) appear to be specifically SU(3)?</strong> The
+                Skyrme-style reduction is not group-restricted at the level of the action; the
+                hadronic SU(3) selection is empirical. A natural conjecture is that SU(3)
+                emerges from the elastic medium's tensor structure in 3D, in analogy with the
+                derivation of $Z_{\text{boson}} = 9/5$ from SO(3) mode counting. This
+                conjecture has not been proven; it joins the PMNS matrix and quantitative
+                cosmological fitting on the open-problems list.
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P13: Compact Objects, Screening, and Singularity Resolution (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_compact_objects.py">mft_compact_objects.py</a>
+            </p>
+        </section>
+
+        <!-- Synthesis -->
+        <section class="section">
+            <h2>5. Synthesis: one parameter, all gravitational scales</h2>
+            <p>
+                The gravitational sector uses one MFT-specific input — the gravitational coupling
+                $\beta \approx 1.016 \times 10^{-4}$ — across all three regimes:
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Regime</th><th>Mechanism</th><th>$\beta$ role</th><th>Key result</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Solar System</td><td>Yukawa screening</td><td>Sets screening range</td><td>$\omega_{\text{BD}} > 40{,}000$</td></tr>
+                        <tr><td>Galactic</td><td>Nonlinear BVP</td><td>Coupling to baryons</td><td>$\Sigma\chi^2/\text{dof} = 1.17$</td></tr>
+                        <tr><td>Cosmological</td><td>Void vacuum energy</td><td>$F(\varphi)$ amplitude</td><td>$w_\varphi \approx -1$</td></tr>
+                        <tr><td>Black holes</td><td>Elastic saturation</td><td>—</td><td>No singularity</td></tr>
+                        <tr><td>Neutrinos (cross-link)</td><td>1-loop self-energy</td><td>$\beta^2$ scaling</td><td>Mass scale to 6%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                The galactic-fit $\beta = 10^{-4}$ and the neutrino-mass-fit $\beta = 1.016 \times 10^{-4}$
+                agree to <strong>1.6%</strong> — independent measurements of the same number from
+                completely different physical regimes. The Solar-System Yukawa screening gives
+                $\omega_{\text{BD}} > 40{,}000$ at the same $\beta$, automatic. <strong>One coupling
+                of order $10^{-4}$, fixed by Solar-System tests, simultaneously produces neutrino
+                masses, galactic halos, cosmological expansion, and singularity-free black holes.</strong>
+            </p>
+        </section>
+
+        <!-- Where to next -->
+        <section class="section">
+            <h2>Where to next</h2>
+            <div class="next-grid">
+                <a href="../foundations/" class="next-card">
+                    <h3>← Foundations</h3>
+                    <p>The action and silver-ratio condition that the gravitational sector inherits.</p>
+                    <p class="next-papers">P0 · P1 · P2 · P9</p>
+                </a>
+                <a href="../particles/" class="next-card">
+                    <h3>← Particles</h3>
+                    <p>The microphysical sector that uses the same potential — and the same silver-ratio numbers that govern halo profile shape.</p>
+                    <p class="next-papers">P3 · P4 · P6 · P7 · P8</p>
+                </a>
+                <a href="../quantum/" class="next-card">
+                    <h3>Quantum →</h3>
+                    <p>Promotion to a quantum field theory: canonical quantisation, propagators, scattering, 3D finiteness of the sextic potential.</p>
+                    <p class="next-papers">P10 · P11 · P14 · P15</p>
+                </a>
+                <a href="../synthesis/" class="next-card">
+                    <h3>Synthesis →</h3>
+                    <p>The flagship paper as a single synthesis page: principle, action, parameter ledger, derivation chain across all sectors.</p>
+                    <p class="next-papers">P9</p>
+                </a>
+                <a href="../qball-solver/" class="next-card">
+                    <h3>Q-ball Solver →</h3>
+                    <p>Compute the discrete soliton spectrum interactively in your browser. The same potential structure that produces galactic halos.</p>
+                    <p class="next-papers">live</p>
+                </a>
+                <a href="../guide/" class="next-card">
+                    <h3>Understanding Guide</h3>
+                    <p>The eight-section overview of the entire framework.</p>
+                    <p class="next-papers">summary</p>
+                </a>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+</body>
+</html>
