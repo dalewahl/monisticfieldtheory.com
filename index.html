@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monistic Field Theory</title>
-    <meta name="description" content="A unified field theory treating space and matter as a single elastic medium. Particles are solitons; mass spectrum, Weinberg angle, and galactic rotation curves emerge from two parameters.">
+    <meta name="description" content="A unified field theory in which matter and space are configurations of one elastic medium. From two parameters: three particle generations, all masses to sub-percent accuracy, the silver ratio δ=1+√2, galactic rotation curves, and emergent Lorentz invariance.">
     <link rel="stylesheet" href="style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'none'
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </head>
 <body>
     <header class="site-header">
@@ -13,313 +25,291 @@
             <a href="./" class="site-title">Monistic Field Theory</a>
             <nav class="site-nav">
                 <a href="./" class="active">Home</a>
-                <a href="#results">Results</a>
-                <a href="#papers">Papers</a>
-                <a href="#solvers">Solvers</a>
-                <a href="#contact">Contact</a>
+                <a href="guide/">Guide</a>
+                <a href="synthesis/">Synthesis</a>
+                <a href="foundations/">Foundations</a>
+                <a href="particles/">Particles</a>
+                <a href="gravity/">Gravity</a>
+                <a href="quantum/">Quantum</a>
+                <a href="results/">Results</a>
+                <a href="qball-solver/">Solvers</a>
+                <a href="papers/">Papers</a>
             </nav>
         </div>
     </header>
 
-    <main class="container">
+    <main class="container guide-page">
 
-        <!-- Hero -->
+        <!-- Hero / opening claim -->
         <section class="hero">
             <h1>Monistic Field Theory</h1>
-            <p class="hero-tagline">
-                A unified field theory treating space and matter as a single elastic medium
-                governed by a contraction field φ with sextic potential. Particles are Q-ball
-                solitons of φ. The Standard Model mass spectrum, the Weinberg angle, and
-                galactic rotation curves emerge from two parameters.
+            <p class="hero-tagline" style="font-size: 18px; line-height: 1.55;">
+                A unified field theory in which matter and space are not separate entities — both
+                are configurations of a single three-dimensional elastic medium. From a derived
+                sextic potential and two MFT-specific inputs, the framework produces three particle
+                generations, all masses to sub-percent accuracy, the Weinberg angle, the pion decay
+                constant, the neutrino mass hierarchy, galactic rotation curves, cosmological
+                expansion without $\Lambda$, and emergent Lorentz invariance — all related by the
+                silver ratio $\delta = 1 + \sqrt{2}$.
+            </p>
+        </section>
+
+        <!-- The single claim -->
+        <section class="section">
+            <h2>The single claim</h2>
+            <blockquote class="key-claim" style="font-size: 17px;">
+                Matter and space are not separate entities. What we call "matter" is space in
+                a state of localised contraction. What we call "empty space" is the same medium
+                in its relaxed state.
+            </blockquote>
+            <p>
+                Everything in MFT follows from this. Particles are localised contractions
+                (solitons). Galactic halos are extended contraction profiles around baryonic
+                matter. Cosmological expansion is the relaxation of the medium in low-density
+                regions. Gravity is the metric response of the medium to local contraction.
+                Electromagnetism is a directional polarisation mode of the same medium.
+            </p>
+            <p>
+                There is no separate substance for matter and no separate substance for
+                spacetime. The contraction field $\varphi(\mathbf{x})$ describes the local
+                state of the one underlying medium.
+            </p>
+        </section>
+
+        <!-- Headline result cards -->
+        <section class="section">
+            <h2>What it produces</h2>
+            <p>
+                From two MFT-specific inputs — the gravitational coupling $\beta$ and the
+                energy calibration $m_e$ — and a sextic potential whose shape is forced by
+                the Symmetric Back-Reaction theorem, MFT produces:
             </p>
 
-            <div class="status-block">
-                <p class="status-label">Current status — April 2026</p>
-                <ul class="status-list">
-                    <li>16-paper corpus published on Zenodo (DOI <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>)</li>
-                    <li>Family-of-Three Stability Theorem submitted for arXiv math.AP; awaiting endorsement</li>
-                    <li>Q-ball spectrum solver <a href="qball-solver/">live in browser</a> — reproduces lepton, quark, and boson masses from the same equation</li>
-                    <li>Five additional solvers in development</li>
-                </ul>
+            <div class="results-grid">
+
+                <div class="result-card derived">
+                    <p class="result-label">Derived identity</p>
+                    <h3 class="result-title">Pion decay constant</h3>
+                    <p class="result-formula">$f_\pi^2 = V''(\varphi_v)/4 = \delta = 1 + \sqrt{2}$</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>185.9 MeV</span>
+                        <span><strong>Observed:</strong></span><span>186.0 MeV</span>
+                    </div>
+                    <span class="result-error">0.03%</span>
+                </div>
+
+                <div class="result-card derived">
+                    <p class="result-label">Derived identity</p>
+                    <h3 class="result-title">Neutrino mass hierarchy</h3>
+                    <p class="result-formula">$\Delta m^2_{32}/\Delta m^2_{21} = \delta^4 - 1 = 16 + 12\sqrt{2}$</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>32.97</span>
+                        <span><strong>Observed:</strong></span><span>32.58</span>
+                    </div>
+                    <span class="result-error">1.2%</span>
+                </div>
+
+                <div class="result-card">
+                    <p class="result-label">Mass ratio</p>
+                    <h3 class="result-title">Weinberg angle</h3>
+                    <p class="result-formula">$\sin^2\theta_W = 1 - (E_W/E_Z)^2$ from Q-ball ratio</p>
+                    <div class="result-numbers">
+                        <span><strong>Predicted:</strong></span><span>0.2240</span>
+                        <span><strong>Observed:</strong></span><span>0.2232</span>
+                    </div>
+                    <span class="result-error">0.4%</span>
+                </div>
+
+                <div class="result-card theorem">
+                    <p class="result-label">Structural theorem</p>
+                    <h3 class="result-title">Three families of matter</h3>
+                    <p class="result-formula">Constrained Morse index admits exactly three admissible Q-ball modes</p>
+                    <div class="result-numbers">
+                        <span><strong>Stable:</strong></span><span>$n = 0, 1$</span>
+                        <span><strong>Metastable:</strong></span><span>$n = 2$</span>
+                    </div>
+                    <span class="result-error">exact</span>
+                </div>
+
+                <div class="result-card">
+                    <p class="result-label">Six-galaxy spiral fit</p>
+                    <h3 class="result-title">Galactic rotation curves</h3>
+                    <p class="result-formula">Halo profile shape derived from silver-ratio potential — not assumed</p>
+                    <div class="result-numbers">
+                        <span><strong>Combined:</strong></span><span>$\Sigma\chi^2/\text{dof} = 1.17$</span>
+                        <span><strong>Galaxies:</strong></span><span>MW, M31, +4</span>
+                    </div>
+                    <span class="result-error">data-quality fit</span>
+                </div>
+
+                <div class="result-card derived">
+                    <p class="result-label">All-orders S-matrix equivalence</p>
+                    <h3 class="result-title">Electron form factor</h3>
+                    <p class="result-formula">$F_{\text{MFT}}(q) = F_{\text{QED}}(q) + \mathcal{O}(m_e^2/M_{\text{Pl}}^2)$</p>
+                    <div class="result-numbers">
+                        <span><strong>Deviation:</strong></span><span>$\sim 10^{-45}$</span>
+                        <span><strong>$g$-factor:</strong></span><span>$g = 2$ derived</span>
+                    </div>
+                    <span class="result-error">undetectable</span>
+                </div>
+
             </div>
-        </section>
 
-        <!-- What is MFT? -->
-        <section class="section" id="about">
-            <h2>What is MFT?</h2>
-            <p>
-                Monistic Field Theory models space as a three-dimensional elastic medium described
-                by a scalar contraction field φ(x). The field's dynamics follow from a sextic
-                potential:
-            </p>
-            <p class="equation">
-                V(φ) = ½ m₂φ² − ¼ λ₄φ⁴ + ⅙ λ₆φ⁶,
-                with the constraint λ₄² = 8m₂λ₆.
-            </p>
-            <p>
-                The constraint produces the silver ratio δ = 1+√2 as a structural fixed point of
-                the back-reaction iteration r → 2 + 1/r. δ governs the potential's geometry:
-                its critical points, stiffness ratios, and the discrete spectrum of soliton
-                solutions.
-            </p>
-            <p>
-                Fundamental particles are <strong>Q-ball solitons</strong> of φ — stable, localised
-                configurations of the medium with internal phase coherence, carrying a conserved
-                U(1) Noether charge. The same field equation, with sector-specific Coulomb
-                coupling Z, produces the charged leptons (Z=1), up-type quarks (Z=1),
-                down-type quarks (Z=2), and electroweak gauge bosons (Z=9/5). Galactic rotation
-                curves emerge from the same potential mapped to gravitational scales.
-            </p>
-            <p>
-                The framework operates with two calibration constants: m_e = 0.511 MeV (energy
-                scale) and β ≈ 10⁻⁴ (gravitational coupling). The Standard Model requires
-                approximately 19 independent mass parameters; MFT reproduces them from these two.
+            <p style="margin-top: 16px;">
+                These are six of twenty headline results across particle physics, gravity, and
+                quantum field theory. <a href="results/"><strong>The full Results dashboard →</strong></a>
             </p>
         </section>
 
-        <!-- Headline results -->
-        <section class="section" id="results">
-            <h2>Headline results</h2>
+        <!-- Why one number -->
+        <section class="section">
+            <h2>The silver ratio</h2>
             <p>
-                Twenty quantitative and structural results derived within the framework. A condensed
-                summary; full derivations and numerical verifications are in the corpus papers.
-            </p>
-
-            <h3>Quantitative predictions</h3>
-            <div class="result-grid">
-                <div class="result-card">
-                    <div class="result-headline">f<sub>π</sub>² = δ</div>
-                    <div class="result-detail">Pion decay constant: predicted 185.9 MeV, observed 186.0 MeV. <strong>0.03% match</strong>, zero free parameters.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Δm²<sub>32</sub>/Δm²<sub>21</sub> = δ⁴ − 1</div>
-                    <div class="result-detail">Neutrino mass-squared hierarchy: predicted 32.97, observed 32.58. <strong>1.2% match</strong> from δ alone.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">sin²θ_W = 1 − (E_W/E_Z)²</div>
-                    <div class="result-detail">Weinberg angle as geometric ratio of W and Z eigenvalues: predicted 0.2240, observed 0.2232. <strong>0.4% match</strong>, derived not fitted.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Charged lepton spectrum</div>
-                    <div class="result-detail">m<sub>μ</sub>/m<sub>e</sub> to <strong>1.2%</strong>, m<sub>τ</sub>/m<sub>μ</sub> to <strong>0.8%</strong>. Q-ball solutions at Z=1.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Gauge boson masses</div>
-                    <div class="result-detail">m<sub>W</sub>, m<sub>Z</sub>, m<sub>H</sub> all predicted to <strong>&lt; 0.2%</strong> at Z<sub>boson</sub> = 9/5.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Galactic rotation curves</div>
-                    <div class="result-detail">Σχ²/dof = 1.17 across six spirals (Milky Way, M31, NGC 3198/6946/891/7331). No dark matter introduced.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">π⁰ at Z=0</div>
-                    <div class="result-detail">Neutral pion: predicted 135.3 MeV, observed 135.0 MeV. <strong>0.2% match</strong>.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Hadronic decuplet</div>
-                    <div class="result-detail">Δ–Σ*–Ξ*–Ω equal-mass spacing matches at <strong>~95%</strong>.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">ω<sub>BD</sub> &gt; 10⁸</div>
-                    <div class="result-detail">Brans-Dicke parameter; Solar-System PPN tests automatically satisfied. Cassini bound (4×10⁴) cleared by orders of magnitude.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">F_MFT = F_QED + O(10⁻⁴⁵)</div>
-                    <div class="result-detail">EM scattering form factor agrees with QED to 45 orders of magnitude; g=2 derived from Weinberg structure.</div>
-                </div>
-            </div>
-
-            <h3>Structural results</h3>
-            <div class="result-grid">
-                <div class="result-card">
-                    <div class="result-headline">Exactly three families</div>
-                    <div class="result-detail">Constrained Morse-index analysis: m<sub>phys</sub>(u<sub>n</sub>) = max(0, n−1). Two stable, one metastable, all higher modes excluded. <em>Falsifiable: a fourth charged lepton refutes the theorem.</em></div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Top non-hadronisation</div>
-                    <div class="result-detail">Top quark sits at the n=2 metastable mode in the up-type sector — quark-sector analogue of the tau lepton. Its short lifetime is structural metastability, not coincidence.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Spin-½ classification</div>
-                    <div class="result-detail">Q-ball internal frequency η = ω²/m₂ separates fermions (η ≈ 0.93–0.96) from bosons (η ≈ 0.05–0.07) cleanly across all six fundamental species. <strong>14× gap</strong>, no new fields required.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">14 silver-ratio manifestations</div>
-                    <div class="result-detail">δ = 1+√2 appears across powers δ⁻², δ⁻¹, δ, δ², δ⁴, plus δ(δ+2). Each manifestation is provably a consequence of the single algebraic constraint λ₄² = 8m₂λ₆.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Confinement without colour</div>
-                    <div class="result-detail">Virial theorem: nonzero topological charge configurations cannot be separated to infinity at finite energy. Confinement is structural elasticity.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Non-singular black holes</div>
-                    <div class="result-detail">The contraction field saturates at φ_v before reaching infinite curvature. Black-hole interiors have finite density; no physical singularity.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Renormalisability resolved</div>
-                    <div class="result-detail">Q-ball ansatz separates variables exactly. Reduces to a 3D problem where [λ₆]=0 is marginal and V<sub>1-loop</sub> is closed-form finite.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Dark matter as field relaxation</div>
-                    <div class="result-detail">Galactic halos emerge as elastic-medium relaxation around baryonic cores. No new substance; the 17.2% energy asymmetry (=1/δ²) controls relaxation.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">σ-meson at m<sub>σ</sub> = 2f<sub>π</sub></div>
-                    <div class="result-detail">Predicted 372 MeV, within the PDG f₀(500) pole range. Direct identity at the silver-ratio vacuum, parameter-free.</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-headline">Two parameters total</div>
-                    <div class="result-detail">m_e = 0.511 MeV and β ≈ 10⁻⁴. All particle masses, family count, Weinberg angle, neutrino hierarchies, hadronic spectrum, and galactic dynamics emerge from these plus the silver-ratio condition.</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Open problems -->
-        <section class="section" id="open-problems">
-            <h2>Open problems</h2>
-            <p>
-                Three substantive unresolved questions remain in the framework: the PMNS mixing
-                matrix (eigenstates derived but not the rotation), quantitative cosmology beyond
-                schematic late-time acceleration, and the structural derivation of SU(3) selection.
+                The number $\delta = 1 + \sqrt{2} \approx 2.414$ — the silver ratio — appears in
+                fourteen independent manifestations across MFT. It is not chosen. It is the
+                unique fixed point of the gravitational self-consistency condition: the only
+                algebraic number for which the elastic medium's own gravitational back-reaction
+                leaves its potential landscape invariant.
             </p>
             <p>
-                Negative results — including five ruled-out spin-½ mechanisms and four ruled-out
-                neutrino approaches — are documented in the corpus.
+                The same constant governs physics across <strong>37 orders of magnitude in mass</strong>:
+                from neutrinos at $\sim 10^{-2}$ eV to galactic halos at $10^{12}\,M_\odot$. The
+                pion decay constant equals $\delta$. The neutrino mass hierarchy ratio is
+                $\delta^4 - 1$. The vacuum stiffness ratio is $4\delta$. The barrier-to-vacuum
+                energy ratio is $1/\delta^2$. Every one of these is an algebraic consequence
+                of a single condition $\lambda_4^2 = 8 m_2 \lambda_6$ on the potential.
+            </p>
+            <p>
+                <a href="synthesis/"><strong>Why the silver ratio is forced (Synthesis page) →</strong></a>
             </p>
         </section>
 
-        <!-- Solvers -->
-        <section class="section" id="solvers">
-            <h2>Interactive solvers</h2>
+        <!-- The parameter ledger headline -->
+        <section class="section">
+            <h2>Two inputs</h2>
             <p>
-                Browser-based solvers using Pyodide. Each solver runs the actual MFT physics
-                in your browser without server-side computation.
+                The Standard Model has roughly 19–25 free parameters; $\Lambda$CDM adds another
+                six. MFT operates with <strong>two MFT-specific inputs</strong>:
+            </p>
+            <ul style="font-size: 16px;">
+                <li><strong>$\beta \approx 1.016 \times 10^{-4}$</strong> — the gravitational coupling.
+                    Fixed by Solar-System tests. The same $\beta$ produces galactic halos
+                    ($\Sigma\chi^2/\text{dof} = 1.17$) and absolute neutrino masses (best-fit $\beta = 1.016 \times 10^{-4}$,
+                    agreement with galactic fit to 1.6%).</li>
+                <li><strong>$m_e = 0.511$ MeV</strong> — the electron mass. A single energy-scale
+                    anchor for all of microphysics.</li>
+            </ul>
+            <p>
+                Everything else — the potential parameters, the silver ratio, the sector Coulomb
+                couplings $Z_{\text{lep}}, Z_{\text{down}}$, the coupling function
+                $F(\varphi) = F_0 e^{\beta\varphi}$, all the mass predictions — is derived.
+            </p>
+            <p>
+                <a href="synthesis/"><strong>The complete parameter ledger →</strong></a>
+            </p>
+        </section>
+
+        <!-- Where to start -->
+        <section class="section">
+            <h2>Where to start</h2>
+            <p>
+                The site is organised around different reader paths. Pick the entry point that
+                matches what you're looking for:
             </p>
 
-            <div class="solver-grid">
-                <a href="qball-solver/" class="solver-card live">
-                    <div class="solver-status">live</div>
-                    <h3>Q-ball Spectrum Solver</h3>
-                    <p>
-                        Compute the discrete soliton spectrum for any Standard Model sector.
-                        Reproduces lepton, quark, and boson masses from a single equation
-                        with sector-specific Coulomb coupling.
-                    </p>
+            <div class="next-grid">
+                <a href="guide/" class="next-card">
+                    <h3>Understanding Guide →</h3>
+                    <p>The eight-section overview. Designed as a first-time reading entry point — assumes physics-curious but not necessarily a specialist.</p>
+                    <p class="next-papers">recommended starting point</p>
                 </a>
 
-                <div class="solver-card upcoming">
-                    <div class="solver-status">in development</div>
-                    <h3>F3 Morse-Index Solver</h3>
-                    <p>
-                        Direct visualisation of the Family-of-Three Stability Theorem:
-                        compute constrained Morse indices to show why exactly three families
-                        are physically realised.
-                    </p>
-                </div>
+                <a href="synthesis/" class="next-card">
+                    <h3>Synthesis →</h3>
+                    <p>The bird's-eye view. Single ontological claim, action, parameter ledger, full derivation chain, comparison with the Standard Model. The flagship paper as a single page.</p>
+                    <p class="next-papers">P9 · the unifying view</p>
+                </a>
 
-                <div class="solver-card upcoming">
-                    <div class="solver-status">in development</div>
-                    <h3>Galactic Rotation Curves</h3>
-                    <p>
-                        Solve the gravitational sector boundary-value problem and fit observed
-                        rotation curves of spiral galaxies — same potential as the particle
-                        sector, mapped to galactic scales.
-                    </p>
-                </div>
+                <a href="results/" class="next-card">
+                    <h3>Results dashboard →</h3>
+                    <p>Twenty MFT predictions across all sectors as a visual dashboard, plus ten falsifiability criteria — the experimental discoveries that would refute MFT.</p>
+                    <p class="next-papers">all sectors · visual</p>
+                </a>
 
-                <div class="solver-card upcoming">
-                    <div class="solver-status">in development</div>
-                    <h3>Hedgehog / Skyrmion Solver</h3>
-                    <p>
-                        Find topological soliton configurations and compute the Skyrme coupling
-                        e = 2δ candidate value for hadronic structure.
-                    </p>
-                </div>
+                <a href="foundations/" class="next-card">
+                    <h3>Foundations →</h3>
+                    <p>The structural base: action, sign constraints, Symmetric Back-Reaction theorem, full benchmark Lagrangian, step-by-step derivation of emergent Lorentz invariance and $E = mc^2$.</p>
+                    <p class="next-papers">P0 · P1 · P2 · P9</p>
+                </a>
 
-                <div class="solver-card upcoming">
-                    <div class="solver-status">in development</div>
-                    <h3>Energy Landscape Explorer</h3>
-                    <p>
-                        Visualise the V₆ potential's three critical points and the silver-ratio
-                        fixed-point structure across parameter variations.
-                    </p>
-                </div>
+                <a href="particles/" class="next-card">
+                    <h3>Particles →</h3>
+                    <p>The microphysics sector: family-of-three theorem, Q-ball mass spectrum, spin-½ emergence, fractional-charge confinement, hadrons, neutrinos, electroweak bosons.</p>
+                    <p class="next-papers">P3 · P4 · P6 · P7 · P8</p>
+                </a>
 
-                <div class="solver-card upcoming">
-                    <div class="solver-status">in development</div>
-                    <h3>Neutrino Hierarchy Solver</h3>
-                    <p>
-                        Compute neutrino masses via the quartic-gradient neutral soliton with
-                        one-loop gravitational self-energy.
-                    </p>
-                </div>
+                <a href="gravity/" class="next-card">
+                    <h3>Gravity →</h3>
+                    <p>The macroscopic sector: galactic rotation curves at $\chi^2/\text{dof} = 1.17$, cosmological expansion without $\Lambda$, compact objects, full Solar-System compatibility.</p>
+                    <p class="next-papers">P5 · P12 · P13</p>
+                </a>
+
+                <a href="quantum/" class="next-card">
+                    <h3>Quantum →</h3>
+                    <p>Promotion to a quantum field theory: canonical quantisation, propagators, electromagnetic scattering matching QED to $10^{-45}$, derived $g = 2$, 3D finiteness of the sextic potential.</p>
+                    <p class="next-papers">P10 · P11 · P14 · P15</p>
+                </a>
+
+                <a href="qball-solver/" class="next-card">
+                    <h3>Q-ball Solver →</h3>
+                    <p>Compute the discrete soliton spectrum interactively in your browser. Reproduces lepton, quark, and boson masses including the photon and Weinberg angle.</p>
+                    <p class="next-papers">live · interactive</p>
+                </a>
+
+                <a href="papers/" class="next-card">
+                    <h3>Papers →</h3>
+                    <p>The complete 16-paper corpus (P0–P15) on Zenodo. Each paper is self-contained with derivation chain, key results, and per-paper PDF download.</p>
+                    <p class="next-papers">corpus · DOI 10.5281/zenodo.19343255</p>
+                </a>
             </div>
         </section>
 
-        <!-- Papers -->
-        <section class="section" id="papers">
-            <h2>Papers</h2>
+        <!-- Status -->
+        <section class="section">
+            <h2>Status</h2>
             <p>
-                Sixteen papers (P0–P15) form the MFT corpus. They are deposited on Zenodo with
-                an always-current DOI that resolves to the latest version of each paper:
+                The 16 papers (P0–P15) are published on Zenodo under the always-current corpus
+                DOI <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>.
+                MFT is presented as a candidate framework with concrete, falsifiable predictions
+                across multiple sectors. Three open problems define the current frontier:
             </p>
-
-            <div class="doi-card">
-                <div class="doi-label">Always-current DOI</div>
-                <div class="doi-link">
-                    <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
-                </div>
-                <div class="doi-detail">All papers, all versions. Cite the latest, or any specific paper from the deposit.</div>
-            </div>
-
-            <h3>Corpus structure</h3>
-            <p>The papers fall into four groups:</p>
-            <ul class="paper-list">
-                <li><strong>Foundations (P0–P2)</strong> — Field equations, potential structure, k₄ derivation, λ ratio derivation.</li>
-                <li><strong>Particle sector (P3–P5)</strong> — Family-of-Three Stability Theorem, lepton/quark/boson masses, microphysics.</li>
-                <li><strong>Astrophysical sector (P6–P10)</strong> — Galactic rotation curves, cosmology, compact objects, gravitational tests.</li>
-                <li><strong>Quantum and field-theoretic structure (P11–P15)</strong> — Quantum completion, propagators, scattering, 3D finiteness, spin-½ emergence.</li>
+            <ul>
+                <li>The PMNS mixing matrix (mechanism known, extraction in progress)</li>
+                <li>Quantitative cosmological fitting and the Hubble tension</li>
+                <li>SU(3) colour selection from elastic mode-counting</li>
             </ul>
-
-            <h3>Refereed publication in progress</h3>
             <p>
-                "A Family-of-Three Stability Theorem for Confined Solitons under Charge and
-                Dilation Constraints" (P3 of the corpus) has been submitted for arXiv math.AP
-                with math-ph cross-listing, with publication planned in <em>Foundations of
-                Physics</em>. The paper proves the family-of-three structure as a constrained
-                Morse-index theorem.
+                Several earlier open problems have been resolved in the corpus:
+                spin-½ classification (P6), renormalisability (P15), the pion decay constant
+                (P8), neutrino masses (P8), and the coupling function $F(\varphi)$ (P2).
+                See the <a href="results/">falsifiability section</a> for what experimental
+                discoveries would refute the theory.
             </p>
         </section>
 
-        <!-- Contact -->
-        <section class="section" id="contact">
-            <h2>Contact</h2>
+        <!-- Author / contact -->
+        <section class="section">
+            <h2>Author</h2>
             <p>
-                Correspondence, criticism, and pointers to relevant literature are genuinely
-                welcome. The work is offered for engagement, not promotion.
+                MFT is the work of <strong>Dale Wahl</strong>, an independent researcher.
+                Correspondence: <a href="mailto:drwahl6913@gmail.com">drwahl6913@gmail.com</a>.
             </p>
             <p>
-                Email: <a href="mailto:drwahl6913@gmail.com">drwahl6913@gmail.com</a><br>
-                Source code: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a><br>
-                Corpus: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+                Source code for this site, all numerical scripts, and LaTeX sources for every
+                paper are available on
+                <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">GitHub</a>.
+                The site is hosted as static GitHub Pages content; corrections, suggestions,
+                and feedback are welcome via email or GitHub issues.
             </p>
         </section>
 
@@ -327,6 +317,7 @@
             <p>
                 Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
                 · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+                · Contact: <a href="mailto:drwahl6913@gmail.com">drwahl6913@gmail.com</a>
             </p>
         </footer>
     </main>
