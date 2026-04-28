@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundations — Monistic Field Theory</title>
+    <meta name="description" content="The foundational papers of MFT: gravitational field equations, sign constraints, the Symmetric Back-Reaction theorem and silver ratio, and the complete benchmark action with derived emergent Lorentz invariance.">
+    <link rel="stylesheet" href="../style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'none'
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/" class="active">Foundations</a>
+                <a href="../particles/">Particles</a>
+                <a href="../gravity/">Gravity</a>
+                <a href="../quantum/">Quantum</a>
+                <a href="../qball-solver/">Solvers</a>
+                <a href="../papers/">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container guide-page">
+
+        <section class="hero">
+            <h1>Foundations</h1>
+            <p class="hero-tagline">
+                The structural base of MFT: the gravitational action, the derived signs of the
+                potential, the Symmetric Back-Reaction theorem that forces the silver ratio,
+                the complete benchmark action, and the step-by-step derivation of emergent
+                Lorentz invariance and $E = mc^2$.
+            </p>
+            <div class="status-block">
+                <p class="status-label">Papers covered</p>
+                <p style="margin: 0; font-size: 14px; color: #444;">
+                    P0 (Gravitational Field Equations) ·
+                    P1 (Why $K_4 < 0$) ·
+                    P2 (Symmetric Back-Reaction) ·
+                    P9 (Flagship: monistic principle, benchmark action, parameter ledger, emergent Lorentz invariance).
+                </p>
+            </div>
+        </section>
+
+        <!-- The monistic principle (P9) -->
+        <section class="section">
+            <h2>1. The monistic principle <span class="paper-tag">P9</span></h2>
+
+            <p>
+                Monistic Field Theory rests on a single ontological claim:
+            </p>
+            <blockquote class="key-claim">
+                Matter and space are not separate entities. What we call "matter" is space in
+                a state of localised contraction.
+            </blockquote>
+            <p>
+                The contraction field $\varphi(\mathbf{x})$ measures how strongly the medium
+                is contracted at each point. Where the medium is contracted, the effective
+                spatial geometry changes, and other solitons follow geodesics of this
+                deformed geometry. Electromagnetic fields are directional distortions
+                (polarisation modes) of the same medium.
+            </p>
+
+            <h3>On the nature of time</h3>
+            <p>
+                MFT is formulated on a three-dimensional spatial manifold $\Sigma$ with metric
+                $h_{ij}$. There is no fundamental time coordinate. Physical history is an
+                ordered sequence of spatial configurations indexed by an ordering parameter
+                $\tau$ that labels successive configurations but carries no direct physical
+                meaning. Any smooth reparameterisation $\tau \mapsto f(\tau)$ leaves the
+                theory invariant. What we experience as "time" emerges from the dynamics of
+                the contraction field: the rate at which configurations change along $\tau$
+                depends on the local contraction.
+            </p>
+            <p>
+                This is what makes Lorentz invariance and $E = mc^2$ <em>derived</em> rather
+                than postulated: there is no spacetime metric to be Lorentz-invariant in the
+                fundamental theory. The Minkowski structure emerges only when localised
+                contraction patterns (solitons) are set in motion through the medium. We
+                derive this in §6 below.
+            </p>
+
+            <div class="callout callout-warn">
+                <p><strong>Conceptual trap:</strong> Do not read MFT as "Brans–Dicke with a
+                sextic potential." The mathematical structure is similar, but the physical
+                interpretation is fundamentally different. The scalar field $\varphi$ is not
+                a fifth-force mediator alongside matter — it <em>is</em> matter. There is no
+                separate substance.</p>
+            </div>
+        </section>
+
+        <!-- P0 -->
+        <section class="section">
+            <h2>2. The MFT gravitational action <span class="paper-tag">P0</span></h2>
+            <p>
+                Let $\Sigma$ be a three-dimensional spatial slice with 3-metric $h_{ij}$,
+                compatible covariant derivative $D_i$, and 3D Ricci scalar $R^{(3)}[h]$. The
+                MFT gravitational action on $\Sigma$ is:
+            </p>
+            <div class="equation-display">
+                $$S[h, \varphi] = \int_\Sigma d^3x \sqrt{h} \left[
+                  F(\varphi)\, R^{(3)}
+                  - \tfrac{\kappa}{2}\, D_i\varphi\, D^i\varphi
+                  - V_6(\varphi)
+                  + \mathcal{L}_{\text{matter}}
+                \right]$$
+            </div>
+            <p>
+                The four ingredients are: a non-minimal coupling $F(\varphi)$ between the
+                contraction field and the spatial curvature; an elastic-stiffness gradient
+                term with $\kappa > 0$; the sextic self-interaction potential $V_6(\varphi)$;
+                and matter and gauge field contributions $\mathcal{L}_{\text{matter}}$.
+            </p>
+
+            <h3>The sextic potential</h3>
+            <div class="equation-display">
+                $$V_6(\varphi) = \frac{m_2}{2}\varphi^2 - \frac{\lambda_4}{4}\varphi^4 + \frac{\lambda_6}{6}\varphi^6$$
+            </div>
+            <p>
+                The quadratic term provides a linear restoring force, the negative quartic
+                creates an attractive nonlinearity (the double-well barrier), and the positive
+                sextic provides the elastic ceiling. The potential has its minimum at
+                $\varphi = 0$ (the relaxed vacuum), a barrier at $\varphi_b$, and a nonlinear
+                vacuum at $\varphi_v$, where:
+            </p>
+            <div class="equation-display">
+                $$\varphi_b^2 = \frac{\lambda_4 - \sqrt{\lambda_4^2 - 4 m_2 \lambda_6}}{2 \lambda_6}, \qquad
+                  \varphi_v^2 = \frac{\lambda_4 + \sqrt{\lambda_4^2 - 4 m_2 \lambda_6}}{2 \lambda_6}$$
+            </div>
+            <p>
+                A barrier exists if and only if $\lambda_4^2 > 4 m_2 \lambda_6$.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/fig_mft_grav_potential.png" alt="The MFT sextic potential V₆(φ) under the silver ratio condition.">
+                <figcaption>
+                    The MFT sextic potential $V_6(\varphi)$ with $\lambda_4^2 = 8 m_2 \lambda_6$ (silver-ratio condition).
+                    Left: double-well landscape with relaxed vacuum at $\varphi = 0$, barrier at $\varphi_b = 0.765$,
+                    nonlinear vacuum at $\varphi_v = 1.848$. Centre: gradient $V_6'(\varphi)$ with zeros at the three
+                    stationary points. Right: stiffness $V_6''(\varphi)$, showing the nonlinear vacuum is
+                    $4\delta \approx 9.66$ times stiffer than the relaxed vacuum.
+                </figcaption>
+            </figure>
+
+            <h3>Field equations</h3>
+            <p>
+                Varying the action with respect to the 3-metric $h^{ij}$ yields the modified
+                Einstein equation:
+            </p>
+            <div class="equation-display">
+                $$F(\varphi)\, G^{(3)}_{ij} = T^{(\text{matt})}_{ij} + T^{(\varphi)}_{ij}$$
+            </div>
+            <p>
+                where $G^{(3)}_{ij} = R^{(3)}_{ij} - \tfrac{1}{2} h_{ij} R^{(3)}$ is the 3D
+                Einstein tensor and the contraction-field stress tensor is:
+            </p>
+            <div class="equation-display">
+                $$T^{(\varphi)}_{ij} = \kappa \left( D_i\varphi\, D_j\varphi - \tfrac{1}{2} h_{ij} D_k\varphi\, D^k\varphi \right) - h_{ij}\, V_6(\varphi) + D_i D_j F(\varphi) - h_{ij}\, D_k D^k F(\varphi)$$
+            </div>
+            <p>
+                Varying with respect to $\varphi$ yields the contraction field equation:
+            </p>
+            <div class="equation-display">
+                $$\kappa\, D_k D^k \varphi = m_2 \varphi - \lambda_4 \varphi^3 + \lambda_6 \varphi^5 - F'(\varphi)\, R^{(3)}[h]$$
+            </div>
+            <p>
+                The right-hand side contains the potential gradient (restoring force,
+                attractive nonlinearity, elastic ceiling) and the curvature coupling through
+                $F'(\varphi)\, R^{(3)}$. This curvature coupling is what generates the
+                Symmetric Back-Reaction theorem of §4.
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P0: Gravitational Field Equations (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_grav_verification.py">mft_grav_verification.py</a>
+            </p>
+        </section>
+
+        <!-- P1 -->
+        <section class="section">
+            <h2>3. The signs are forced <span class="paper-tag">P1: Why $K_4 < 0$</span></h2>
+            <p>
+                With the action established, the next question is which signs the potential
+                coefficients must have. P1 derives all four sign constraints from elementary
+                physical requirements. There are no choices.
+            </p>
+
+            <h3>$\lambda_6 > 0$: energy bounded below</h3>
+            <p>
+                As $\varphi \to \infty$, the sextic term dominates: $V_6(\varphi) \approx \lambda_6\varphi^6/6$.
+                If $\lambda_6 \le 0$, the energy functional is unbounded from below and no
+                stable soliton exists. Therefore $\lambda_6 > 0$.
+            </p>
+
+            <h3>$m_2 > 0$: localisation</h3>
+            <p>
+                At large $r$, the soliton profile decays to vacuum. Linearising the field
+                equation around $\varphi = 0$ gives $\kappa\, \nabla^2 \varphi = m_2\, \varphi$.
+                For $\varphi(r)$ to decay exponentially as
+                $\varphi \propto e^{-\sqrt{m_2/\kappa}\,r}$, we need $m_2 > 0$. If $m_2 \le 0$
+                solutions are oscillatory or growing at infinity — neither is normalisable.
+            </p>
+
+            <h3>$\lambda_4 > 0$: Derrick's theorem (the central result)</h3>
+            <p>
+                This is the non-trivial sign. The proof uses Derrick's theorem extended to
+                Q-ball configurations. Given a Q-ball solution $\varphi(r)$, consider the
+                one-parameter family of spatially dilated configurations:
+            </p>
+            <div class="equation-display">
+                $$\varphi_\mu(\mathbf{r}) = \varphi(\mathbf{r}/\mu), \qquad \mu > 0$$
+            </div>
+            <p>
+                Under this rescaling, $\nabla\varphi_\mu = (1/\mu)(\nabla\varphi)(\mathbf{r}/\mu)$
+                and $d^3x \to \mu^3\, d^3x'$. The Q-ball energy of the rescaled configuration
+                is:
+            </p>
+            <div class="equation-display">
+                $$E_Q(\mu) = \mu\, T_{\text{grad}} + \mu^3\, (T_{\text{kin}} + W_{\text{pot}})$$
+            </div>
+            <p>
+                For $\varphi(r)$ to be a physical soliton, it must be stationary under spatial
+                dilations. Setting $dE_Q/d\mu|_{\mu=1} = 0$:
+            </p>
+            <div class="equation-display">
+                $$T_{\text{grad}} + 3 (T_{\text{kin}} + W_{\text{pot}}) = 0
+                  \quad\Longrightarrow\quad T_{\text{kin}} + W_{\text{pot}} = -\frac{T_{\text{grad}}}{3} < 0$$
+            </div>
+            <p>
+                Since $T_{\text{grad}} > 0$ (gradient energy is always positive), the potential
+                energy must be <em>negative</em> on the soliton support. With
+                $m_2 > 0, \lambda_4 \ge 0, \lambda_6 > 0$, every term in $V_6(\varphi)$ is
+                non-negative, so $V_6(\varphi) \ge 0$ everywhere and
+                $W_{\text{pot}} \ge 0$. This contradicts the virial requirement.
+            </p>
+            <p>
+                <strong>Therefore $\lambda_4 > 0$ (i.e., $K_4 < 0$): the quartic must be
+                attractive.</strong> The answer to "why $K_4 < 0$?" is: <strong>because
+                particles exist in three dimensions.</strong>
+            </p>
+
+            <h3>$\lambda_4^2 > 4 m_2 \lambda_6$: barrier existence</h3>
+            <p>
+                Required for the discriminant in $\varphi_b^2, \varphi_v^2$ to be positive,
+                i.e., for the two non-trivial critical points to exist as real solutions.
+                Without this inequality the potential has no double-well structure.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/fig_k4_three_potentials.png" alt="The sextic potential in three regimes illustrating why K₄ < 0 is required.">
+                <figcaption>
+                    The sextic potential $V_6(\varphi)$ for three regimes.
+                    (a) $K_4 > 0$: all terms non-negative, $V_6 \ge 0$ everywhere — Derrick violated, no solitons.
+                    (b) $K_4 < 0$ but $K_4^2 < 4 K_2 K_6$: dip with no barrier — only one family.
+                    (c) $K_4 < 0$ with $\lambda_4^2 = 8 m_2 \lambda_6$ (silver ratio): proper double-well — three families.
+                </figcaption>
+            </figure>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P1: Why $K_4 < 0$ (Zenodo) →</a>
+            </p>
+        </section>
+
+        <!-- P2 -->
+        <section class="section">
+            <h2>4. The ratio is forced — Symmetric Back-Reaction <span class="paper-tag">P2</span></h2>
+            <p>
+                Three of the four potential parameters can be absorbed by rescaling
+                $\varphi$ and the energy. One physically meaningful ratio remains:
+                $\lambda_4/\lambda_6$ (or equivalently $\rho = \lambda_4^2/(m_2\lambda_6)$).
+                P2 proves this ratio is uniquely determined by self-consistency of the action.
+            </p>
+
+            <h3>The back-reaction problem</h3>
+            <p>
+                The contraction field equation contains the curvature coupling
+                $-F'(\varphi)\, R^{(3)}$. Near a critical point $\varphi_c$ where
+                $V_6'(\varphi_c) = 0$, the curvature $R^{(3)}$ is sourced by the energy
+                density at $\varphi_c$, which is proportional to $V(\varphi_c)$. The
+                resulting field shift is:
+            </p>
+            <div class="equation-display">
+                $$\delta\varphi_c \propto \frac{V(\varphi_c)}{V''(\varphi_c)}$$
+            </div>
+            <p>
+                Define the <strong>back-reaction amplitude</strong>:
+            </p>
+            <div class="equation-display">
+                $$\Sigma(\varphi_c) = \frac{V(\varphi_c)}{V''(\varphi_c)}$$
+            </div>
+            <p>
+                The potential has three critical points. The relaxed vacuum has $V(0) = 0$,
+                so $\Sigma(0) = 0$ trivially. The non-trivial question concerns the relation
+                between $\Sigma(\varphi_b)$ and $\Sigma(\varphi_v)$.
+            </p>
+            <p>
+                If $\Sigma(\varphi_b) \ne \Sigma(\varphi_v)$, the back-reaction preferentially
+                shifts one critical point relative to the other. The barrier migrates, the
+                double-well topology changes, and the three-family structure is disrupted.
+                For self-consistency under the action's own gravitational back-reaction:
+            </p>
+            <div class="equation-display">
+                $$\boxed{\Sigma(\varphi_b) = \Sigma(\varphi_v)} \qquad \text{(Symmetric Back-Reaction Condition)}$$
+            </div>
+
+            <h3>Algebraic proof</h3>
+            <p>
+                At any critical point where $V'(\varphi_c) = 0$, eliminate $m_2$ via
+                $m_2 = \lambda_4\varphi_c^2 - \lambda_6\varphi_c^4$:
+            </p>
+            <div class="equation-display">
+                $$V(\varphi_c) = \frac{\lambda_4}{4}\varphi_c^4 - \frac{\lambda_6}{3}\varphi_c^6, \qquad
+                  V''(\varphi_c) = 2\varphi_c^2(-\lambda_4 + 2\lambda_6\varphi_c^2)$$
+            </div>
+            <p>
+                Introduce the dimensionless variable $t = \lambda_6\varphi_c^2/\lambda_4$. Then
+                $\varphi_c^2 = t\, \lambda_4/\lambda_6$ and the back-reaction amplitude becomes:
+            </p>
+            <div class="equation-display">
+                $$\Sigma(\varphi_c) = \frac{\lambda_4}{\lambda_6} \cdot \frac{t(1/4 - t/3)}{2(-1 + 2t)}$$
+            </div>
+            <p>
+                The two critical points satisfy the quadratic
+                $m_2/\lambda_6 - (\lambda_4/\lambda_6)\varphi^2 + \varphi^4 = 0$, which in
+                $t$-variables gives Vieta sum $t_b + t_v = 1$ and Vieta product
+                $t_b \cdot t_v = m_2\lambda_6/\lambda_4^2$. Setting
+                $\Sigma(\varphi_b) = \Sigma(\varphi_v)$, the prefactor $\lambda_4/\lambda_6$
+                cancels. Both $t_b, t_v$ then satisfy
+            </p>
+            <div class="equation-display">
+                $$\frac{t(1/4 - t/3)}{-1 + 2t} = K$$
+            </div>
+            <p>
+                for some constant $K$. Rearranging: $t^2 - (3/4 - 6K) t - 3K = 0$. By Vieta:
+            </p>
+            <div class="equation-display">
+                $$t_b + t_v = 3/4 - 6K = 1 \;\Longrightarrow\; K = -1/24, \qquad
+                  t_b \cdot t_v = -3K = 1/8$$
+            </div>
+            <p>
+                Comparing with the original Vieta product
+                $t_b \cdot t_v = m_2\lambda_6/\lambda_4^2$:
+            </p>
+            <div class="equation-display">
+                $$\boxed{\frac{m_2\lambda_6}{\lambda_4^2} = \frac{1}{8} \;\Longleftrightarrow\; \lambda_4^2 = 8 m_2 \lambda_6}$$
+            </div>
+            <p>
+                In normalised units ($m_2 = 1$): $\lambda_4/\lambda_6 = 4$. The universal
+                back-reaction amplitude follows: $\Sigma(\varphi_b) = \Sigma(\varphi_v) = -1/12$.
+            </p>
+
+            <h3>The silver ratio as the unique attractor</h3>
+            <p>
+                With $\lambda_4^2 = 8 m_2 \lambda_6$, the critical points are
+                $\varphi_b^2 = 2 - \sqrt{2}$, $\varphi_v^2 = 2 + \sqrt{2}$, and the field
+                ratio is:
+            </p>
+            <div class="equation-display">
+                $$r = \frac{\varphi_v}{\varphi_b} = \sqrt{\frac{2 + \sqrt{2}}{2 - \sqrt{2}}} = 1 + \sqrt{2} \equiv \delta$$
+            </div>
+            <p>
+                The silver ratio. Equivalently, the back-reaction map acts on $r$ as:
+            </p>
+            <div class="equation-display">
+                $$r_{n+1} = f(r_n) = 2 + \frac{1}{r_n}$$
+            </div>
+            <p>
+                The unique positive fixed point of this map satisfies $r^* = 2 + 1/r^*$, i.e.,
+                $(r^*)^2 - 2r^* - 1 = 0$, giving $r^* = 1 + \sqrt{2} = \delta$. The map is a
+                contraction on $(0, \infty)$ and converges globally to $\delta$ from any
+                positive starting value.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/fig_cobweb.png" alt="Cobweb diagram showing the iteration r → 2 + 1/r converging to the silver ratio.">
+                <figcaption>
+                    Cobweb diagram for $r \to 2 + 1/r$. Three trajectories from different starting values
+                    ($r_0 = 0.3, 1.5, 4.5$) all converge to $\delta = 1+\sqrt{2} \approx 2.414$.
+                </figcaption>
+            </figure>
+
+            <h3>The extended theorem: deriving $F(\varphi)$</h3>
+            <p>
+                The standard theorem treats $F'(\varphi)$ as constant (linearised). The
+                <strong>extended</strong> theorem determines the functional form of
+                $F(\varphi)$ itself. When $F$ is non-linear, the back-reaction displacement
+                acquires a local coupling factor:
+            </p>
+            <div class="equation-display">
+                $$\delta\varphi_c \propto \frac{F'(\varphi_c)}{F(\varphi_c)} \cdot \frac{V(\varphi_c)}{V''(\varphi_c)} = \frac{d \ln F}{d\varphi}\bigg|_{\varphi_c} \cdot \Sigma(\varphi_c)$$
+            </div>
+            <p>
+                Since the standard theorem already gives
+                $\Sigma(\varphi_b) = \Sigma(\varphi_v) = -1/12$, the extended condition
+                reduces to:
+            </p>
+            <div class="equation-display">
+                $$\frac{d \ln F}{d\varphi}\bigg|_{\varphi_b} = \frac{d \ln F}{d\varphi}\bigg|_{\varphi_v}$$
+            </div>
+            <p>
+                The Master-to-Gravitational mapping relates the potential across scales by a
+                continuous rescaling parameter $\alpha$, mapping critical points to
+                $\alpha\varphi_b, \alpha\varphi_v$. The silver-ratio condition is preserved
+                for all $\alpha$. For the back-reaction to be symmetric at <em>every</em>
+                rescaling simultaneously, the condition must hold at $(\alpha\varphi_b, \alpha\varphi_v)$
+                for all $\alpha > 0$ — an infinite family of constraints requiring
+                $d(\ln F)/d\varphi$ to take the same value at every pair of critical-point
+                images. The unique solution:
+            </p>
+            <div class="equation-display">
+                $$\frac{d \ln F}{d\varphi} = \beta = \text{const} \quad\Longrightarrow\quad
+                \boxed{F(\varphi) = F_0\, e^{\beta\varphi}}$$
+            </div>
+            <p>
+                where $F_0 = 1/(16\pi G_0)$ and $\beta \approx 1.016 \times 10^{-4}$ is
+                constrained from galactic rotation curves and cross-validated by the neutrino
+                mass formula to $1.6\%$.
+            </p>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P2: Derivation of $\lambda_4/\lambda_6 = 4$ (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_lambda_ratio_derivation.py">mft_lambda_ratio_derivation.py</a>
+                ·
+                <a href="../scripts/mft_F_derivation.py">mft_F_derivation.py</a>
+            </p>
+        </section>
+
+        <!-- 14 silver-ratio manifestations -->
+        <section class="section">
+            <h2>5. Fourteen silver-ratio manifestations <span class="paper-tag">P9</span></h2>
+            <p>
+                The silver ratio is the organising constant of MFT. It appears in 14
+                independent manifestations across MFT physics. They are not independent
+                curiosities — they are algebraic consequences of the single equation
+                $\lambda_4^2 = 8 m_2 \lambda_6$ applied to different properties of the same
+                potential.
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>#</th><th>Ratio</th><th>Value</th><th>Num.</th><th>Meaning</th><th>Sector</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="6" class="power-row">$\delta^{-2}$</td></tr>
+                        <tr><td>2</td><td>$V(\varphi_b)/|V(\varphi_v)|$</td><td>$1/\delta^2$</td><td>0.172</td><td>Energy asymmetry</td><td>All</td></tr>
+                        <tr><td colspan="6" class="power-row">$\delta^{-1}$</td></tr>
+                        <tr><td>5</td><td>$V(\varphi_b)$</td><td>$1/(3\delta)$</td><td>0.138</td><td>Barrier height</td><td>Hadrons, $\nu$</td></tr>
+                        <tr><td colspan="6" class="power-row">$\delta^0 = \sqrt{2}$</td></tr>
+                        <tr><td>7</td><td>$(\varphi_v - \varphi_b)/\varphi_b$</td><td>$\sqrt{2}$</td><td>1.414</td><td>Phase-space width</td><td>All</td></tr>
+                        <tr><td>8</td><td>$\Delta V = 0$ crossing</td><td>$\sqrt{2}$</td><td>1.414</td><td>Fluctuation operator</td><td>Spin</td></tr>
+                        <tr><td>9</td><td>$\varphi_b \cdot \varphi_v$</td><td>$\sqrt{2}$</td><td>1.414</td><td>Geom. mean of crit. pts</td><td>All</td></tr>
+                        <tr><td colspan="6" class="power-row">$\delta^1$</td></tr>
+                        <tr><td>1</td><td>$\varphi_v/\varphi_b$</td><td>$\delta$</td><td>2.414</td><td>Field amplitude ratio</td><td>All</td></tr>
+                        <tr><td>3</td><td>$V''(\varphi_v)/V''(0)$</td><td>$4\delta$</td><td>9.657</td><td>Stiffness ratio</td><td>Leptons, bosons</td></tr>
+                        <tr><td>6</td><td>$|V(\varphi_v)|$</td><td>$\delta/3$</td><td>0.805</td><td>Vacuum depth</td><td>All</td></tr>
+                        <tr><td>10</td><td>$r \mapsto 2 + 1/r$</td><td>fixed pt $\delta$</td><td>—</td><td>Gravitational attractor</td><td>Origin</td></tr>
+                        <tr><td>11</td><td>$f_\pi^2$</td><td>$\delta$</td><td>2.414</td><td>Pion decay const. (0.03%)</td><td>Hadrons</td></tr>
+                        <tr><td>12</td><td>$e$ (Skyrme)</td><td>$2\delta$</td><td>4.83</td><td>Skyrme coupling (cand., 6%)</td><td>Hadrons</td></tr>
+                        <tr><td colspan="6" class="power-row">$\delta(\delta+2)$</td></tr>
+                        <tr><td>13</td><td>$V''(\varphi_v) + V''(0)$</td><td>$\delta(\delta+2)$</td><td>10.66</td><td>Neutrino screening mass</td><td>Neutrinos</td></tr>
+                        <tr><td colspan="6" class="power-row">$\delta^2$</td></tr>
+                        <tr><td>4</td><td>$|V''(\varphi_v)/V''(\varphi_b)|$</td><td>$\delta^2$</td><td>5.828</td><td>Nonlin. vac / barrier stiffness</td><td>Compact obj.</td></tr>
+                        <tr><td colspan="6" class="power-row">$\delta^4$</td></tr>
+                        <tr><td>14</td><td>$\Delta m^2_{32}/\Delta m^2_{21}$</td><td>$\delta^4 - 1$</td><td>32.97</td><td>Neutrino hierarchy (1.2%)</td><td>Neutrinos</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Curvature algebra</h3>
+            <p>
+                The stiffnesses at the three critical points form a closed algebraic system:
+            </p>
+            <div class="equation-display">
+                $$V''(0) = 1, \qquad V''(\varphi_b) = -\frac{4}{\delta}, \qquad V''(\varphi_v) = 4\delta$$
+            </div>
+            <p>
+                Two identities follow from the master relation $\delta - 1/\delta = 2$:
+            </p>
+            <div class="equation-display">
+                $$V''(\varphi_v) + V''(\varphi_b) = 4\delta - 4/\delta = 8 \quad \text{(exact integer)}$$
+                $$V''(\varphi_v) \times V''(\varphi_b) = -16 \quad \text{(exact integer)}$$
+            </div>
+            <p>
+                The geometric mean of the absolute curvatures is
+                $\sqrt{4\delta \cdot 4/\delta} = 4 = \lambda_4/\lambda_6$: the potential ratio
+                that generates the silver ratio reappears as the geometric mean of its own
+                curvatures.
+            </p>
+
+            <div class="callout callout-warn">
+                <p><strong>Conceptual trap:</strong> The silver ratio is not numerology. It is
+                the algebraic fixed point of a dynamical equation (the back-reaction map).
+                Every manifestation is a provable consequence of the single condition
+                $\lambda_4^2 = 8 m_2 \lambda_6$. If you change the ratio, all 14
+                manifestations break simultaneously.</p>
+            </div>
+
+            <h3>What the silver ratio does <em>not</em> control</h3>
+            <p>
+                The sector Coulomb couplings $Z_{\text{lep}} = 1$, $Z_{\text{boson}} = 9/5$,
+                and $Z_{\text{down}} = 2$ are rational numbers. They arise from the potential
+                coefficients ($m^2$, $\lambda_4/(2\lambda_6)$) and the medium's tensor
+                structure in $d = 3$ dimensions ($9/(9-4)$), not from the silver ratio. The
+                sector couplings reflect <em>how</em> different particle types couple to the
+                medium; the silver ratio controls <em>what</em> the medium looks like. Both
+                are structural properties of the same elastic medium with different algebraic
+                origins. The Z values are derived in detail on the <a href="../particles/">Particles</a> page.
+            </p>
+        </section>
+
+        <!-- The benchmark action -->
+        <section class="section">
+            <h2>6. The benchmark action <span class="paper-tag">P9</span></h2>
+            <p>
+                The structural action of §2 contains functions ($F$, $\varepsilon$, etc.)
+                whose forms must be specified to compute anything. The complete benchmark
+                realisation consistent with all published MFT results is:
+            </p>
+            <div class="equation-display">
+                $$\begin{aligned}
+                S_{\text{MFT}} = \int d\tau\, d^3x\, \sqrt{h}\, \biggl[
+                    & \frac{1}{16\pi G_0}(1 + \beta\varphi)\, R^{(3)} \\
+                    & - \frac{\kappa}{2}(\nabla\varphi)^2
+                    - \frac{K_4}{4\Lambda^4}(\nabla\varphi)^4
+                    - V_6(\varphi) \\
+                    & - \frac{1}{4} F_{ij} F^{ij}
+                    + \mathcal{L}_{\text{EW,pol}}(\varphi, W, B, h) \\
+                    & + \mathcal{L}_{\text{Skyrme}}(\varphi, U)
+                    + \sum_f \mathcal{L}_f(\varphi, \psi_f, h)
+                \biggr]
+                \end{aligned}$$
+            </div>
+
+            <h3>What each block does</h3>
+            <p>
+                <strong>Gravity + contraction:</strong> $F(\varphi) = (1+\beta\varphi)/(16\pi G_0)$
+                is the linearised non-minimal coupling (the full exponential
+                $F_0 e^{\beta\varphi}$ is derived in §4). The kinetic term
+                $\kappa(\nabla\varphi)^2/2$ is standard. $V_6(\varphi)$ is the derived sextic
+                potential. The quartic-gradient operator $K_4(\nabla\varphi)^4/(4\Lambda^4)$
+                is a permitted higher-derivative correction included for completeness; it is
+                not required by any published MFT prediction.
+            </p>
+            <p>
+                <strong>Electromagnetism:</strong> $F_{ij} = \partial_i A_j - \partial_j A_i$
+                is the field strength. The dielectric function $\varepsilon(\varphi)$ is
+                constrained at the two vacua: $\varepsilon(0) = 1$ by vacuum normalisation,
+                and $\varepsilon(\varphi_v) = 1$ to $0.03\%$ precision from
+                $f_\pi^2 = V''(\varphi_v)/4 = \delta$. The simplest function consistent with
+                both points is $\varepsilon(\varphi) = 1$ everywhere, which is the working
+                hypothesis. Under this, the contraction field couples to electromagnetism
+                only through the gravitational sector $F(\varphi)$.
+            </p>
+            <p>
+                <strong>Electroweak polarisation:</strong> $\mathcal{L}_{\text{EW,pol}}$
+                contains $SU(2)$ gauge fields $W_i^a$ and $U(1)$ field $B_i$ with
+                contraction-dependent stiffness functions $Z_W(\varphi), Z_B(\varphi)$ and
+                mass functions $m_W(\varphi), m_Z(\varphi)$.
+            </p>
+            <p>
+                <strong>Hadronic Skyrme sector:</strong>
+                $\mathcal{L}_{\text{Skyrme}} = f_\pi^2(\lambda_4, \lambda_6)\, \text{Tr}(\partial_i U \partial_i U^\dagger)/16 + [\text{Skyrme term}]/(32 e^2(\lambda_4, \lambda_6))$.
+                The pion decay constant is closed by the chiral-stiffness relation
+                $f_\pi^2 = V''(\varphi_v)/4 = \delta$ at $0.03\%$ accuracy. The Skyrme
+                coupling $e \approx 4.53$ is extracted from the converged $B = 1$ hedgehog
+                soliton via rotational quantisation of $M_N$ and $M_\Delta$.
+            </p>
+            <p>
+                <strong>Matter:</strong>
+                $\mathcal{L}_f = Z_f(\varphi)\, \bar\psi_f\, i\gamma^i D_i \psi_f - Y_f(\varphi, h)\, \bar\psi_f \psi_f$
+                for each fermion species $f$.
+            </p>
+        </section>
+
+        <!-- Parameter ledger -->
+        <section class="section">
+            <h2>7. The parameter ledger <span class="paper-tag">P9</span></h2>
+            <p>
+                The Standard Model has $\sim 20$–$25$ free parameters. MFT operates with
+                two MFT-specific inputs: the gravitational coupling $\beta$ and the energy
+                calibration $m_e$. ($G_0$ is the standard bare Newton constant, shared with
+                General Relativity, not specifically MFT.)
+            </p>
+
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Symbol</th><th>Meaning</th><th>Status</th><th>Set by</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>$G_0$</td><td>Bare Newton constant</td><td>Input (standard)</td><td>Observation (shared with GR)</td></tr>
+                        <tr><td>$\beta$</td><td>Grav. coupling to $\varphi$</td><td>Input ($1.016 \times 10^{-4}$)</td><td>Galactic fits (P5)</td></tr>
+                        <tr><td>$m_e$</td><td>Electron mass (calibration)</td><td>Input (0.511 MeV)</td><td>Calibration</td></tr>
+                        <tr><td colspan="4" class="power-row">Derived from above</td></tr>
+                        <tr><td>$F(\varphi)$</td><td>Non-minimal coupling</td><td><strong>Derived</strong></td><td>$F_0 e^{\beta\varphi}$ (P2)</td></tr>
+                        <tr><td>$m_2, \lambda_4, \lambda_6$</td><td>Potential parameters</td><td><strong>Derived</strong></td><td>$\lambda_4^2 = 8 m_2 \lambda_6$ (P2)</td></tr>
+                        <tr><td>$K_4 < 0$ sign</td><td>Quartic sign</td><td><strong>Derived</strong></td><td>Derrick (P1)</td></tr>
+                        <tr><td>$\varphi_b, \varphi_v$</td><td>Critical points</td><td><strong>Derived</strong></td><td>From $V_6'(\varphi) = 0$</td></tr>
+                        <tr><td>$\delta$</td><td>Silver ratio</td><td><strong>Derived</strong></td><td>$\varphi_v/\varphi_b = 1+\sqrt{2}$</td></tr>
+                        <tr><td>$\kappa$</td><td>Gradient stiffness</td><td>Normalised to 1</td><td>Convention</td></tr>
+                        <tr><td>$\varepsilon(\varphi)$</td><td>Dielectric function</td><td><strong>Constrained</strong></td><td>$\varepsilon(0) = \varepsilon(\varphi_v) = 1$ (P8)</td></tr>
+                        <tr><td>$m_\mu/m_e$</td><td>Muon ratio</td><td><strong>Predicted</strong> (1.2%)</td><td>Q-ball (P4)</td></tr>
+                        <tr><td>$m_\tau/m_\mu$</td><td>Tau ratio</td><td><strong>Predicted</strong> (0.4%)</td><td>Q-ball (P4)</td></tr>
+                        <tr><td>$m_W, m_Z, m_H$</td><td>Boson masses</td><td><strong>Predicted</strong> ($&lt;$0.2%)</td><td>Q-ball (P4)</td></tr>
+                        <tr><td>$\sin^2\theta_W$</td><td>Weinberg angle</td><td><strong>Predicted</strong> (0.4%)</td><td>Q-ball (P4)</td></tr>
+                        <tr><td>$f_\pi$</td><td>Pion decay constant</td><td><strong>Derived</strong> (0.03%)</td><td>$f_\pi^2 = \delta$ (P8)</td></tr>
+                        <tr><td>$Z_{\text{lep}}$</td><td>Lepton coupling</td><td><strong>Derived</strong> ($= 1$)</td><td>$V''(0)$ (P8)</td></tr>
+                        <tr><td>$Z_{\text{down}}$</td><td>Down-quark coupling</td><td><strong>Derived</strong> ($= 2$)</td><td>$\lambda_4/(2\lambda_6)$ (P8)</td></tr>
+                        <tr><td>$Z_{\text{boson}}$</td><td>Boson coupling</td><td>Conjectured ($= 9/5$)</td><td>SO(3) mode counting (P8)</td></tr>
+                        <tr><td>$\Delta m^2_{32}/\Delta m^2_{21}$</td><td>Neutrino hierarchy</td><td><strong>Predicted</strong> (1.2%)</td><td>$\delta^4 - 1$ (P8)</td></tr>
+                        <tr><td>$m_{\nu_2}, m_{\nu_3}$</td><td>Neutrino masses</td><td><strong>Derived</strong> ($\sim$6%)</td><td>1-loop + $\delta(\delta+2)$ (P8)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                Everything below the line is derived or constrained by the theory.
+            </p>
+        </section>
+
+        <!-- Lorentz invariance -->
+        <section class="section">
+            <h2>8. Emergent Lorentz invariance and $E = mc^2$ <span class="paper-tag">P9</span></h2>
+            <p>
+                Lorentz invariance in MFT is not imposed. It is derived from the contraction
+                dynamics of the elastic medium in <strong>five steps</strong>. There is no
+                fundamental spacetime metric in the theory — the Minkowski structure emerges
+                only when localised contraction patterns (solitons) are set in motion.
+            </p>
+
+            <h3>Step 1: Quadratic action and dispersion relation</h3>
+            <p>
+                Around a rest soliton $\varphi_0(r)$ in a screened background, expand the MFT
+                action to quadratic order in perturbations $\delta\varphi$:
+            </p>
+            <div class="equation-display">
+                $$S^{(2)} = \int d^3x\, d\tau \left[
+                    \tfrac{1}{2}\kappa_\varphi(\partial_\tau \delta\varphi)^2
+                    - \tfrac{1}{2}\eta_\varphi(\nabla \delta\varphi)^2
+                    - \tfrac{1}{2}m_\varphi^2 (\delta\varphi)^2
+                \right]$$
+            </div>
+            <p>
+                where $\kappa_\varphi$ and $\eta_\varphi$ are effective coefficients from the
+                background. The dispersion relation:
+            </p>
+            <div class="equation-display">
+                $$\omega^2 = c_{\text{eff}}^2\, k^2 + m_\varphi^2, \qquad c_{\text{eff}}^2 = \frac{\eta_\varphi}{\kappa_\varphi}$$
+            </div>
+
+            <h3>Step 2: Common lightcone across all sectors</h3>
+            <p>
+                Electromagnetic waves (directional contraction modes) propagate with
+                effective speed $v_\gamma = \sqrt{\eta_{\text{EM}}/\kappa_{\text{EM}}}$. By
+                construction of the MFT action:
+            </p>
+            <div class="equation-display">
+                $$c_{\text{eff}} = v_\gamma \equiv c$$
+            </div>
+            <p>
+                All low-energy excitations — scalar contraction, electromagnetic, and soliton
+                modes — share the same lightcone. <strong>The universality of $c$ is a derived
+                property of the medium, not an independent postulate.</strong>
+            </p>
+
+            <h3>Step 3: Moving soliton and the relativistic Lagrangian</h3>
+            <p>
+                A localised soliton profile $\varphi_0(\mathbf{r})$ determines two
+                independent energy-like quantities. The first is the
+                <strong>Noether rest energy</strong> $E_0 = \omega^2 Q$, where
+                $Q = \int u^2\, dr$ is the conserved charge of the soliton's internal
+                $U(1)$-like phase symmetry $\Phi \mapsto e^{i\alpha}\Phi$; $E_0$ is the
+                energy of the static configuration. The second is the
+                <strong>inertial mass</strong>:
+            </p>
+            <div class="equation-display">
+                $$M = \frac{\kappa_\varphi}{3} \cdot 4\pi \int_0^\infty (d\varphi_0/dr)^2\, r^2\, dr$$
+            </div>
+            <p>
+                which is the coefficient of $\tfrac{1}{2}\dot{\mathbf{X}}^2$ in the
+                low-velocity expansion of the effective point-particle Lagrangian below.
+                These two quantities are physically distinct, and in general $E_0 \ne Mc^2$:
+                their ratio depends on the potential structure and the Coulomb binding. The
+                quantity that plays the role of "mass" in the relativistic kinematics — the
+                $m$ appearing in $E = mc^2$ and $E^2 = p^2c^2 + m^2c^4$ — is $M$, not $E_0$.
+            </p>
+            <p>
+                Promote the soliton's centre of mass to a collective coordinate:
+            </p>
+            <div class="equation-display">
+                $$\varphi(\mathbf{r}, \tau) = \varphi_0(\mathbf{r} - \mathbf{X}(\tau))$$
+            </div>
+            <p>
+                Substituting into the action and expanding to all orders in $\dot{\mathbf{X}}/c$
+                yields an effective point-particle Lagrangian that is Lorentz-covariant by
+                construction — it is what the Lorentz-invariant MFT action reduces to under
+                rigid translation of a localised profile:
+            </p>
+            <div class="equation-display">
+                $$\boxed{L_{\text{eff}} = -Mc^2 \sqrt{1 - \frac{\dot{\mathbf{X}}^2}{c^2}}}$$
+            </div>
+            <p>
+                This is the standard relativistic Lagrangian for a massive particle. It
+                emerges from the contraction dynamics of the medium, not from a postulate
+                about spacetime geometry. The corresponding energy and momentum:
+            </p>
+            <div class="equation-display">
+                $$E(v) = \gamma(v)\, Mc^2, \qquad P(v) = \gamma(v)\, Mv, \qquad \gamma(v) = \frac{1}{\sqrt{1 - v^2/c^2}}$$
+            </div>
+            <p>giving the relativistic energy–momentum relation:</p>
+            <div class="equation-display">
+                $$\boxed{E^2 = p^2 c^2 + m^2 c^4}$$
+            </div>
+
+            <h3>Step 4: Mass–energy equivalence</h3>
+            <p>
+                The collective-coordinate Lagrangian is invariant under translations of the
+                evolution parameter $\tau$. Noether's theorem applied to this $\tau$-translation
+                symmetry gives the conserved energy:
+            </p>
+            <div class="equation-display">
+                $$E(v) = \dot{\mathbf{X}} \cdot \frac{\partial L_{\text{eff}}}{\partial \dot{\mathbf{X}}} - L_{\text{eff}} = \gamma(v)\, Mc^2$$
+            </div>
+            <p>
+                Evaluating at $\mathbf{X} = \mathbf{0}, \dot{\mathbf{X}} = \mathbf{0}$ gives
+                the rest-frame value:
+            </p>
+            <div class="equation-display">
+                $$\boxed{E(v=0) = Mc^2 \qquad \text{(``$E = mc^2$'')}}$$
+            </div>
+            <p>
+                This is the mass–energy equivalence relation. <strong>It is not postulated;
+                it is the rest-frame limit of the Noether energy of the Lorentz-covariant
+                effective Lagrangian</strong>, which was itself derived by substituting a
+                translating soliton ansatz into the MFT action. The "$m$" in $E = mc^2$ is
+                the inertial mass $M$ — the coefficient of $\tfrac{1}{2}\dot{\mathbf{X}}^2$
+                in the non-relativistic expansion of $L_{\text{eff}}$ — and not the Noether
+                energy $E_0 = \omega^2 Q$ of the <em>internal</em> $U(1)$ phase of the static
+                soliton, which is a separate conserved quantity.
+            </p>
+            <p>
+                The structure of the derivation rests on three ingredients:
+            </p>
+            <ol class="forced-moves">
+                <li>The contraction-field dynamics of the elastic medium.</li>
+                <li>The universal speed $c$ that defines the lightcone (Step 2).</li>
+                <li>Noether's theorem applied to $\tau$-translation invariance of the
+                    effective Lagrangian that emerges once the soliton is set in motion.</li>
+            </ol>
+            <p>
+                Rest mass in MFT is thus the coefficient that appears when a localised
+                contraction pattern is set into slow, rigid translation — a kinematic
+                property of the pattern's extended structure. Radiation is the same elastic
+                medium carrying energy at speed $c$ without a localised contraction core.
+            </p>
+
+            <figure class="paper-figure">
+                <img src="../figures/mft_lorentz_invariance.png" alt="Four-panel figure verifying the five steps of emergent Lorentz invariance.">
+                <figcaption>
+                    Emergent Lorentz invariance — derived, not postulated.
+                    <strong>Top left (Steps 1–2):</strong> Dispersion relations for scalar contraction modes at both
+                    vacua and the massless photon. All modes share the same asymptotic slope $c = \sqrt{\eta/\kappa}$,
+                    defining a universal lightcone.
+                    <strong>Top right (Step 3):</strong> The electron soliton profile $\varphi_0(r)$ (blue) and its
+                    gradient energy density $(d\varphi_0/dr)^2 r^2$ (red). The inset distinguishes the two
+                    energy-like quantities computed from the same profile: the Noether charge $E_0 = \omega^2 Q$ of
+                    the internal $U(1)$ phase, and the inertial mass coefficient $Mc^2$ that enters $L_{\text{eff}}$.
+                    These are distinct physical quantities; the "$m$" in $E = mc^2$ is $M$.
+                    <strong>Bottom left (Step 4):</strong> The relativistic energy $E(v)/(Mc^2) = \gamma(v)$ emerging
+                    from the collective-coordinate Lagrangian (blue) compared to the Newtonian approximation
+                    $1 + \tfrac{1}{2}v^2/c^2$ (red dashed).
+                    <strong>Bottom right:</strong> The energy–momentum relation $E^2 = p^2 c^2 + m^2 c^4$ (blue),
+                    with massless ($E = pc$, green dashed) and non-relativistic ($E \approx mc^2 + p^2/2m$,
+                    red dotted) limits.
+                </figcaption>
+            </figure>
+
+            <h3>Step 5: Where deviations appear</h3>
+            <p>
+                Corrections to Lorentz invariance arise from higher-order operators and
+                strong $\nabla\varphi$. In screened regimes (labs, Solar System), these are
+                exponentially suppressed. In strong-gradient regions (black-hole horizons,
+                early universe), deviations of $\mathcal{O}(10^{-5})$ may appear — a window
+                for observational tests.
+            </p>
+
+            <div class="callout callout-info">
+                <p><strong>Logical status of the derivation.</strong> Steps 1–4 derive the
+                full structure of special relativity — universal lightcone, $E = mc^2$, and
+                the relativistic energy–momentum relation — from the MFT action. The
+                derivation assumes equal temporal and spatial kinetic coefficients for the
+                contraction field ($\kappa_\varphi = \eta_\varphi$). This is a structural
+                property of the isotropic elastic medium: the ordering parameter $\tau$ and
+                the spatial coordinates $x^i$ enter the elastic energy through the same
+                response coefficient because they both describe deformations of one
+                substance. It is not an independent postulate of Lorentz invariance — the
+                medium does not "know" about special relativity — but neither is it derived
+                from a deeper principle within MFT. The question "why does the medium have
+                isotropic kinetic structure?" is analogous to "why does spacetime have
+                Lorentz signature $(-,+,+,+)$?" in General Relativity. Both theories take the
+                kinetic structure as given and derive everything else from it.</p>
+            </div>
+
+            <p class="paper-link">
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P9: Monistic Field Theory — Flagship (Zenodo) →</a>
+                ·
+                <a href="../scripts/mft_lorentz_invariance.py">mft_lorentz_invariance.py</a>
+                ·
+                <a href="../scripts/mft_flagship.py">mft_flagship.py</a>
+            </p>
+        </section>
+
+        <!-- Effective 4D spacetime -->
+        <section class="section">
+            <h2>9. The effective 4D spacetime description <span class="paper-tag">P9</span></h2>
+            <p>
+                The fundamental variables are $(h_{ij}, \varphi)$ on the spatial slice
+                $\Sigma$. Experimental tests are phrased in 4D language. Given MFT data along
+                a foliation by $\tau$, the effective 4D metric in ADM form is:
+            </p>
+            <div class="equation-display">
+                $$ds_{\text{eff}}^2 = -N^2(\varphi)\, c^2\, dt^2 + h_{ij}(dx^i + N^i\, dt)(dx^j + N^j\, dt)$$
+            </div>
+            <p>
+                where $N(\varphi) = e^{\psi(\varphi)}$ is determined by $\varphi$ and
+                normalised so that $\psi(\varphi_\infty) = 0$. Gravitational redshift:
+            </p>
+            <div class="equation-display">
+                $$\frac{\nu_2}{\nu_1} = \exp[\psi(\varphi(r_1)) - \psi(\varphi(r_2))]$$
+            </div>
+            <p>
+                The 4D covariant action obtained by dimensional reduction from $S$ matches
+                the standard scalar-tensor form, allowing comparison with Brans–Dicke and
+                related theories. This is what makes MFT testable in standard
+                experimental contexts: PPN parameters, Cassini bound, Solar-System tests, all
+                evaluated in the 4D effective description on the <a href="../gravity/">Gravity</a> page.
+            </p>
+        </section>
+
+        <!-- Field equations in regimes -->
+        <section class="section">
+            <h2>10. Field equations in physical regimes <span class="paper-tag">P9</span></h2>
+            <p>
+                The coupled field equations of §2 govern all gravitational phenomena.
+                Different physical regimes correspond to different limits.
+            </p>
+            <ul class="downstream-list">
+                <li><strong>Dense, weak-field (Solar System):</strong> $\varphi$ is screened
+                    and short-ranged. The modified Einstein equation reduces to GR with a
+                    Yukawa-suppressed scalar correction. The Brans–Dicke parameter
+                    $\omega_{\text{BD}} > 40{,}000$; PPN parameters match GR to
+                    $\lesssim 10^{-8}$ (P13).</li>
+                <li><strong>Low-density, galactic:</strong> $\varphi$ is unscreened across
+                    kiloparsec scales. The scalar equation becomes a nonlinear BVP producing
+                    flat rotation curves: $\Sigma\chi^2/\text{dof} = 1.17$ across six
+                    galaxies (P5).</li>
+                <li><strong>Black-hole limit:</strong> $\varphi$ saturates at $\varphi_v$
+                    (elastic ceiling). The interior is a finite-density, neutral phase with
+                    bounded curvature. No singularity (P13).</li>
+                <li><strong>Cosmological (voids):</strong> $\varphi$ relaxes toward the
+                    low-density minimum, driving an effective expansion rate
+                    $H_{\text{eff}}$. Acceleration emerges from the residual void vacuum
+                    energy $V(\varphi_{\text{void}})$ without $\Lambda$ (P12).</li>
+            </ul>
+            <p>
+                Detailed treatments of each regime are on the <a href="../gravity/">Gravity</a>
+                topic page.
+            </p>
+        </section>
+
+        <!-- Where to next -->
+        <section class="section">
+            <h2>Where to next</h2>
+            <p>
+                The foundations are now established: the action, the derived signs, the
+                silver-ratio condition, the benchmark Lagrangian, and the full derivation
+                of emergent Lorentz invariance. Everything else is downstream.
+            </p>
+            <div class="next-grid">
+                <a href="../particles/" class="next-card">
+                    <h3>Particles →</h3>
+                    <p>The Q-ball equation applied to the silver-ratio potential gives the family-of-three theorem, mass spectrum, spin-½, confinement, hadrons and neutrinos.</p>
+                    <p class="next-papers">P3 · P4 · P6 · P7 · P8</p>
+                </a>
+                <a href="../gravity/" class="next-card">
+                    <h3>Gravity →</h3>
+                    <p>The same potential mapped to galactic and cosmological scales: rotation curves, dark-matter-like halos, cosmological expansion, compact objects.</p>
+                    <p class="next-papers">P5 · P12 · P13</p>
+                </a>
+                <a href="../quantum/" class="next-card">
+                    <h3>Quantum →</h3>
+                    <p>Promotion to a quantum field theory: canonical quantisation, propagators, electromagnetic form factor matching QED to $10^{-45}$, 3D finiteness of the sextic potential.</p>
+                    <p class="next-papers">P10 · P11 · P14 · P15</p>
+                </a>
+                <a href="../synthesis/" class="next-card">
+                    <h3>Synthesis →</h3>
+                    <p>The flagship paper as a single synthesis page: principle, action, parameter ledger, all sectors at a glance, the derivation chain.</p>
+                    <p class="next-papers">P9</p>
+                </a>
+                <a href="../qball-solver/" class="next-card">
+                    <h3>Q-ball Solver →</h3>
+                    <p>Compute the discrete soliton spectrum for any sector in your browser. Reproduces lepton, quark, and boson masses from the action above.</p>
+                    <p class="next-papers">live</p>
+                </a>
+                <a href="../guide/" class="next-card">
+                    <h3>← Understanding Guide</h3>
+                    <p>Step back to the eight-section overview. Why each step is forced and where the common misreadings occur.</p>
+                    <p class="next-papers">summary</p>
+                </a>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+</body>
+</html>
