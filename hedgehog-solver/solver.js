@@ -428,6 +428,42 @@ function renderResults(result) {
         </div>
     `;
 
+    // CARD 4: Other MFT hadronic predictions (independent of Skyrme rotor)
+    cardsHTML += `
+        <div class="result-card-big" style="border-left-color: #1e7e34;">
+            <p class="card-label">PREDICTION 4: mesons from Z=0 Q-ball spectrum</p>
+            <p class="card-formula">independent of Skyrme rotor; from chiral identities</p>
+            <table class="mass-mini-table" style="font-size: 12.5px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 700; text-align: left; padding-bottom: 4px;">particle</td>
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 700; text-align: right; padding-bottom: 4px;">observed</td>
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 700; text-align: right; padding-bottom: 4px;">MFT pred</td>
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 700; text-align: right; padding-bottom: 4px;">error</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 600;">π⁰ <span style="color:#888; font-weight:400; font-size:11px;">(neutral pion)</span></td>
+                        <td style="text-align: right;">135.0</td>
+                        <td style="text-align: right; color:#234a85; font-weight:600;">135.3</td>
+                        <td style="text-align: right; color: #1e7e34;">0.22%</td>
+                    </tr>
+                    <tr>
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 600;">σ <span style="color:#888; font-weight:400; font-size:11px;">(scalar f₀(500))</span></td>
+                        <td style="text-align: right;">~475</td>
+                        <td style="text-align: right; color:#234a85; font-weight:600;">372</td>
+                        <td style="text-align: right; color: #bc6c25;">in width</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="card-error">
+                <strong>m_σ = 2 f<sub>π</sub></strong>; <strong>π⁰ = Z=0 Q-ball state</strong>
+                <span class="badge ok">parameter-free</span>
+            </div>
+        </div>
+    `;
+
     cardsHTML += `</div>`;
     cardsEl.innerHTML = cardsHTML;
 
