@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family-of-Three Visualizer — Monistic Field Theory</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/">Foundations</a>
+                <a href="../particles/">Particles</a>
+                <a href="../gravity/">Gravity</a>
+                <a href="../quantum/">Quantum</a>
+                <a href="../results/">Results</a>
+                <a href="../solvers/" class="active">Solvers</a>
+                <a href="../papers/">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Family-of-Three Visualizer</h1>
+        <p class="lede">
+            The Family-of-Three Stability Theorem (P3 of the corpus) proves that the
+            constrained Morse index of the Q-ball energy functional admits exactly three
+            physically admissible radial modes. This page visualises the canonical published
+            calculation: four soliton modes computed at full resolution (N = 3000, R<sub>max</sub> = 14),
+            their fluctuation eigenvalue spectra, and the constrained Morse indices
+            <code>(0, 0, 1, 2)</code> that make exactly three families admissible — and
+            no more.
+        </p>
+
+        <p id="loading-msg" style="text-align:center; color:#888; padding:40px;">
+            Loading published F3 dataset…
+        </p>
+
+        <section id="main-content" style="display: none;">
+
+            <!-- The theorem statement up top, framing everything -->
+            <div class="theorem-statement">
+                <h3>The Family-of-Three Stability Theorem</h3>
+                <p class="formula">
+                    m<sub>phys</sub>(u<sub>n</sub>) = max(0, n − 1)
+                </p>
+                <p>
+                    For the silver-ratio sextic potential, the constrained Morse index
+                    of the n-th radial soliton mode is exactly <code>max(0, n−1)</code>.
+                    This means: <code>u<sub>0</sub></code> is stable (electron),
+                    <code>u<sub>1</sub></code> is stable (muon), <code>u<sub>2</sub></code>
+                    is metastable with one decay direction (tau), and every higher mode
+                    has Morse index ≥ 2 (multiply unstable, no fourth lepton).
+                </p>
+                <p>
+                    Below: the four computed modes from the published canonical run.
+                    Click any mode to inspect its profile, fluctuation spectrum, and
+                    Morse-index data.
+                </p>
+            </div>
+
+            <div class="f3-grid">
+
+                <!-- Sidebar: mode selector -->
+                <aside class="controls">
+                    <h2>Soliton modes</h2>
+                    <p style="font-size: 12px; color: #888; margin: 0 0 8px;">
+                        Select a mode to view its profile and spectrum.
+                    </p>
+                    <div class="mode-selector" id="mode-selector"></div>
+
+                    <hr>
+
+                    <div class="silver-ratio-note">
+                        <p style="margin: 0; font-size: 12px;">
+                            <strong>Dataset:</strong> N = 3000 grid, R<sub>max</sub> = 14, Z = 1.1,
+                            <em>k</em><sub>2</sub> = 0.039, ℓ = 0.
+                            Published F3 paper parameters (P3, corpus).
+                            Computed offline; visualization is instant.
+                        </p>
+                    </div>
+                </aside>
+
+                <!-- Right pane: plots, verdict, eigenvalue spectrum, summary -->
+                <section class="results">
+
+                    <!-- Verdict block (per-mode) -->
+                    <div id="verdict-block" class="f3-verdict">
+                        <h3>Loading…</h3>
+                    </div>
+
+                    <!-- Profile plot -->
+                    <div class="plot-container">
+                        <h3>
+                            Soliton profile u<sub>n</sub>(r)
+                            <label style="float:right; font-size:12px; font-weight:400; color:#666;">
+                                <input type="checkbox" id="show-all-profiles" style="vertical-align:middle;">
+                                show all modes
+                            </label>
+                        </h3>
+                        <canvas id="profile-canvas" width="700" height="320"></canvas>
+                    </div>
+
+                    <!-- Eigenvalue spectrum -->
+                    <h3 style="margin-top: 28px;">Fluctuation eigenvalue spectrum</h3>
+                    <p style="margin: 6px 0 12px; color: #555; font-size: 13.5px;">
+                        Each row shows the lowest 8 eigenvalues of the fluctuation operator at
+                        that mode. <span style="color: #c0392b;">Red bars are negative</span>
+                        (unstable directions); <span style="color: #27ae60;">green bars are positive</span>
+                        (stable directions). The number of negative eigenvalues is the Morse index.
+                    </p>
+
+                    <div class="f3-toolbar">
+                        <button class="eig-toggle" data-view="raw">Raw eigenvalues</button>
+                        <button class="eig-toggle active" data-view="constrained">After dilation+charge constraint</button>
+                    </div>
+
+                    <div class="eig-grid" id="eig-grid"></div>
+
+                    <p style="margin: 12px 0; color: #555; font-size: 13px; line-height: 1.55;">
+                        The Q-ball variational problem fixes the Noether charge Q (one constraint)
+                        and the soliton size (one dilation direction). After projecting these out,
+                        the <em>physical</em> Morse index is the count of remaining negative
+                        eigenvalues: this is what determines the actual stability of the soliton.
+                    </p>
+
+                    <!-- Summary table -->
+                    <div id="summary-table-container" style="margin-top: 32px;"></div>
+
+                </section>
+            </div>
+
+        </section>
+
+        <section class="explanatory">
+            <h2>About this visualization</h2>
+
+            <h3>What's being shown</h3>
+            <p>
+                The dataset is a single run of <code>family_of_three_theorem.py</code>
+                at the canonical published parameters: N = 3000 radial grid points,
+                R<sub>max</sub> = 14, Coulomb coupling Z = 1.1, soft-core a = 1.145,
+                quadratic confinement <em>k</em><sub>2</sub> = 0.039, ℓ = 0. The original
+                run computes four radial modes <code>u<sub>0</sub>, u<sub>1</sub>,
+                u<sub>2</sub>, u<sub>3</sub></code>, and for each computes:
+            </p>
+            <ul style="color:#444;">
+                <li><strong>The profile u<sub>n</sub>(r)</strong> — radial shape with n nodes.</li>
+                <li><strong>The fluctuation operator's spectrum</strong> — the lowest several
+                    eigenvalues of the second variation of the energy at the mode. Negative
+                    eigenvalues mean unstable directions.</li>
+                <li><strong>Two Morse indices:</strong> the raw count of negative eigenvalues,
+                    and the constrained count after projecting out the dilation direction (the
+                    direction of soliton-size rescaling) and the Noether-charge constraint.</li>
+            </ul>
+
+            <h3>Why constrained Morse index, not raw</h3>
+            <p>
+                The Q-ball is a constrained extremum of the energy: not a minimum in the full
+                function space, but a minimum on the subspace of fixed Noether charge Q. The
+                Hessian on the full space has spurious negative directions — including the
+                dilation mode, which is always unstable for solitons in 3D (Derrick's theorem
+                in disguise). What matters physically is the Morse index <em>after</em> these
+                spurious directions are projected out.
+            </p>
+            <p>
+                After this projection, the constrained Morse indices are exactly
+                <code>(0, 0, 1, 2)</code> for <code>n = 0, 1, 2, 3</code>. This matches
+                <code>max(0, n−1)</code> — the F3 theorem prediction. <code>u<sub>0</sub></code>
+                and <code>u<sub>1</sub></code> are stable; <code>u<sub>2</sub></code> has one
+                decay direction (tau); <code>u<sub>3</sub></code> has two (excluded as a fourth lepton).
+            </p>
+
+            <h3>Why this isn't a live solver</h3>
+            <p>
+                Computing the F3 dataset at full resolution (N = 3000, four modes, full
+                Hessian eigendecomposition with constraint projection) takes minutes on a
+                workstation and tens of minutes in a browser via Pyodide. The result is also
+                a one-shot proof: at the canonical silver-ratio parameters, the Morse-index
+                pattern is <code>(0, 0, 1, 2)</code> — and that's the theorem. There's nothing
+                meaningful to vary that would change the qualitative answer.
+            </p>
+            <p>
+                So this page presents the published canonical result rather than recomputing it.
+                If you want to verify it yourself, run
+                <a href="../scripts/family_of_three_theorem.py"><code>family_of_three_theorem.py</code></a>
+                from the corpus locally — the JSON output you'd produce is exactly what's
+                visualised here.
+            </p>
+
+            <h3>Source</h3>
+            <p>
+                The F3 theorem and its numerical verification are P3 of the corpus
+                (<em>Family-of-Three Stability in MFT</em>). The stability theorem with full
+                proof, the constraint-projection construction, and the canonical numerical
+                dataset are all in
+                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P3 on Zenodo</a>.
+                See <a href="../particles/">Particles §2</a> for the F3 theorem in the
+                broader MFT context.
+            </p>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+
+    <script src="solver.js"></script>
+</body>
+</html>
