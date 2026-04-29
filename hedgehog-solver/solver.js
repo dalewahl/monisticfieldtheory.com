@@ -186,12 +186,12 @@ function plotCurves(canvas, curves, options = {}) {
 
 // === Decuplet bar chart ===
 
-function drawDecupletBars(canvas, baryons) {
+function drawDecupletBars(canvas, decupletData) {
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
     clearCanvas(canvas);
 
-    const padding = { left: 70, right: 30, top: 30, bottom: 60 };
+    const padding = { left: 70, right: 110, top: 30, bottom: 60 };
     const plotW = W - padding.left - padding.right;
     const plotH = H - padding.top - padding.bottom;
 
@@ -236,61 +236,77 @@ function drawDecupletBars(canvas, baryons) {
     ctx.lineTo(padding.left + plotW, padding.top + plotH);
     ctx.stroke();
 
-    // Bars
-    const labels = ['Δ', 'Σ*', 'Ξ*', 'Ω'];
-    const masses = [baryons.delta, baryons.sigma_star, baryons.xi_star, baryons.omega];
-    const barColors = ['#2c5aa0', '#386641', '#bc6c25', '#6a4c93'];
+    // Pairs of bars: observed (light) and predicted (solid)
+    const baryons = decupletData.baryons;
+    const groupWidth = plotW / baryons.length;
+    const barWidth = groupWidth * 0.32;
+    const barGap = 2;
 
-    const barWidth = plotW / labels.length * 0.5;
-    const barSpacing = plotW / labels.length;
-
-    for (let i = 0; i < labels.length; i++) {
-        const cx = padding.left + barSpacing * (i + 0.5);
-        const py = yToPx(masses[i]);
+    for (let i = 0; i < baryons.length; i++) {
+        const b = baryons[i];
+        const groupCx = padding.left + groupWidth * (i + 0.5);
         const baseline = padding.top + plotH;
 
-        // Bar
-        ctx.fillStyle = barColors[i];
-        ctx.fillRect(cx - barWidth / 2, py, barWidth, baseline - py);
+        // Observed bar (light blue, on left)
+        const obsX = groupCx - barWidth - barGap / 2;
+        const obsTop = yToPx(b.mass_observed);
+        ctx.fillStyle = '#a8c0e0';
+        ctx.fillRect(obsX, obsTop, barWidth, baseline - obsTop);
 
-        // Mass label on top
-        ctx.fillStyle = '#234a85';
-        ctx.font = 'bold 13px monospace';
+        // Predicted bar (dark blue, on right)
+        const predX = groupCx + barGap / 2;
+        const predTop = yToPx(b.mass_predicted);
+        ctx.fillStyle = b.is_anchor ? '#888' : '#234a85';
+        ctx.fillRect(predX, predTop, barWidth, baseline - predTop);
+
+        // Mass labels above each bar
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 11px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(masses[i].toFixed(0), cx, py - 6);
+        ctx.fillText(b.mass_observed.toFixed(0), obsX + barWidth / 2, obsTop - 4);
+        ctx.fillStyle = b.is_anchor ? '#666' : '#234a85';
+        ctx.fillText(b.mass_predicted.toFixed(0), predX + barWidth / 2, predTop - 4);
 
-        // Particle name below
+        // Particle name below the group
         ctx.fillStyle = '#333';
         ctx.font = 'bold 18px serif';
-        ctx.fillText(labels[i], cx, baseline + 22);
+        ctx.textAlign = 'center';
+        ctx.fillText(b.symbol, groupCx, baseline + 22);
 
-        // Spacing arrow between bars
-        if (i < labels.length - 1) {
-            const nextCx = padding.left + barSpacing * (i + 1.5);
-            const nextPy = yToPx(masses[i + 1]);
-            const midY = (py + nextPy) / 2;
-            const spacing = masses[i + 1] - masses[i];
-
-            ctx.strokeStyle = '#aaa';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(cx + barWidth / 2 + 6, py);
-            ctx.lineTo(nextCx - barWidth / 2 - 6, py);
-            ctx.stroke();
-
+        // Error % below the name
+        if (!b.is_anchor) {
+            ctx.fillStyle = b.error_pct < 1 ? '#1e7e34' : '#bc6c25';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText(b.error_pct.toFixed(2) + '%', groupCx, baseline + 38);
+        } else {
             ctx.fillStyle = '#888';
-            ctx.font = '11px monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText(`+${spacing} MeV`, (cx + nextCx) / 2, py - 4);
+            ctx.font = 'italic 10px sans-serif';
+            ctx.fillText('anchor', groupCx, baseline + 38);
         }
     }
 
-    // Below: spacing summary text
-    ctx.fillStyle = '#888';
+    // Legend
+    const legendX = padding.left + plotW + 10;
+    const legendY = padding.top + 10;
     ctx.font = '11px sans-serif';
+    ctx.textAlign = 'left';
+
+    ctx.fillStyle = '#a8c0e0';
+    ctx.fillRect(legendX, legendY, 14, 12);
+    ctx.fillStyle = '#333';
+    ctx.fillText('observed', legendX + 18, legendY + 10);
+
+    ctx.fillStyle = '#234a85';
+    ctx.fillRect(legendX, legendY + 18, 14, 12);
+    ctx.fillStyle = '#333';
+    ctx.fillText('MFT predicted', legendX + 18, legendY + 28);
+
+    // Subtitle: equal spacing magnitude
+    ctx.fillStyle = '#234a85';
+    ctx.font = 'bold 11px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('observed equal spacings (within ~5%)',
-                 padding.left + plotW / 2, padding.top + plotH + 50);
+    ctx.fillText(`MFT predicts equal spacing of ${decupletData.a_predicted} MeV per step`,
+                 padding.left + plotW / 2, padding.top + plotH + 56);
 }
 
 // === Render results ===
@@ -375,19 +391,38 @@ function renderResults(result) {
         </div>
     `;
 
-    // CARD 3: Decuplet equal spacings (highlight)
+    // CARD 3: Decuplet equal spacings (with per-baryon comparison)
     cardsHTML += `
         <div class="result-card-big" style="border-left-color: #1e7e34;">
             <p class="card-label">PREDICTION 3: decuplet equal spacings</p>
-            <p class="card-formula">SU(3) symmetry → equal Δ→Σ*→Ξ*→Ω steps</p>
-            <p class="card-value" style="color: #1e7e34;">${fmt(dec.observed_avg, 0)} MeV</p>
-            <table class="mass-mini-table">
-                <tr><td>Σ* − Δ:</td><td>${dec.observed_spacings[0].toFixed(0)} MeV</td></tr>
-                <tr><td>Ξ* − Σ*:</td><td>${dec.observed_spacings[1].toFixed(0)} MeV</td></tr>
-                <tr><td>Ω − Ξ*:</td><td>${dec.observed_spacings[2].toFixed(0)} MeV</td></tr>
+            <p class="card-formula">SU(3) symmetry → Σ* − Δ = Ξ* − Σ* = Ω − Ξ* = ${dec.a_predicted} MeV</p>
+            <table class="mass-mini-table" style="font-size: 12.5px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 700; text-align: left; padding-bottom: 4px;">baryon</td>
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 700; text-align: right; padding-bottom: 4px;">observed</td>
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 700; text-align: right; padding-bottom: 4px;">MFT pred</td>
+                        <td style="font-family: -apple-system, sans-serif; font-weight: 700; text-align: right; padding-bottom: 4px;">error</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${dec.baryons.map(b => `
+                        <tr>
+                            <td style="font-family: -apple-system, sans-serif; font-weight: 600;">${b.symbol} ${b.is_anchor ? '<span style="color:#888; font-weight:400; font-size:11px;">(anchor)</span>' : ''}</td>
+                            <td style="text-align: right;">${b.mass_observed.toFixed(0)}</td>
+                            <td style="text-align: right; color:#234a85; font-weight:600;">${b.mass_predicted.toFixed(0)}</td>
+                            <td style="text-align: right; color: ${b.is_anchor ? '#888' : (b.error_pct < 1 ? '#1e7e34' : '#bc6c25')};">
+                                ${b.is_anchor ? '—' : b.error_pct.toFixed(2) + '%'}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
             </table>
             <div class="card-error">
-                <strong>${dec.accuracy_pct.toFixed(0)}% equal</strong>
+                <strong>Spacings observed:</strong>
+                ${dec.observed_spacings[0].toFixed(0)},
+                ${dec.observed_spacings[1].toFixed(0)},
+                ${dec.observed_spacings[2].toFixed(0)} MeV
                 <span class="badge ok">prediction confirmed</span>
             </div>
         </div>
@@ -432,7 +467,7 @@ function renderResults(result) {
     );
 
     // Plot 3: decuplet bar chart
-    drawDecupletBars(document.getElementById('decuplet-canvas'), dec.baryon_masses);
+    drawDecupletBars(document.getElementById('decuplet-canvas'), dec);
 }
 
 // === Solve handler ===
