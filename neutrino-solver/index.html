@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neutrino Hierarchy Solver — Monistic Field Theory</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/">Foundations</a>
+                <a href="../particles/">Particles</a>
+                <a href="../gravity/">Gravity</a>
+                <a href="../quantum/">Quantum</a>
+                <a href="../results/">Results</a>
+                <a href="../solvers/" class="active">Solvers</a>
+                <a href="../papers/">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Neutrino Hierarchy Solver</h1>
+        <p class="lede">
+            From the MFT sextic potential parameters and the gravitational coupling β,
+            compute the neutrino mass-hierarchy ratio Δm²₃₂/Δm²₂₁ and the absolute neutrino
+            masses m_ν₁, m_ν₂, m_ν₃ in eV. The hierarchy ratio comes from the V² splitting
+            mechanism applied to the three critical points of the potential. The absolute
+            masses come from a one-loop gravitational self-energy with universal screening.
+            <strong>When the silver-ratio condition λ₄² = 8 m² λ₆ is satisfied, the
+            hierarchy ratio locks at δ⁴ - 1 = 16 + 12√2 ≈ 32.97</strong> — matching the
+            observed PDG value of 32.58 to 1.2%.
+        </p>
+
+        <section class="status" id="status">
+            <p id="status-text">Loading Pyodide and Python solver…</p>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </section>
+
+        <section class="solver-grid" id="solver-ui" style="display: none;">
+            <aside class="controls">
+                <h2>Potential parameters</h2>
+
+                <div class="presets">
+                    <p class="preset-label">Silver-ratio regimes:</p>
+                    <div class="preset-buttons">
+                        <button class="preset" data-preset="silver_ratio_canonical">Canonical (silver)</button>
+                        <button class="preset" data-preset="silver_ratio_off_5pct">Off by 5%</button>
+                        <button class="preset" data-preset="silver_ratio_off_10pct">Off by 10%</button>
+                        <button class="preset" data-preset="no_barrier">No barrier</button>
+                    </div>
+                    <p class="preset-description" id="preset-description">
+                        The canonical MFT silver-ratio condition: λ₄² = 8 m² λ₆ exactly.
+                        All thirteen silver-ratio manifestations active. Hierarchy ratio
+                        locked at δ⁴ - 1 = 32.97, matching observed 32.58 to 1.2%.
+                    </p>
+                </div>
+
+                <hr>
+
+                <div class="control">
+                    <label for="m2">m² <span class="hint-inline">(quadratic mass term)</span></label>
+                    <input type="number" id="m2" value="1.0" step="0.1">
+                </div>
+
+                <div class="control">
+                    <label for="lam4">λ₄ <span class="hint-inline">(quartic coupling)</span></label>
+                    <input type="number" id="lam4" value="2.0" step="0.05">
+                </div>
+
+                <div class="control">
+                    <label for="lam6">λ₆ <span class="hint-inline">(sextic coupling)</span></label>
+                    <input type="number" id="lam6" value="0.5" step="0.05">
+                </div>
+
+                <div class="control">
+                    <label for="beta">β <span class="hint-inline">(gravitational coupling)</span></label>
+                    <input type="number" id="beta" value="1.016e-4" step="1e-5">
+                </div>
+
+                <button id="solve-btn" class="solve-button">Compute</button>
+                <p class="solve-time-note">Closed-form algebra; takes &lt;1 second.</p>
+
+                <div class="silver-ratio-note">
+                    <p><strong>Silver-ratio condition:</strong> λ₄² = 8 m² λ₆ — equivalently
+                    ρ = λ₄²/(m² λ₆) = 8. Forced by the Symmetric Back-Reaction Theorem (P2).
+                    When satisfied, the field-space ratio φ_v/φ_b = δ = 1+√2, and the
+                    hierarchy ratio locks at δ⁴ - 1.</p>
+                </div>
+            </aside>
+
+            <section class="results">
+                <h2>Hierarchy &amp; absolute masses</h2>
+
+                <div id="results-summary" class="results-summary">
+                    <p class="placeholder">Loading default values…</p>
+                </div>
+
+                <div id="cards-container"></div>
+
+                <div class="plots">
+                    <div class="plot-container">
+                        <h3>Sextic potential V(φ) with three critical points</h3>
+                        <canvas id="potential-canvas" width="600" height="320"></canvas>
+                    </div>
+                    <div class="plot-container">
+                        <h3>Sensitivity: hierarchy ratio vs ρ = λ₄²/(m²λ₆)</h3>
+                        <canvas id="sensitivity-canvas" width="600" height="320"></canvas>
+                    </div>
+                </div>
+
+                <div id="details-table-container"></div>
+            </section>
+        </section>
+
+        <section class="explanatory">
+            <h2>About this calculation</h2>
+
+            <h3>The hierarchy ratio (closed-form)</h3>
+            <p>
+                The MFT sextic potential V(φ) = m²φ²/2 - λ₄φ⁴/4 + λ₆φ⁶/6 has three critical
+                points: φ = 0 (linear vacuum), φ_b (barrier), φ_v (nonlinear vacuum). The
+                Family-of-Three Theorem (P3) associates one neutrino with each.
+            </p>
+            <p>
+                The mass-squared splitting at each critical point is proportional to V²(φ_i)
+                — the square of the potential energy — arising from second-order gravitational
+                back-reaction through the F(φ)R coupling. The hierarchy ratio is therefore:
+            </p>
+            <p style="font-family: 'SF Mono', Monaco, Consolas, monospace; padding-left: 24px; color: #234a85;">
+                Δm²₃₂ / Δm²₂₁ = [V²(φ_v) - V²(φ_b)] / [V²(φ_b) - V²(0)]
+            </p>
+            <p>
+                When the silver-ratio condition λ₄² = 8 m² λ₆ is satisfied, the potential
+                values at the critical points are exactly:
+            </p>
+            <p style="font-family: 'SF Mono', Monaco, Consolas, monospace; padding-left: 24px; color: #234a85;">
+                V(0) = 0,&nbsp;&nbsp;V(φ_b) = 1/(3δ),&nbsp;&nbsp;V(φ_v) = -δ/3
+            </p>
+            <p>
+                Substituting and simplifying gives:
+            </p>
+            <p style="font-family: 'SF Mono', Monaco, Consolas, monospace; padding-left: 24px; color: #234a85;">
+                Δm²₃₂ / Δm²₂₁ = δ⁴ - 1 = (1+√2)⁴ - 1 = 16 + 12√2 ≈ 32.97
+            </p>
+            <p>
+                This is parameter-free. <strong>It depends only on the silver ratio δ = 1+√2,
+                which is itself the unique fixed point of the gravitational back-reaction
+                map.</strong> Compare to the observed PDG value 32.58 ± 0.3 — agreement at 1.2%.
+            </p>
+
+            <h3>The absolute masses (one-loop)</h3>
+            <p>
+                The absolute neutrino masses follow from the one-loop gravitational
+                self-energy in the Einstein frame, with the conformal mass correction
+                δm²(φ_i) = 6 β² V(φ_i) and a universal screening mass M²_s = V''(φ_v) + V''(0)
+                (the same for all three neutrinos because each propagates through the same
+                bulk medium).
+            </p>
+            <p>
+                The 3D one-loop integral I = ∫ d³k/(2π)³ × 1/(k² + M²)³ = 1/(32π M³). Combining:
+            </p>
+            <p style="font-family: 'SF Mono', Monaco, Consolas, monospace; padding-left: 24px; color: #234a85;">
+                m_νᵢ = 3 β² |V(φᵢ)| × √I × (m_e/E_e)
+            </p>
+            <p>
+                At silver-ratio condition with β = 1.016 × 10⁻⁴: m_ν₂ ≈ 8.7 meV, m_ν₃ ≈ 50.4 meV.
+                Compare these with the PDG bounds (Σm_ν &lt; 120 meV) and the observed
+                splittings Δm²₂₁ ≈ 7.53 × 10⁻⁵ eV², Δm²₃₂ ≈ 2.453 × 10⁻³ eV².
+            </p>
+
+            <h3>Why the silver-ratio condition is forced</h3>
+            <p>
+                The condition λ₄² = 8 m² λ₆ is not chosen — it is forced by the Symmetric
+                Back-Reaction Theorem (P2 in the corpus): self-consistency of the contraction
+                field's gravitational back-reaction at both vacua. This is the same condition
+                that produces the lepton mass hierarchy (P4), the pion decay constant
+                (f_π² = δ at 0.03%, P8), the spin-½ classification (14× ω² gap, P6), and
+                eleven other measurable consequences.
+            </p>
+            <p>
+                <strong>The silver ratio is the deepest structural commitment of MFT.</strong>
+                Watch the sensitivity plot above as you vary ρ: the hierarchy ratio varies
+                steeply near ρ = 8. A 10% deviation in λ₄² doubles the error against
+                observed Δm²₃₂/Δm²₂₁ from 1.2% to ~64%. This is what makes the prediction
+                falsifiable: a precision improvement in the observed ratio could either
+                lock down the silver-ratio condition further or rule it out.
+            </p>
+
+            <h3>Source</h3>
+            <p>
+                The closed-form derivation is from <a href="../scripts/mft_neutrino_hierarchy.py">mft_neutrino_hierarchy.py</a>;
+                the absolute-mass calculation is from <a href="../scripts/mft_neutrino_masses.py">mft_neutrino_masses.py</a>.
+                Both are part of <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P8 of the corpus</a>.
+                See <a href="../particles/">Particles §6b</a> for the full derivation in context.
+            </p>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+
+    <script src="solver.js"></script>
+</body>
+</html>

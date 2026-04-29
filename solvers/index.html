@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Solvers — Monistic Field Theory</title>
+    <meta name="description" content="Interactive browser-based solvers for MFT predictions: Q-ball mass spectrum, neutrino hierarchy, and more.">
+    <link rel="stylesheet" href="../style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'none'
+            },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="../" class="site-title">Monistic Field Theory</a>
+            <nav class="site-nav">
+                <a href="../">Home</a>
+                <a href="../guide/">Guide</a>
+                <a href="../synthesis/">Synthesis</a>
+                <a href="../foundations/">Foundations</a>
+                <a href="../particles/">Particles</a>
+                <a href="../gravity/">Gravity</a>
+                <a href="../quantum/">Quantum</a>
+                <a href="../results/">Results</a>
+                <a href="./" class="active">Solvers</a>
+                <a href="../papers/">Papers</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container guide-page">
+
+        <section class="hero">
+            <h1>Interactive Solvers</h1>
+            <p class="hero-tagline">
+                Browser-based solvers for MFT predictions. Each solver runs entirely in your
+                browser via Pyodide — no backend, no data transmitted. Compute the predictions
+                interactively at any choice of potential parameters.
+            </p>
+        </section>
+
+        <section class="section">
+            <h2>Available solvers</h2>
+
+            <div class="next-grid">
+
+                <a href="../qball-solver/" class="next-card">
+                    <h3>Q-ball Mass Spectrum →</h3>
+                    <p>
+                        Compute the discrete soliton spectrum of the generalised
+                        $\ell$-dependent Q-ball equation at any sector coupling $Z$.
+                        Reproduces lepton, quark, and gauge boson masses — and the Weinberg
+                        angle — from one calibration per sector. Solves by shooting at 40
+                        $\omega^2$ values; takes ~20–30 seconds.
+                    </p>
+                    <p class="next-papers">P4 · live</p>
+                </a>
+
+                <a href="../neutrino-solver/" class="next-card">
+                    <h3>Neutrino Hierarchy →</h3>
+                    <p>
+                        Compute the hierarchy ratio $\Delta m^2_{32}/\Delta m^2_{21}$ and
+                        absolute neutrino masses from the MFT sextic potential and
+                        gravitational coupling $\beta$. Watch the silver-ratio condition
+                        $\lambda_4^2 = 8 m^2 \lambda_6$ lock the hierarchy at $\delta^4 - 1$.
+                        Closed-form algebra; takes &lt;1 second.
+                    </p>
+                    <p class="next-papers">P8 · live</p>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Planned solvers</h2>
+            <p>
+                Additional solvers are planned to cover other parts of the MFT corpus.
+                These will follow the same browser-based architecture; each will be added
+                as it is built and tested.
+            </p>
+
+            <div class="next-grid">
+
+                <div class="next-card" style="opacity: 0.7; cursor: default;">
+                    <h3>Family-of-Three Visualizer</h3>
+                    <p>
+                        Visualise the constrained Morse-index spectrum across parameter regimes.
+                        Show how the (0, 0, 1, 2+, ...) admissibility pattern is preserved
+                        when the silver-ratio condition holds and breaks when it doesn't.
+                    </p>
+                    <p class="next-papers">P3 · planned</p>
+                </div>
+
+                <div class="next-card" style="opacity: 0.7; cursor: default;">
+                    <h3>Galactic Rotation Curves</h3>
+                    <p>
+                        Solve the nonlinear contraction-field BVP for any galaxy with given
+                        baryon model. Output: predicted rotation curve, $\chi^2$, residuals,
+                        halo profile.
+                    </p>
+                    <p class="next-papers">P5 · planned</p>
+                </div>
+
+                <div class="next-card" style="opacity: 0.7; cursor: default;">
+                    <h3>Energy Landscape</h3>
+                    <p>
+                        Interactive visualisation of the sextic potential $V_6(\varphi)$ as a
+                        function of $\rho = \lambda_4^2/(m^2\lambda_6)$. Watch the double-well
+                        topology emerge at $\rho = 8$ and break elsewhere.
+                    </p>
+                    <p class="next-papers">P1 · P2 · planned</p>
+                </div>
+
+                <div class="next-card" style="opacity: 0.7; cursor: default;">
+                    <h3>Hedgehog / Skyrmion BVP</h3>
+                    <p>
+                        Solve the $B = 1$ hedgehog soliton equation for any choice of $f_\pi$
+                        and $e$. Verify $f_\pi^2 = \delta$ and the decuplet spacings.
+                    </p>
+                    <p class="next-papers">P8 · planned</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>About the architecture</h2>
+            <p>
+                All solvers run client-side via Pyodide — a Python runtime compiled to
+                WebAssembly. Each loads NumPy and SciPy in the browser (about 15 MB,
+                cached after first visit). After the initial load, every computation
+                happens locally; no data is transmitted to any server.
+            </p>
+            <p>
+                Each solver is a standalone page with its own physics module
+                (<code>solver.py</code>), event handler (<code>solver.js</code>), and
+                styling (<code>style.css</code>). The Q-ball solver served as the template;
+                all subsequent solvers replace the physics layer while keeping the
+                Pyodide loading and plotting infrastructure.
+            </p>
+            <p>
+                The full source for each solver is on
+                <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">GitHub</a>.
+                If you want to verify a result, run the underlying script locally — every
+                solver here is browser-adapted from a script in the
+                <a href="../papers/">corpus</a>.
+            </p>
+        </section>
+
+        <section class="section">
+            <h2>Where to next</h2>
+            <div class="next-grid">
+                <a href="../results/" class="next-card">
+                    <h3>← Results dashboard</h3>
+                    <p>20-card overview of all MFT predictions plus 10 falsifiability criteria.</p>
+                    <p class="next-papers">all sectors</p>
+                </a>
+                <a href="../particles/" class="next-card">
+                    <h3>Particles →</h3>
+                    <p>The full derivations behind the Q-ball and neutrino solvers — F3 theorem, mass spectrum, neutrino hierarchy.</p>
+                    <p class="next-papers">P3 · P4 · P6 · P7 · P8</p>
+                </a>
+                <a href="../foundations/" class="next-card">
+                    <h3>Foundations →</h3>
+                    <p>The action and the silver-ratio condition that the solvers all use as input.</p>
+                    <p class="next-papers">P0 · P1 · P2 · P9</p>
+                </a>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>
+                Source: <a href="https://github.com/dalewahl/monisticfieldtheory.com" target="_blank">github.com/dalewahl/monisticfieldtheory.com</a>
+                · Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>
+            </p>
+        </footer>
+    </main>
+</body>
+</html>
