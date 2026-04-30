@@ -384,31 +384,141 @@ function renderResults(result) {
         }
     );
 
-    // Residual bars (Δv/σ)
-    let residualHTML = '';
-    const maxAbsRes = Math.max(...res.delta_v_over_sigma.map(Math.abs), 2.0);
-    for (let i = 0; i < res.r.length; i++) {
-        const dvs = res.delta_v_over_sigma[i];
-        const heightPct = Math.min(50, (Math.abs(dvs) / maxAbsRes) * 50);
-        const cls = dvs >= 0 ? 'positive' : 'negative';
-        residualHTML += `
-            <div class="residual-bar ${cls}" title="R=${res.r[i]} kpc: ${dvs.toFixed(2)}σ">
-                <div class="bar-fill" style="height: ${heightPct}%"></div>
-                <div class="bar-label">${res.r[i]}</div>
-            </div>
-        `;
-    }
-    residualBars.innerHTML = `
+    // Residual bars (Δv/σ) — proper canvas chart with centerline and ±1σ/±2σ bands
+    drawResidualChart(residualBars, res);
+}
+
+function drawResidualChart(container, res) {
+    // Clear container and inject canvas + heading
+    container.innerHTML = `
         <h3 style="margin: 14px 0 6px; font-size: 14px; color: #234a85;">Residuals (Δv / σ)</h3>
-        <p style="font-size: 12px; color: #888; margin: 0 0 4px;">
-            R [kpc] →
-        </p>
-        <div class="residuals-bar-container">${residualHTML}</div>
-        <p style="font-size: 12px; color: #888; margin: 28px 0 0;">
+        <canvas id="residual-canvas" width="600" height="220" style="width: 100%; max-width: 600px; display: block;"></canvas>
+        <p style="font-size: 12px; color: #888; margin: 6px 0 0;">
             Bars above the centerline: MFT overpredicts. Below: underpredicts.
-            Within ±1σ band: well-fit.
+            <span style="color: #1e7e34; font-weight: 500;">Green</span>: |Δv/σ| &lt; 1 (within 1σ).
+            <span style="color: #d97706; font-weight: 500;">Orange</span>: 1–2σ.
+            <span style="color: #c0392b; font-weight: 500;">Red</span>: &gt; 2σ.
         </p>
     `;
+
+    const canvas = document.getElementById('residual-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const padding = { left: 50, right: 18, top: 14, bottom: 36 };
+    const plotW = W - padding.left - padding.right;
+    const plotH = H - padding.top - padding.bottom;
+
+    clearCanvas(canvas);
+
+    // y-axis range: symmetric around 0, with at least ±2.5 to always show both sigma bands
+    const maxAbs = Math.max(2.5, ...res.delta_v_over_sigma.map(v => Math.abs(v)));
+    const ymax = Math.ceil(maxAbs * 2) / 2;  // round up to nearest 0.5
+    const ymin = -ymax;
+    const yToPx = y => padding.top + plotH - ((y - ymin) / (ymax - ymin)) * plotH;
+
+    // Background
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(padding.left, padding.top, plotW, plotH);
+
+    // Sigma bands (±1σ shaded green, ±2σ shaded orange)
+    // 1σ band first (drawn underneath)
+    const y1Top = yToPx(1);
+    const y1Bot = yToPx(-1);
+    ctx.fillStyle = 'rgba(39, 174, 96, 0.10)';
+    ctx.fillRect(padding.left, y1Top, plotW, y1Bot - y1Top);
+
+    // Horizontal grid lines and labels
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 0.5;
+    ctx.fillStyle = '#666';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    const yTicks = [];
+    for (let v = -Math.floor(ymax); v <= Math.floor(ymax); v++) {
+        yTicks.push(v);
+    }
+    for (const v of yTicks) {
+        const py = yToPx(v);
+        ctx.strokeStyle = (v === 0) ? '#444' : '#e0e0e0';
+        ctx.lineWidth = (v === 0) ? 1.0 : 0.5;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, py);
+        ctx.lineTo(padding.left + plotW, py);
+        ctx.stroke();
+        ctx.fillStyle = '#666';
+        ctx.fillText(v.toString(), padding.left - 6, py + 4);
+    }
+
+    // ±1σ and ±2σ markers (dashed)
+    for (const sig of [-2, -1, 1, 2]) {
+        if (Math.abs(sig) > ymax) continue;
+        const py = yToPx(sig);
+        ctx.strokeStyle = (Math.abs(sig) === 1) ? 'rgba(39, 174, 96, 0.6)' : 'rgba(217, 119, 6, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(padding.left, py);
+        ctx.lineTo(padding.left + plotW, py);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+
+    // y-axis label
+    ctx.save();
+    ctx.translate(14, padding.top + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#444';
+    ctx.font = '11.5px sans-serif';
+    ctx.fillText('Δv / σ', 0, 0);
+    ctx.restore();
+
+    // Bars
+    const n = res.r.length;
+    const slotWidth = plotW / n;
+    const barWidth = Math.min(slotWidth * 0.65, 36);
+    const y0 = yToPx(0);
+
+    for (let i = 0; i < n; i++) {
+        const cx = padding.left + slotWidth * (i + 0.5);
+        const dvs = res.delta_v_over_sigma[i];
+        const py = yToPx(dvs);
+
+        // Color by sigma band
+        const absDvs = Math.abs(dvs);
+        let fillColor;
+        if (absDvs < 1) fillColor = 'rgba(39, 174, 96, 0.78)';     // green
+        else if (absDvs < 2) fillColor = 'rgba(217, 119, 6, 0.80)'; // orange
+        else fillColor = 'rgba(192, 57, 43, 0.82)';                  // red
+
+        ctx.fillStyle = fillColor;
+        const top = Math.min(py, y0);
+        const height = Math.abs(py - y0);
+        ctx.fillRect(cx - barWidth / 2, top, barWidth, height);
+
+        // Outline
+        ctx.strokeStyle = fillColor.replace('0.78', '1.0').replace('0.80', '1.0').replace('0.82', '1.0');
+        ctx.lineWidth = 1;
+        ctx.strokeRect(cx - barWidth / 2, top, barWidth, height);
+
+        // Value label above/below the bar
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 10.5px monospace';
+        ctx.textAlign = 'center';
+        const valY = dvs >= 0 ? py - 4 : py + 13;
+        ctx.fillText(dvs.toFixed(2), cx, valY);
+
+        // r [kpc] label below the centerline
+        ctx.fillStyle = '#666';
+        ctx.font = '10.5px monospace';
+        ctx.fillText(res.r[i].toString(), cx, padding.top + plotH + 14);
+    }
+
+    // x-axis label
+    ctx.fillStyle = '#444';
+    ctx.font = '11.5px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('R [kpc]', padding.left + plotW / 2, H - 4);
 }
 
 // === Solve handler ===
