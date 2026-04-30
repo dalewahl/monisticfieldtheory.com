@@ -391,9 +391,13 @@
                 So this page presents the published canonical result rather than recomputing
                 it. To verify it yourself, run
                 <a href="../scripts/family_of_three_theorem.py"><code>family_of_three_theorem.py</code></a>
-                from the corpus locally — the JSON output you'd produce is exactly what's
-                visualised here.
+                from the corpus locally — the JSON output it produces is exactly what's
+                visualised here. The canonical command is:
             </p>
+<pre style="background:#f6f8fa; border:1px solid #e1e4e8; border-radius:6px; padding:12px 14px; font-size:12.5px; line-height:1.55; color:#24292e; overflow-x:auto; margin:8px 0 14px;">python family_of_three_theorem.py --Rmax 14.0 \
+  --N 3000 --Z 1.1 --a 1.1451604 --k2 0.039 --k4 2e-06 \
+  --k6 2e-07 --solve_up_to_n 3 --fluct_spectrum \
+  --report --outfile_json theorem_results.json</pre>
 
             <h3 style="margin-top: 18px;">Sources</h3>
             <p>
@@ -401,16 +405,28 @@
                 and three corpus papers:
             </p>
             <ul style="color:#444; font-size: 13px;">
-                <li><a href="../scripts/family_of_three_theorem.py"><code>family_of_three_theorem.py</code></a>
+                <li>
+                    <a href="../scripts/family_of_three_theorem.py"><code>family_of_three_theorem.py</code></a>
                     — the canonical position-space solver. Computes the four soliton modes,
                     the unconstrained spectrum, and the constrained Morse indices. The JSON
-                    output is exactly what this page visualises.</li>
-                <li><a href="../scripts/mft_family_of_three_theorem_presentation.py"><code>mft_family_of_three_theorem_presentation.py</code></a>
+                    output is exactly what this page visualises.
+<pre style="background:#f6f8fa; border:1px solid #e1e4e8; border-radius:6px; padding:10px 12px; font-size:12px; line-height:1.55; color:#24292e; overflow-x:auto; margin:6px 0 0;">python family_of_three_theorem.py --Rmax 14.0 \
+  --N 3000 --Z 1.1 --a 1.1451604 --k2 0.039 --k4 2e-06 \
+  --k6 2e-07 --solve_up_to_n 3 --fluct_spectrum \
+  --report --outfile_json theorem_results.json</pre>
+                </li>
+                <li style="margin-top: 12px;">
+                    <a href="../scripts/mft_family_of_three_theorem_presentation.py"><code>mft_family_of_three_theorem_presentation.py</code></a>
                     — the full publication-ready run, including all 14 stress tests and the
-                    extension to n = 5.</li>
-                <li><a href="../scripts/figures_family_of_three.py"><code>figures_family_of_three.py</code></a>
+                    extension to n = 5.
+<pre style="background:#f6f8fa; border:1px solid #e1e4e8; border-radius:6px; padding:10px 12px; font-size:12px; line-height:1.55; color:#24292e; overflow-x:auto; margin:6px 0 0;">python mft_family_of_three_theorem_presentation.py --Rmax 14.0 \
+  --N 3000 --Z 1.1 --a 1.1451604 --k2 0.039 --k4 2e-06 \
+  --k6 2e-07 --solve_up_to_n 3 --fluct_spectrum \
+  --report --outfile_json theorem_results.json</pre>
+                </li>
+                <li style="margin-top: 12px;"><a href="../scripts/figures_family_of_three.py"><code>figures_family_of_three.py</code></a>
                     — figure generation for the published P3 paper.</li>
-                <li><a href="../scripts/mft_energy_landscape.py"><code>mft_energy_landscape.py</code></a>
+                <li style="margin-top: 8px;"><a href="../scripts/mft_energy_landscape.py"><code>mft_energy_landscape.py</code></a>
                     — the independent verification via the Q-ball energy landscape (shown in
                     the green panel above): E(φ<sub>core</sub>; Q = Q<sub>0</sub>) has
                     exactly three critical points.</li>
