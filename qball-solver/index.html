@@ -149,53 +149,156 @@
 
         <section class="explanatory">
             <h2>About this calculation</h2>
+
             <p>
-                The generalised ℓ-dependent Q-ball equation,
-                u″ = [m₂ − ω² − λ₄(u/r)² + λ₆(u/r)⁴ − Z/√(r²+a²) + ℓ(ℓ+1)/r²] · u,
-                admits a discrete spectrum of soliton solutions for any given potential.
-                Each solution is characterised by its node count, angular momentum ℓ,
-                central amplitude φ_core, internal frequency ω², and energy E = ω²·Q
-                (where Q = ∫u² dr is the Noether charge). ℓ = 0 produces scalar solitons
-                (leptons, quarks, Higgs); ℓ = 1 produces vector solitons (W, Z, photon).
+                In the Standard Model, fermion masses come from <em>Yukawa couplings</em>: each
+                charged lepton, each quark, gets its own free coupling constant fitted to
+                observation. That's roughly 13 independent fitted parameters across the lepton
+                and quark sectors, plus three more for the gauge bosons.
             </p>
             <p>
-                <strong>ω² is not a free parameter</strong> — it is an eigenvalue of the
-                equation, fixed by the requirement that u(r) → 0 as r → ∞ for each
-                discrete solution. The solver scans ω² ∈ [0.05, 0.99] and finds the
-                soliton solutions automatically.
+                MFT replaces all of those with one universal shape-fixing condition on the
+                contraction-field potential — λ₄² = 8 m₂ λ₆ (the silver-ratio condition,
+                derived in P2 of the corpus from a back-reaction theorem) — plus a single
+                Coulomb coupling Z per sector. Three of the four Z values come from the
+                medium's structure (derived); one is conjectured. The discrete soliton
+                spectrum of the resulting equation reproduces every charged-particle mass
+                ratio across the Standard Model, with one anchor mass per sector setting the
+                overall energy scale.
             </p>
+
+            <h3 style="margin-top: 18px;">The four sectors</h3>
             <p>
-                The Standard Model particle families are identified with specific entries
-                in this spectrum, by sector:
+                Each Standard Model fermion or boson family is identified with a specific
+                soliton in the spectrum, distinguished only by its Coulomb coupling Z and its
+                angular momentum ℓ:
             </p>
             <ul style="color:#444;">
-                <li><strong>Charged leptons</strong> (Z=1, ℓ=0): the (e, μ, τ) triple. Z=1 is
-                derived from the potential curvature m² = V″(0) = 1.</li>
-                <li><strong>Up-type quarks</strong> (Z=1, ℓ=0): the (u, c, t) triple. Same Z
-                as leptons; same field-space regimes.</li>
-                <li><strong>Down-type quarks</strong> (Z=2, ℓ=0): the (d, s, b) triple. Z=2 is
-                derived as λ₄/(2λ₆), the Vieta average of the potential's critical-point field
-                values.</li>
-                <li><strong>Gauge bosons</strong> (Z=9/5, ℓ=1 for W,Z; ℓ=0 for Higgs): the
-                (W, Z, H) triple. Z=9/5 is conjectured from SO(3) mode counting. The Weinberg
-                angle emerges as sin²θ_W = 1 − (E_W/E_Z)².</li>
-                <li><strong>Photon</strong>: ℓ=1, Z=0 — masslessness derived from the Q-ball
-                equation (no Coulomb well → no bound state).</li>
+                <li><strong>Charged leptons</strong> (e, μ, τ) —
+                    <span class="badge ok" style="margin: 0 4px;">derived</span>
+                    Z = m² = V″(0) = <strong>1</strong>, ℓ = 0.
+                    The Coulomb coupling equals the curvature of the potential at the linear
+                    vacuum.</li>
+                <li><strong>Up-type quarks</strong> (u, c, t) —
+                    <span class="badge ok" style="margin: 0 4px;">derived</span>
+                    Z = <strong>1</strong>, ℓ = 0. Same coupling as leptons; same field-space
+                    regimes. The (u, c, t) and (e, μ, τ) families occupy identical positions
+                    in the potential.</li>
+                <li><strong>Down-type quarks</strong> (d, s, b) —
+                    <span class="badge ok" style="margin: 0 4px;">derived</span>
+                    Z = λ₄/(2λ₆) = <strong>2</strong>, ℓ = 0. The Vieta average of the two
+                    nontrivial critical-point field values.</li>
+                <li><strong>Gauge bosons</strong> (W, Z, H) —
+                    <span class="badge warn" style="margin: 0 4px;">conjectured</span>
+                    Z = 9/5 = <strong>1.8</strong>, ℓ = 1 for vectors (W, Z), ℓ = 0 for the
+                    Higgs. The 9/5 is conjectured from SO(3) mode counting and verified
+                    numerically at 0.07 % on m_Z/m_W. The Weinberg angle emerges as
+                    sin²θ_W = 1 − (E_W/E_Z)².</li>
+                <li><strong>Photon</strong> (γ) —
+                    <span class="badge ok" style="margin: 0 4px;">theorem</span>
+                    Z = 0, ℓ = 1. At Z = 0 the Q-ball equation reduces to the hydrogen
+                    Schrödinger equation, which has no bound state; therefore E → 0 exactly.
+                    The photon's masslessness is a derived consequence of the equation, not
+                    an input.</li>
+            </ul>
+
+            <h3 style="margin-top: 18px;">Why three families, not four or two</h3>
+            <p>
+                The Family-of-Three Stability Theorem (P3 of the corpus) gives a structural
+                answer. The constrained energy functional E(φ_core) at fixed Noether charge
+                has exactly three critical points: the linear vacuum minimum, a barrier
+                maximum, and the nonlinear vacuum minimum. These correspond to three
+                Morse-stability classes:
+            </p>
+            <ul style="color:#444;">
+                <li><strong>n = 0 mode (stable)</strong> — the lightest particle in each
+                    sector (electron, up, down, W).</li>
+                <li><strong>n = 1 mode (also stable)</strong> — the second-generation
+                    particle (muon, charm, strange, Z).</li>
+                <li><strong>n = 2 mode (metastable)</strong> — the third-generation particle
+                    (tau, top, bottom, Higgs). Decays before the medium can fully reorganise.</li>
             </ul>
             <p>
-                The Family-of-Three Stability Theorem (P3 of the corpus) shows that the
-                three-family structure is a structural consequence of constrained Morse-index
-                analysis: only the n=0 and n=1 modes are stable, n=2 is metastable, and
-                n≥3 modes are multiply unstable.
+                Higher-n modes are multiply unstable and don't survive as physical particles.
+                A fourth charged lepton would require a second barrier in the potential —
+                ruled out experimentally by LEP bounds (M₄ &gt; 100 GeV would need a barrier
+                height of &gt;833 MFT units, far above the observed potential structure).
             </p>
+
+            <h3 style="margin-top: 18px;">The lepton sector tells a particularly clean story</h3>
             <p>
-                <strong>Free parameter count.</strong> The MFT framework operates with two
-                ingredients per sector: the universal potential ratio λ₄/λ₆ = 4 (derived from
-                the Symmetric Back-Reaction Theorem), and the Coulomb coupling Z (derived
-                per sector except Z_boson which is conjectured). One overall energy scale
-                per sector is set by anchoring to one observed mass (m_e for leptons, m_t for
-                up-quarks, m_b for down-quarks, m_W for bosons). All other masses in each
-                sector — plus the Weinberg angle — emerge from the Q-ball equation.
+                Within each sector, the three families occupy three distinct regimes of the
+                potential. For charged leptons (most clearly):
+            </p>
+            <ul style="color:#444;">
+                <li><strong>Electron</strong> — sits at φ_core ≈ 0.02, deep in the linear
+                    vacuum. The dominant physics is the Coulomb well; the nonlinear λ₄, λ₆
+                    terms are negligible.</li>
+                <li><strong>Muon</strong> — sits at φ_core ≈ 0.71, about 93 % of the way to
+                    the barrier at φ_b = 0.7654. Still in the linear regime, but the
+                    nonlinear terms start to matter.</li>
+                <li><strong>Tau</strong> — sits at φ_core ≈ 1.93, past the barrier in the
+                    nonlinear vacuum (φ_v = 1.85). The local contraction field has crossed
+                    the barrier, and the soliton is sextic-stabilised.</li>
+            </ul>
+            <p>
+                This is why the tau is rare: forming one requires the local field to cross
+                the barrier, which costs energy comparable to twice the tau mass. The pair-
+                and single-production thresholds shown above (0.4 % errors) follow directly
+                from the barrier-crossing geometry — they're not independent fits.
+            </p>
+
+            <h3 style="margin-top: 18px;">Free parameter count vs. the Standard Model</h3>
+            <p>
+                Spelling it out, end-to-end:
+            </p>
+            <ul style="color:#444;">
+                <li><strong>Standard Model:</strong> 9 charged fermion masses (3 leptons +
+                    6 quarks) require 9 independent Yukawa couplings, all fitted. Plus the
+                    three gauge boson masses (three more parameters: g, g′, v).</li>
+                <li><strong>MFT:</strong> One shape condition (λ₄² = 8 m₂ λ₆, derived in P2),
+                    fixing the ratio λ₄/λ₆ = 4. One Z value per sector (three derived from
+                    the medium's structure, one conjectured). One anchor mass per sector for
+                    the overall energy scale.</li>
+            </ul>
+            <p>
+                That's it. Every other charged-particle mass — and the Weinberg angle, and
+                the photon's masslessness, and the equal decuplet baryon spacings on the
+                hadronic side — emerges from solving the same Q-ball equation in different
+                regimes.
+            </p>
+
+            <h3 style="margin-top: 18px;">Sources</h3>
+            <p>
+                The Q-ball spectrum sector is verified by six scripts in the corpus, plus the
+                full P4 paper:
+            </p>
+            <ul style="color:#444; font-size: 13px;">
+                <li><a href="../scripts/mft_qball_lepton_masses.py"><code>mft_qball_lepton_masses.py</code></a>
+                    — the canonical lepton solver. Reproduces (e, μ, τ) to within 1 % from one
+                    calibration (m_e). Includes the tau production threshold prediction.</li>
+                <li><a href="../scripts/mft_quark_sector.py"><code>mft_quark_sector.py</code></a>
+                    — up-type quark sector. Demonstrates that (u, c, t) occupy identical
+                    field-space regimes to (e, μ, τ) at the same Z = 1.</li>
+                <li><a href="../scripts/mft_vector_bosons.py"><code>mft_vector_bosons.py</code></a>
+                    — gauge boson sector with ℓ = 1 vectors. Predicts m_Z/m_W and m_H/m_W,
+                    derives the Weinberg angle and photon masslessness.</li>
+                <li><a href="../scripts/mft_cross_sector.py"><code>mft_cross_sector.py</code></a>
+                    — cross-sector universality test. Same potential, four sectors, three
+                    derived Z values plus one conjectured.</li>
+                <li><a href="../scripts/mft_uniqueness_test.py"><code>mft_uniqueness_test.py</code></a>
+                    — confirms each lepton soliton branch has exactly one energy minimum
+                    (each particle is unique on its branch, not cherry-picked from a menu).</li>
+                <li><a href="../scripts/mft_energy_landscape.py"><code>mft_energy_landscape.py</code></a>
+                    — the constrained energy landscape E(φ_core) at fixed Q. Verifies the
+                    three-critical-point structure underlying the Family-of-Three theorem.</li>
+            </ul>
+            <p>
+                Full physics is in <strong>P4 of the corpus</strong> (<em>Charged Lepton
+                Masses from a Single Q-Ball Equation</em>) and the cross-sector synthesis in
+                <strong>P8</strong> (<em>Microphysics from the Silver Ratio</em>).
+                Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>.
+                See <a href="../particles/">Particles</a> for the broader MFT context.
             </p>
         </section>
 
