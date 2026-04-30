@@ -57,6 +57,13 @@ function clearCanvas(canvas) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+// Render an integer as Unicode superscript characters: 5 → "⁵", -3 → "⁻³"
+function supDigit(n) {
+    const map = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+                  '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+    return String(n).split('').map(c => map[c] || c).join('');
+}
+
 function plotCurves(canvas, curves, options = {}) {
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
@@ -67,23 +74,32 @@ function plotCurves(canvas, curves, options = {}) {
     clearCanvas(canvas);
     if (curves.length === 0) return;
 
+    const ylog = !!options.ylog;
+    const minPositive = options.minPositive !== undefined ? options.minPositive : 1e-6;
+
+    // Transform a y value into the plot space (log if ylog, identity otherwise)
+    const yMap = ylog
+        ? (y => Math.log10(Math.max(Math.abs(y), minPositive)))
+        : (y => y);
+
     let xmin = Infinity, xmax = -Infinity, ymin = Infinity, ymax = -Infinity;
     for (const c of curves) {
         for (const x of c.xs) { if (x < xmin) xmin = x; if (x > xmax) xmax = x; }
         for (const y of c.ys) {
-            if (y < ymin) ymin = y;
-            if (y > ymax) ymax = y;
+            const yt = yMap(y);
+            if (yt < ymin) ymin = yt;
+            if (yt > ymax) ymax = yt;
         }
     }
     if (options.xmin !== undefined) xmin = options.xmin;
     if (options.xmax !== undefined) xmax = options.xmax;
-    if (options.ymin !== undefined) ymin = options.ymin;
-    if (options.ymax !== undefined) ymax = options.ymax;
+    if (options.ymin !== undefined) ymin = ylog ? Math.log10(options.ymin) : options.ymin;
+    if (options.ymax !== undefined) ymax = ylog ? Math.log10(options.ymax) : options.ymax;
     const yrange = ymax - ymin || 1;
     const xrange = xmax - xmin || 1;
 
     const xToPx = x => padding.left + ((x - xmin) / xrange) * plotW;
-    const yToPx = y => padding.top + plotH - ((y - ymin) / yrange) * plotH;
+    const yToPx = y => padding.top + plotH - ((yMap(y) - ymin) / yrange) * plotH;
 
     ctx.fillStyle = '#fafafa';
     ctx.fillRect(padding.left, padding.top, plotW, plotH);
@@ -91,14 +107,28 @@ function plotCurves(canvas, curves, options = {}) {
     // Subtle grid
     ctx.strokeStyle = '#e8e8e8';
     ctx.lineWidth = 0.5;
-    const ticks_y = 5;
-    for (let i = 0; i <= ticks_y; i++) {
-        const y = ymin + (ymax - ymin) * i / ticks_y;
-        const py = yToPx(y);
-        ctx.beginPath();
-        ctx.moveTo(padding.left, py);
-        ctx.lineTo(padding.left + plotW, py);
-        ctx.stroke();
+    if (ylog) {
+        // Log grid: integer powers of 10 within [ymin, ymax]
+        const minPow = Math.floor(ymin);
+        const maxPow = Math.ceil(ymax);
+        for (let p = minPow; p <= maxPow; p++) {
+            const py = padding.top + plotH - ((p - ymin) / yrange) * plotH;
+            if (py < padding.top || py > padding.top + plotH) continue;
+            ctx.beginPath();
+            ctx.moveTo(padding.left, py);
+            ctx.lineTo(padding.left + plotW, py);
+            ctx.stroke();
+        }
+    } else {
+        const ticks_y = 5;
+        for (let i = 0; i <= ticks_y; i++) {
+            const y = ymin + (ymax - ymin) * i / ticks_y;
+            const py = padding.top + plotH - ((y - ymin) / yrange) * plotH;
+            ctx.beginPath();
+            ctx.moveTo(padding.left, py);
+            ctx.lineTo(padding.left + plotW, py);
+            ctx.stroke();
+        }
     }
 
     // Axes
@@ -110,9 +140,9 @@ function plotCurves(canvas, curves, options = {}) {
     ctx.lineTo(padding.left + plotW, padding.top + plotH);
     ctx.stroke();
 
-    // Zero line
-    if (ymin < 0 && ymax > 0) {
-        const py = yToPx(0);
+    // Zero line (only on linear axes)
+    if (!ylog && ymin < 0 && ymax > 0) {
+        const py = padding.top + plotH - ((0 - ymin) / yrange) * plotH;
         ctx.strokeStyle = '#aaa';
         ctx.setLineDash([3, 3]);
         ctx.beginPath();
@@ -126,10 +156,21 @@ function plotCurves(canvas, curves, options = {}) {
     ctx.fillStyle = '#444';
     ctx.font = '11px sans-serif';
     ctx.textAlign = 'right';
-    [ymin, (ymin + ymax) / 2, ymax].forEach(y => {
-        const lbl = (Math.abs(y) > 1000 || Math.abs(y) < 0.01) ? y.toExponential(1) : y.toFixed(2);
-        ctx.fillText(lbl, padding.left - 5, yToPx(y) + 4);
-    });
+    if (ylog) {
+        const minPow = Math.floor(ymin);
+        const maxPow = Math.ceil(ymax);
+        for (let p = minPow; p <= maxPow; p++) {
+            const py = padding.top + plotH - ((p - ymin) / yrange) * plotH;
+            if (py < padding.top - 2 || py > padding.top + plotH + 2) continue;
+            const lbl = p === 0 ? '1' : `10${supDigit(p)}`;
+            ctx.fillText(lbl, padding.left - 5, py + 4);
+        }
+    } else {
+        [ymin, (ymin + ymax) / 2, ymax].forEach(y => {
+            const lbl = (Math.abs(y) > 1000 || Math.abs(y) < 0.01) ? y.toExponential(1) : y.toFixed(2);
+            ctx.fillText(lbl, padding.left - 5, padding.top + plotH - ((y - ymin) / yrange) * plotH + 4);
+        });
+    }
     ctx.textAlign = 'center';
     [xmin, (xmin + xmax) / 2, xmax].forEach(x => {
         ctx.fillText(x.toFixed(1), xToPx(x), padding.top + plotH + 14);
@@ -362,19 +403,27 @@ function renderResults(result) {
         }
     );
 
-    // Plot 2: Contraction field profile
-    const cfMax = Math.max(cf.delta_v_silver * 1.2, cf.max_delta * 1.05);
+    // Plot 2: Contraction field profile — plot |δ(r)| on log-y because the field
+    // amplitude spans many decades (max |δ| ~ 10⁴-10⁵, silver references at 10²-10³).
+    // The BVP returns δ < 0 (space contracts toward dense regions, like a Newtonian
+    // potential well), but the physical content is in the magnitude — see paper text:
+    // "the field enters the nonlinear vacuum |δ| > δ_b" (uses absolute value throughout).
+    const absDelta = cf.delta.map(v => Math.abs(v));
+    const maxAbs = Math.max(...absDelta);
+    const ratioToBarrier = maxAbs / cf.delta_b_silver;
+
     plotCurves(
         document.getElementById('contraction-canvas'),
         [
-            { xs: cf.r, ys: cf.delta, color: '#234a85', lineWidth: 2.2,
-              label: 'δ(r)' },
+            { xs: cf.r, ys: absDelta, color: '#234a85', lineWidth: 2.2,
+              label: '|δ(r)|' },
         ],
         {
             xlabel: 'R [kpc]',
-            ylabel: 'δ(r)',
-            ymin: 0,
-            ymax: cfMax,
+            ylabel: '|δ(r)| (log)',
+            ylog: true,
+            ymin: 1.0,
+            ymax: Math.max(1e5, maxAbs * 1.5),
             hlines: [
                 { y: cf.delta_b_silver, color: '#d4a017',
                   label: `silver barrier (${cf.delta_b_silver.toFixed(0)})` },
@@ -383,6 +432,25 @@ function renderResults(result) {
             ],
         }
     );
+
+    // Annotate the plot with max|δ|/δ_b — the paper's "Regime" diagnostic
+    const cfPlotContainer = document.getElementById('contraction-canvas').parentElement;
+    let cfNote = document.getElementById('contraction-annotation');
+    if (!cfNote) {
+        cfNote = document.createElement('p');
+        cfNote.id = 'contraction-annotation';
+        cfNote.style.cssText = 'font-size: 12px; color: #444; margin: 4px 0 0; line-height: 1.5;';
+        cfPlotContainer.appendChild(cfNote);
+    }
+    cfNote.innerHTML = `
+        <strong>max|δ| / δ<sub>barrier</sub> = ${ratioToBarrier.toFixed(1)}×</strong>
+        — the field is driven <strong>${ratioToBarrier > 1 ? 'past the barrier into the nonlinear vacuum' : 'toward but not past the barrier'}</strong>
+        in the dense galactic core. The silver-ratio double-well structure is
+        ${ratioToBarrier > 1 ? 'dynamically active' : 'partially probed'}.
+        The BVP returns δ &lt; 0 (space contracts toward dense regions, analogous
+        to the negative Newtonian potential of a gravitational well); the physical
+        content is in the magnitude, plotted here.
+    `;
 
     // Residual bars (Δv/σ) — proper canvas chart with centerline and ±1σ/±2σ bands
     drawResidualChart(residualBars, res);
