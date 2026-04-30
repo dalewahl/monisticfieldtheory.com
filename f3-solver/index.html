@@ -28,13 +28,17 @@
     <main class="container">
         <h1>Family-of-Three Visualizer</h1>
         <p class="lede">
-            The Family-of-Three Stability Theorem (P3 of the corpus) proves that the
-            constrained Morse index of the Q-ball energy functional admits exactly three
-            physically admissible radial modes. This page visualises the canonical published
-            calculation: four soliton modes computed at full resolution (N = 3000, R<sub>max</sub> = 14),
-            their fluctuation eigenvalue spectra, and the constrained Morse indices
-            <code>(0, 0, 1, 2)</code> that make exactly three families admissible — and
-            no more.
+            <strong>Why exactly three charged leptons?</strong> The Standard Model takes
+            this number as an empirical input. MFT <em>derives</em> it from a stability
+            theorem: the constrained Morse index of the Q-ball energy functional admits
+            exactly three physically admissible radial modes — the electron, muon, and tau.
+            No more, no less.
+        </p>
+        <p class="hint" style="margin-top: -8px;">
+            This page visualises the published numerical proof: four soliton modes computed at
+            full resolution (N = 3000, R<sub>max</sub> = 14), their fluctuation eigenvalue
+            spectra, and the constrained Morse indices that match the theorem's prediction
+            <code>m<sub>phys</sub>(u<sub>n</sub>) = max(0, n − 1)</code> exactly.
         </p>
 
         <p id="loading-msg" style="text-align:center; color:#888; padding:40px;">
@@ -137,71 +141,289 @@
 
         </section>
 
-        <section class="explanatory">
-            <h2>About this visualization</h2>
-
-            <h3>What's being shown</h3>
-            <p>
-                The dataset is a single run of <code>family_of_three_theorem.py</code>
-                at the canonical published parameters: N = 3000 radial grid points,
-                R<sub>max</sub> = 14, Coulomb coupling Z = 1.1, soft-core a = 1.145,
-                quadratic confinement <em>k</em><sub>2</sub> = 0.039, ℓ = 0. The original
-                run computes four radial modes <code>u<sub>0</sub>, u<sub>1</sub>,
-                u<sub>2</sub>, u<sub>3</sub></code>, and for each computes:
+        <!-- Stress-test robustness panel -->
+        <section id="stress-tests" style="margin-top: 32px; padding: 18px 20px; background: #f8f9fb; border: 1px solid #e0e4ea; border-radius: 6px;">
+            <h2 style="margin: 0 0 8px;">Stress test: 14 configurations, all preserve the index pattern</h2>
+            <p style="margin: 0 0 12px; color: #555; font-size: 14px;">
+                The theorem is <strong>topological</strong>: it should be robust to small
+                changes in the potential parameters. To verify the result isn't a fine-tuned
+                numerical artifact, the published P3 paper perturbs each of the 5 numerical
+                parameters by ±10 % (12 runs), extends to higher modes (n = 5), and switches
+                between two implementations of the dilation generator (analytical vs finite-difference).
+                <strong>All 14 configurations preserve the index pattern</strong>
+                <code>m<sub>phys</sub>(n) = max(0, n − 1)</code>.
             </p>
-            <ul style="color:#444;">
-                <li><strong>The profile u<sub>n</sub>(r)</strong> — radial shape with n nodes.</li>
-                <li><strong>The fluctuation operator's spectrum</strong> — the lowest several
-                    eigenvalues of the second variation of the energy at the mode. Negative
-                    eigenvalues mean unstable directions.</li>
-                <li><strong>Two Morse indices:</strong> the raw count of negative eigenvalues,
-                    and the constrained count after projecting out the dilation direction (the
-                    direction of soliton-size rescaling) and the Noether-charge constraint.</li>
+            <div style="overflow-x: auto;">
+                <table class="f3-summary-table" style="width: 100%; font-size: 13px;">
+                    <thead>
+                        <tr>
+                            <th>Test</th>
+                            <th>Modified</th>
+                            <th>Value</th>
+                            <th>E<sub>0</sub></th>
+                            <th>E<sub>1</sub></th>
+                            <th>E<sub>2</sub></th>
+                            <th>Index pattern</th>
+                            <th>Match</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Baseline</strong></td><td>—</td><td>canonical</td><td>+0.003</td><td>+0.667</td><td>+1.274</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>Z low</td><td>Z</td><td>0.80</td><td>+0.123</td><td>+0.753</td><td>+1.347</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>Z −10 %</td><td>Z</td><td>0.99</td><td>+0.048</td><td>+0.699</td><td>+1.301</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>Z +10 %</td><td>Z</td><td>1.21</td><td>−0.042</td><td>+0.635</td><td>+1.247</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>Z high</td><td>Z</td><td>1.50</td><td>−0.163</td><td>+0.551</td><td>+1.176</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>a −10 %</td><td>a</td><td>1.031</td><td>−0.011</td><td>+0.658</td><td>+1.267</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>a +10 %</td><td>a</td><td>1.260</td><td>+0.017</td><td>+0.675</td><td>+1.281</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>c<sub>2</sub> −10 %</td><td>c<sub>2</sub></td><td>0.0351</td><td>−0.012</td><td>+0.623</td><td>+1.201</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>c<sub>2</sub> +10 %</td><td>c<sub>2</sub></td><td>0.0429</td><td>+0.018</td><td>+0.709</td><td>+1.344</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>c<sub>4</sub> −10 %</td><td>c<sub>4</sub></td><td>1.8 × 10⁻⁶</td><td>+0.003</td><td>+0.667</td><td>+1.274</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>c<sub>4</sub> +10 %</td><td>c<sub>4</sub></td><td>2.2 × 10⁻⁶</td><td>+0.003</td><td>+0.667</td><td>+1.274</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>c<sub>6</sub> −10 %</td><td>c<sub>6</sub></td><td>1.8 × 10⁻⁷</td><td>+0.003</td><td>+0.667</td><td>+1.274</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>c<sub>6</sub> +10 %</td><td>c<sub>6</sub></td><td>2.2 × 10⁻⁷</td><td>+0.003</td><td>+0.667</td><td>+1.275</td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>Extended n = 5</td><td>—</td><td>canonical</td><td colspan="3" style="text-align:center; color:#888;"><em>m<sub>phys</sub>(4) = 3, m<sub>phys</sub>(5) = 4</em></td><td><code>max(0, n−1)</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                        <tr><td>Dilation gen.</td><td>g<sub>dil</sub></td><td>fd5 vs analytical</td><td colspan="3" style="text-align:center; color:#888;"><em>identical to machine precision</em></td><td><code>[0,0,1,2]</code></td><td><span style="color:#1e7e34;">✓</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin-top: 10px; font-size: 13px; color: #555;">
+                Note: at <em>Z = 1.5</em>, the ground-state energy <em>E<sub>0</sub></em>
+                shifts by 0.166 (more than its baseline value of 0.003), yet the three-family
+                structure is unchanged. This is the signature of a topological feature — not
+                a fine-tuned numerical coincidence.
+            </p>
+        </section>
+
+        <!-- Falsification callout -->
+        <section id="falsification" style="margin-top: 24px; padding: 18px 20px; background: #fff7e6; border: 1px solid #f0c987; border-radius: 6px;">
+            <h2 style="margin: 0 0 8px; color: #8a5a00;">Falsifiable prediction</h2>
+            <p style="margin: 0 0 8px; font-size: 14px;">
+                The theorem implies a sharp empirical claim:
+            </p>
+            <p style="margin: 0 0 10px; font-style: italic; color: #444; padding-left: 16px; border-left: 3px solid #f0c987;">
+                There is no long-lived fourth charged lepton.
+            </p>
+            <p style="margin: 0 0 8px; font-size: 13.5px;">
+                The n = 3 mode has constrained Morse index 2 — two independent unstable
+                directions — meaning a soliton in this configuration would decay simultaneously
+                along multiple channels, never surviving as an observable particle. The current
+                experimental bound from LEP is <strong>M<sub>4</sub> &gt; 100 GeV</strong> for any
+                fourth charged lepton, which is automatically consistent with the theorem.
+            </p>
+            <p style="margin: 0; font-size: 13.5px; color: #555;">
+                <strong>If a fourth long-lived charged lepton were discovered at any mass</strong>,
+                the F3 theorem's assumptions would require revision — most likely the contraction
+                charge constraint or the sextic potential structure. The result would not stand
+                as currently formulated.
+            </p>
+        </section>
+
+        <!-- Independent verification: energy landscape -->
+        <section id="independent-verification" style="margin-top: 24px; padding: 18px 20px; background: #f4f9f4; border: 1px solid #bee0c2; border-radius: 6px;">
+            <h2 style="margin: 0 0 8px; color: #1f5c2a;">Independent verification: the Q-ball energy landscape</h2>
+            <p style="margin: 0 0 10px; font-size: 14px;">
+                The Morse-index analysis above is one proof of the theorem. The corpus contains
+                a <strong>second, independent verification</strong> using the full Q-ball double-well
+                potential (with the silver-ratio condition λ<sub>4</sub>² = 8 m<sub>2</sub> λ<sub>6</sub>):
+            </p>
+            <p style="margin: 0 0 10px; font-size: 13.5px;">
+                The energy landscape <em>E</em>(φ<sub>core</sub>; Q = Q<sub>0</sub>) at fixed
+                contraction charge — a different formulation of the same problem — has
+                <strong>exactly three critical points</strong>:
+            </p>
+            <div style="overflow-x: auto;">
+                <table class="f3-summary-table" style="width: 100%; font-size: 13px; max-width: 720px;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>φ<sub>core</sub></th>
+                            <th>E/Q</th>
+                            <th>Type</th>
+                            <th>m<sub>phys</sub></th>
+                            <th>Identity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>0.833</td><td>0.883</td><td>Minimum</td><td>0</td><td>Muon (stable)</td></tr>
+                        <tr><td>2</td><td>1.708</td><td>1.083</td><td>Maximum</td><td>—</td><td>Barrier (saddle)</td></tr>
+                        <tr><td>3</td><td>1.999</td><td>0.776</td><td>Minimum</td><td>1</td><td>Tau (metastable)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin: 12px 0 0; font-size: 13.5px; color: #555;">
+                The electron (φ<sub>core</sub> ≈ 0.02) is the global minimum at very small
+                amplitude. The pattern m<sub>phys</sub> = {0, 0, 1} for the three leptons
+                matches the theorem exactly. Source: <code>mft_energy_landscape.py</code>.
+            </p>
+        </section>
+
+        <!-- Cross-link to Q-ball solver -->
+        <section id="qball-link" style="margin-top: 24px; padding: 14px 20px; background: #f0f4fa; border-left: 4px solid #2c5aa0; border-radius: 0 6px 6px 0;">
+            <p style="margin: 0; font-size: 14px;">
+                <strong>The F3 theorem says three modes are admissible.</strong> The
+                <a href="../qball-solver/" style="font-weight: 500;">Q-Ball Spectrum Solver</a>
+                shows <em>which</em> three modes the four Standard Model sectors actually fill —
+                charged leptons, up-type quarks, down-type quarks, and gauge bosons — using the
+                same potential at four different Coulomb couplings Z. The two pages are two
+                views of the same theorem.
+            </p>
+        </section>
+
+        <section class="explanatory">
+            <h2>About this calculation</h2>
+
+            <p>
+                The Standard Model contains exactly three charged leptons (e, μ, τ) with
+                identical gauge quantum numbers but widely separated masses. <em>Why three?</em>
+                In the SM, this number is implemented as an empirical input — encoded in the
+                fermion content but not derived from any structural principle. A large literature
+                tries to explain it using horizontal symmetries, textures, extra dimensions, or
+                compositeness, but in every approach the number "three" is imposed somewhere
+                in the construction.
+            </p>
+            <p>
+                MFT takes a different route. The Family-of-Three Stability Theorem (P3 of the
+                corpus) shows that for a broad class of nonlinear scalar field theories with
+                a confining sextic potential, <strong>at most three localised modes are
+                dynamically admissible</strong> when physically motivated constraints are
+                imposed. The number three is a <strong>topological consequence</strong> of
+                the variational structure, not a fitted parameter.
+            </p>
+
+            <h3 style="margin-top: 18px;">The theorem in one sentence</h3>
+            <p>
+                Under the assumptions <em>"sextic confining potential + fixed Noether charge
+                + dilation projected out"</em>:
+            </p>
+            <p style="font-family: 'SF Mono', Monaco, Consolas, monospace; padding-left: 24px; color: #234a85;">
+                m<sub>phys</sub>(u<sub>n</sub>) = max(0, n − 1)
+            </p>
+            <p>
+                The physical Morse index of the n-th radial mode is exactly <code>max(0, n−1)</code>.
+                This makes <strong>only three modes admissible as observable particles</strong>:
+            </p>
+            <ul style="color:#444; font-size: 13.5px;">
+                <li><strong>n = 0 (electron):</strong> stable. Index 0 — no decay channels.</li>
+                <li><strong>n = 1 (muon):</strong> also stable in the lepton sector. Index 0 —
+                    decays only via electroweak emission of a neutrino, not via the F3 instability.</li>
+                <li><strong>n = 2 (tau):</strong> metastable. Index 1 — exactly one decay direction.</li>
+                <li><strong>n ≥ 3:</strong> Index 2 or more. Multiply unstable, decays
+                    simultaneously along multiple channels, never observable as a long-lived particle.</li>
             </ul>
 
-            <h3>Why constrained Morse index, not raw</h3>
+            <h3 style="margin-top: 18px;">How the index reduction works</h3>
             <p>
-                The Q-ball is a constrained extremum of the energy: not a minimum in the full
-                function space, but a minimum on the subspace of fixed Noether charge Q. The
-                Hessian on the full space has spurious negative directions — including the
-                dilation mode, which is always unstable for solitons in 3D (Derrick's theorem
-                in disguise). What matters physically is the Morse index <em>after</em> these
-                spurious directions are projected out.
+                The unconstrained problem on full function space gives the simple result
+                m<sub>un</sub>(u<sub>n</sub>) = n (Sturm-Liouville oscillation theorem).
+                MFT then imposes two physical constraints that each remove negative directions:
             </p>
+            <ul style="color:#444; font-size: 13.5px;">
+                <li><strong>Fixed Noether charge Q = Q<sub>0</sub>.</strong> The total
+                    contraction of the elastic medium is conserved. This restricts perturbations
+                    to the tangent space of the constraint surface — but the charge gradient
+                    direction itself does not contribute a negative eigenvalue, so this constraint
+                    does not change the index.</li>
+                <li><strong>Dilation projected out.</strong> For each soliton there is one
+                    direction in function space corresponding to global radial dilation
+                    (u<sub>n</sub>(r) → u<sub>n</sub>(r/μ)). This direction is a redundancy
+                    of the description — like a gauge direction — and contributes one
+                    negative eigenvalue that we project out. <strong>This is the −1 in
+                    n − 1</strong>.</li>
+            </ul>
             <p>
-                After this projection, the constrained Morse indices are exactly
-                <code>(0, 0, 1, 2)</code> for <code>n = 0, 1, 2, 3</code>. This matches
-                <code>max(0, n−1)</code> — the F3 theorem prediction. <code>u<sub>0</sub></code>
-                and <code>u<sub>1</sub></code> are stable; <code>u<sub>2</sub></code> has one
-                decay direction (tau); <code>u<sub>3</sub></code> has two (excluded as a fourth lepton).
+                The result m<sub>phys</sub> = n − 1 is therefore not a coincidence, it's
+                the unconstrained index minus one (one negative direction = the dilation
+                redundancy).
             </p>
 
-            <h3>Why this isn't a live solver</h3>
+            <h3 style="margin-top: 18px;">Why this is a topological result, not a fit</h3>
+            <p>
+                The theorem assumes only:
+            </p>
+            <ul style="color:#444; font-size: 13.5px;">
+                <li>A tachyonic quadratic region stabilised by a sextic tail (K<sub>2</sub> &gt; 0,
+                    K<sub>4</sub> &lt; 0, K<sub>6</sub> &gt; 0).</li>
+                <li>The barrier-existence condition K<sub>4</sub>² &gt; 4 K<sub>2</sub> K<sub>6</sub>
+                    (which gives the double-well structure).</li>
+                <li>The two physical constraints above.</li>
+            </ul>
+            <p>
+                In MFT, these three structural inputs are all <em>derived</em> rather than
+                assumed: K<sub>2</sub> &gt; 0 from soliton localisation, K<sub>4</sub> &lt; 0
+                from Derrick's theorem applied to Q-ball solitons in 3D (P1), K<sub>6</sub> &gt; 0
+                from the requirement that the energy is bounded below, and the barrier
+                condition from the Symmetric Back-Reaction Theorem (P2). The 14-configuration
+                stress test above shows that the index pattern is preserved across ±10 %
+                variations in <em>each</em> numerical parameter — confirming that the
+                three-family count is a topological feature of the variational problem,
+                not a fine-tuned coincidence.
+            </p>
+
+            <h3 style="margin-top: 18px;">What this calculation does NOT predict</h3>
+            <p>
+                The theorem explains <em>why three</em>, not <em>how heavy</em>. The position-space
+                model on this page yields E<sub>2</sub>/E<sub>1</sub> = 1.91, which is far from
+                the observed m<sub>τ</sub>/m<sub>μ</sub> = 16.82. This is by design: F3 is
+                <strong>topological</strong>. The mass <em>ratios</em> require the full nonlinear
+                Q-ball dynamics in field space — which is what the
+                <a href="../qball-solver/">Q-Ball Spectrum Solver</a> computes. There, with the
+                silver-ratio condition λ<sub>4</sub>² = 8 m<sub>2</sub> λ<sub>6</sub>, the
+                same theorem yields m<sub>τ</sub>/m<sub>μ</sub> = 16.95 (0.8% from observation).
+            </p>
+            <p>
+                The two pages are <strong>two views of the same theorem</strong>: F3 says
+                three modes are admissible; the Q-Ball solver shows which three modes the
+                four Standard Model sectors actually fill (charged leptons, up-quarks,
+                down-quarks, gauge bosons) and what their masses are.
+            </p>
+
+            <h3 style="margin-top: 18px;">Why this isn't a live solver</h3>
             <p>
                 Computing the F3 dataset at full resolution (N = 3000, four modes, full
                 Hessian eigendecomposition with constraint projection) takes minutes on a
                 workstation and tens of minutes in a browser via Pyodide. The result is also
-                a one-shot proof: at the canonical silver-ratio parameters, the Morse-index
-                pattern is <code>(0, 0, 1, 2)</code> — and that's the theorem. There's nothing
-                meaningful to vary that would change the qualitative answer.
+                a <em>one-shot proof</em>: at the canonical silver-ratio parameters, the
+                Morse-index pattern is <code>(0, 0, 1, 2)</code> — and that's the theorem.
+                The 14 stress tests above confirm there's nothing meaningful to vary that
+                would change the qualitative answer.
             </p>
             <p>
-                So this page presents the published canonical result rather than recomputing it.
-                If you want to verify it yourself, run
+                So this page presents the published canonical result rather than recomputing
+                it. To verify it yourself, run
                 <a href="../scripts/family_of_three_theorem.py"><code>family_of_three_theorem.py</code></a>
                 from the corpus locally — the JSON output you'd produce is exactly what's
                 visualised here.
             </p>
 
-            <h3>Source</h3>
+            <h3 style="margin-top: 18px;">Sources</h3>
             <p>
-                The F3 theorem and its numerical verification are P3 of the corpus
-                (<em>Family-of-Three Stability in MFT</em>). The stability theorem with full
-                proof, the constraint-projection construction, and the canonical numerical
-                dataset are all in
-                <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P3 on Zenodo</a>.
-                See <a href="../particles/">Particles §2</a> for the F3 theorem in the
-                broader MFT context.
+                The F3 theorem and its numerical verifications are spread across four scripts
+                and three corpus papers:
+            </p>
+            <ul style="color:#444; font-size: 13px;">
+                <li><a href="../scripts/family_of_three_theorem.py"><code>family_of_three_theorem.py</code></a>
+                    — the canonical position-space solver. Computes the four soliton modes,
+                    the unconstrained spectrum, and the constrained Morse indices. The JSON
+                    output is exactly what this page visualises.</li>
+                <li><a href="../scripts/mft_family_of_three_theorem_presentation.py"><code>mft_family_of_three_theorem_presentation.py</code></a>
+                    — the full publication-ready run, including all 14 stress tests and the
+                    extension to n = 5.</li>
+                <li><a href="../scripts/figures_family_of_three.py"><code>figures_family_of_three.py</code></a>
+                    — figure generation for the published P3 paper.</li>
+                <li><a href="../scripts/mft_energy_landscape.py"><code>mft_energy_landscape.py</code></a>
+                    — the independent verification via the Q-ball energy landscape (shown in
+                    the green panel above): E(φ<sub>core</sub>; Q = Q<sub>0</sub>) has
+                    exactly three critical points.</li>
+            </ul>
+            <p>
+                The full physics is in <strong>P3 of the corpus</strong>
+                (<em>The Family-of-Three Stability Theorem in MFT</em>) with cross-references to
+                <strong>P1</strong> (the K<sub>4</sub> &lt; 0 derivation),
+                <strong>P2</strong> (the silver-ratio condition λ<sub>4</sub>² = 8 m<sub>2</sub> λ<sub>6</sub>), and
+                <strong>P4</strong> (the Q-ball mass calculation that turns the three admissible
+                modes into m<sub>e</sub>, m<sub>μ</sub>, m<sub>τ</sub>).
+                Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>.
+                See <a href="../particles/">Particles</a> for the F3 theorem in the broader MFT context.
             </p>
         </section>
 
