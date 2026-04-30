@@ -386,7 +386,7 @@ PRESETS = {
         'm2': 1.0, 'lam4': 2.0, 'lam6': 0.5, 'beta': 1.016e-4,
         'description': (
             'The canonical MFT silver-ratio condition: λ₄² = 8 m² λ₆ exactly. '
-            'All thirteen silver-ratio manifestations active. Hierarchy ratio '
+            'All fourteen silver-ratio manifestations active. Hierarchy ratio '
             'locked at δ⁴ - 1 = 32.97, matching observed 32.58 to 1.2%.'
         ),
     },
