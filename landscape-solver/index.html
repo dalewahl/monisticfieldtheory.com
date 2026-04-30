@@ -28,13 +28,18 @@
     <main class="container">
         <h1>Energy Landscape Visualizer</h1>
         <p class="lede">
-            See how the topology of the MFT sextic potential
-            V<sub>6</sub>(φ) = m²φ²/2 − λ<sub>4</sub>φ⁴/4 + λ<sub>6</sub>φ⁶/6
-            changes as the dimensionless ratio ρ = λ<sub>4</sub>²/(m²λ<sub>6</sub>) varies.
-            For ρ &lt; 4 there is no barrier; at ρ = 8 exactly, the Symmetric Back-Reaction
-            condition gives the silver-ratio double-well with field-space ratio
-            φ<sub>v</sub>/φ<sub>b</sub> = δ = 1+√2. Slide ρ continuously and watch the
-            potential reshape in real time.
+            <strong>The MFT sextic potential has just one free shape parameter:</strong>
+            ρ = λ<sub>4</sub>² / (m² λ<sub>6</sub>). Slide it around. At <strong>ρ = 8 exactly,</strong>
+            the Symmetric Back-Reaction Theorem (P2) is satisfied, the field-space ratio
+            φ<sub>v</sub>/φ<sub>b</sub> equals the silver ratio δ = 1+√2, and the hierarchy
+            ratio V²(φ_v)/V²(φ_b) − 1 locks at <strong>δ⁴ − 1 = 32.97</strong> — matching
+            the observed neutrino mass-hierarchy ratio to 1.2%. Move ρ off 8 and watch the
+            prediction break.
+        </p>
+        <p class="hint" style="margin-top: -8px;">
+            Every other MFT solver lives at ρ = 8. This page is the parameter-space context
+            for those calculations — what the potential looks like, and what would happen
+            if the silver-ratio condition were violated.
         </p>
 
         <section class="ls-grid">
@@ -101,80 +106,212 @@
             </section>
         </section>
 
-        <section class="explanatory">
-            <h2>About this visualization</h2>
+        <!-- Two senses of "energy landscape" callout -->
+        <section id="two-senses" style="margin-top: 32px; padding: 18px 20px; background: #fff7e6; border: 1px solid #f0c987; border-radius: 6px;">
+            <h2 style="margin: 0 0 8px; color: #8a5a00;">Two senses of "energy landscape"</h2>
+            <p style="margin: 0 0 8px; font-size: 14px;">
+                MFT discusses two related but distinct objects, both sometimes called
+                "energy landscapes." It's worth being clear which one this page shows:
+            </p>
+            <ul style="margin: 0 0 0 0; color:#444; font-size: 13.5px;">
+                <li>
+                    <strong>This page:</strong> the bulk potential
+                    <em>V(φ) = m²φ²/2 − λ<sub>4</sub>φ⁴/4 + λ<sub>6</sub>φ⁶/6</em>
+                    as a function of the contraction-field amplitude φ, parametrised by ρ.
+                    Closed-form algebra. The shape of V(φ) is what determines whether
+                    solitons exist at all and, if so, what their mass hierarchy is.
+                </li>
+                <li>
+                    <strong>The constrained Q-ball energy landscape:</strong>
+                    <em>E(φ_core; Q = Q<sub>0</sub>)</em> — the total energy of a Q-ball
+                    soliton as a function of its central amplitude, at fixed Noether charge.
+                    This is what
+                    <a href="../scripts/mft_energy_landscape.py" style="color:#8a5a00; font-weight: 500;"><code>mft_energy_landscape.py</code></a>
+                    and <a href="../scripts/energy_landscape_doublewell.py" style="color:#8a5a00; font-weight: 500;"><code>energy_landscape_doublewell.py</code></a>
+                    compute (~3 minutes each on a workstation, impractical in the browser).
+                    At ρ = 8 it has <strong>exactly three critical points</strong> (muon, barrier,
+                    tau) — see the green "Independent verification" panel on the
+                    <a href="../f3-solver/" style="color:#8a5a00; font-weight: 500;">F3 Visualizer</a>
+                    where this is shown.
+                </li>
+            </ul>
+        </section>
 
-            <h3>What ρ controls</h3>
+        <!-- F3 / parameter-space connection -->
+        <section id="parameter-space-connection" style="margin-top: 24px; padding: 18px 20px; background: #f4f9f4; border: 1px solid #bee0c2; border-radius: 6px;">
+            <h2 style="margin: 0 0 8px; color: #1f5c2a;">Why ρ = 8 specifically</h2>
+            <p style="margin: 0 0 10px; font-size: 14px;">
+                The condition ρ = 8 is not a fitted choice. It's the unique value at which
+                <strong>Σ(φ_b) = Σ(φ_v)</strong> — the gravitational back-reaction strengths
+                at the barrier and at the nonlinear vacuum are equal. The Symmetric Back-Reaction
+                Theorem (P2 of the corpus) forces this, and the silver ratio δ = 1+√2 is the
+                unique fixed point of the resulting back-reaction map.
+            </p>
+            <p style="margin: 0; font-size: 13.5px; color: #555;">
+                The live readout in the sidebar shows how dramatically things break when
+                you move off 8: a 10% deviation in ρ already shifts the hierarchy ratio
+                by ~60-100% from its silver target. This is why the
+                <a href="../f3-solver/" style="color:#1f5c2a; font-weight: 500;">F3 theorem</a>
+                produces exactly three modes only at this specific ρ, why the
+                <a href="../qball-solver/" style="color:#1f5c2a; font-weight: 500;">Q-ball spectrum</a>
+                reproduces the lepton mass ratios only at this ρ, and why the
+                <a href="../neutrino-solver/" style="color:#1f5c2a; font-weight: 500;">neutrino hierarchy</a>
+                matches PDG only at this ρ. The four sister solvers are doing physics at one
+                point in the parameter space this page lets you tour.
+            </p>
+        </section>
+
+        <!-- Cross-link to sister solvers -->
+        <section id="solver-links" style="margin-top: 24px; padding: 14px 20px; background: #fafafa; border: 1px solid #e0e4ea; border-radius: 6px;">
+            <p style="margin: 0; font-size: 14px;">
+                <strong>The four sister solvers all live at ρ = 8.</strong>
+                The <a href="../qball-solver/" style="font-weight: 500;">Q-Ball Spectrum</a>
+                computes lepton, quark, and boson masses at this point. The
+                <a href="../neutrino-solver/" style="font-weight: 500;">Neutrino Hierarchy</a>
+                gives Δm²₃₂/Δm²₂₁ = δ⁴ − 1 here. The
+                <a href="../f3-solver/" style="font-weight: 500;">Family-of-Three Visualizer</a>
+                shows the constrained Morse-index analysis at this point, with stress tests
+                across ±10% perturbations confirming the topological robustness of the result.
+                The <a href="../galactic-solver/" style="font-weight: 500;">Galactic Solver</a>
+                applies the same potential at galactic scale. This page shows you the
+                parameter-space context where they all sit.
+            </p>
+        </section>
+
+        <section class="explanatory">
+            <h2>About this calculation</h2>
+
             <p>
-                The MFT sextic potential V<sub>6</sub>(φ) = m²φ²/2 − λ<sub>4</sub>φ⁴/4 + λ<sub>6</sub>φ⁶/6
-                has three free coefficients. Two of them set the units of φ and V, leaving
-                <strong>one dimensionless shape parameter</strong>:
+                The MFT contraction-field potential is a sextic polynomial:
+                V<sub>6</sub>(φ) = m²φ²/2 − λ<sub>4</sub>φ⁴/4 + λ<sub>6</sub>φ⁶/6. It has
+                three free coefficients (m², λ<sub>4</sub>, λ<sub>6</sub>), but two of them
+                set the units of φ and V. <strong>Only one dimensionless number controls the
+                shape of the potential</strong>:
             </p>
             <p style="font-family: 'SF Mono', Monaco, Consolas, monospace; padding-left: 24px; color: #234a85;">
                 ρ = λ<sub>4</sub>² / (m² λ<sub>6</sub>)
             </p>
             <p>
-                Everything physically meaningful about the potential's <em>shape</em> depends
-                only on ρ. Solving V'(φ) = 0 gives critical points φ² = (λ<sub>4</sub> ± √(λ<sub>4</sub>² − 4m²λ<sub>6</sub>)) / (2λ<sub>6</sub>),
-                which depend on the discriminant and ratios — i.e., on ρ alone.
+                Every physically meaningful claim about the potential's shape — whether it has
+                a barrier, where the critical points are, what the field-space ratio is, what
+                the hierarchy ratio is — depends only on ρ. This page lets you slide ρ through
+                its full physically interesting range and watch what happens.
             </p>
 
-            <h3>The five regimes</h3>
+            <h3 style="margin-top: 18px;">The five regimes</h3>
+            <p>
+                As ρ varies, V(φ) goes through five qualitatively distinct regimes:
+            </p>
             <ul style="color:#444;">
-                <li><strong>ρ &lt; 4</strong>: discriminant negative. No critical points
+                <li><strong>ρ &lt; 4</strong> — discriminant negative. No critical points
                     other than φ = 0. Single well, no barrier, no nonlinear vacuum.
                     Soliton solutions don't exist. Incompatible with MFT.</li>
-                <li><strong>ρ = 4</strong>: discriminant zero. Inflection point at
-                    φ = √(λ<sub>4</sub>/2λ<sub>6</sub>). The double-well is just
-                    coming into existence — boundary case.</li>
-                <li><strong>4 &lt; ρ &lt; 8</strong>: barrier exists but the double-well
-                    is asymmetric. The back-reaction strengths differ at φ_b and φ_v.
-                    Symmetric Back-Reaction is violated.</li>
-                <li><strong>ρ = 8 (silver-ratio condition)</strong>: Σ(φ_b) = Σ(φ_v) holds
-                    exactly. The field-space ratio φ_v/φ_b equals the silver ratio δ = 1+√2.
-                    V(φ_b) = +1/(3δ), V(φ_v) = −δ/3. The hierarchy ratio ν₃²/ν₂² = δ⁴ − 1.</li>
-                <li><strong>ρ &gt; 8</strong>: the double-well becomes increasingly skewed
-                    in the opposite direction — barrier shrinks, nonlinear vacuum deepens.
-                    The hierarchy ratio overshoots δ⁴ − 1.</li>
+                <li><strong>ρ = 4</strong> — discriminant zero. Inflection point at
+                    φ = √(λ<sub>4</sub>/2λ<sub>6</sub>). Barrier just emerging — the
+                    boundary case.</li>
+                <li><strong>4 &lt; ρ &lt; 8</strong> — barrier exists but the double-well
+                    is asymmetric. The back-reaction strengths Σ(φ_b) ≠ Σ(φ_v). The
+                    hierarchy ratio is below δ⁴ − 1 (and even passes through zero around
+                    ρ ≈ 6, where V_b² = V_v²).</li>
+                <li><strong>ρ = 8 (silver-ratio condition)</strong> — Σ(φ_b) = Σ(φ_v) holds
+                    exactly. φ<sub>v</sub>/φ<sub>b</sub> = δ = 1+√2 (the silver ratio).
+                    V(φ_b) = +1/(3δ), V(φ_v) = −δ/3. Hierarchy ratio = δ⁴ − 1 = 32.97.</li>
+                <li><strong>ρ &gt; 8</strong> — the double-well becomes increasingly skewed
+                    in the opposite direction: barrier shrinks, vacuum deepens. The
+                    hierarchy ratio overshoots δ⁴ − 1, badly, and grows roughly as ρ².</li>
             </ul>
 
-            <h3>The silver-ratio condition's algebraic origin</h3>
+            <h3 style="margin-top: 18px;">Why the silver-ratio condition is forced</h3>
             <p>
-                At ρ = 8: V(φ_b) = +1/(3δ), V(φ_v) = −δ/3. These are exact algebraic
-                consequences of substituting φ<sub>b</sub> = √(2−√2), φ<sub>v</sub> = √(2+√2)
-                into V<sub>6</sub>. The fact that they appear with the same factor of 1/3
-                and reciprocal coefficients of δ is what produces the silver ratio's
-                appearance in the hierarchy ratio:
-            </p>
-            <p style="font-family: 'SF Mono', Monaco, Consolas, monospace; padding-left: 24px; color: #234a85;">
-                Δm²₃₂/Δm²₂₁ = [V²(φ_v) − V²(φ_b)] / [V²(φ_b) − V²(0)]<br>
-                = [δ²/9 − 1/(9δ²)] / [1/(9δ²)]<br>
-                = δ⁴ − 1 = 16 + 12√2 ≈ 32.97
+                The condition ρ = 8 — equivalently λ<sub>4</sub>² = 8 m² λ<sub>6</sub> —
+                is the <strong>Symmetric Back-Reaction (SBR) condition</strong>, derived
+                in P2 of the corpus from a self-consistency requirement on the
+                gravitational back-reaction map.
             </p>
             <p>
-                See the <a href="../neutrino-solver/">Neutrino Hierarchy solver</a> for the
-                downstream consequences of this potential shape on the neutrino spectrum.
+                Briefly: when the contraction field has two distinct nontrivial critical
+                points (the barrier and the nonlinear vacuum), each one sources its own
+                metric back-reaction with strength Σ(φ) = V(φ)/V''(φ). The SBR theorem
+                requires these strengths to be equal at the two critical points, otherwise
+                the two-vacuum structure is inconsistent with the underlying gravitational
+                action. Imposing Σ(φ_b) = Σ(φ_v) gives the unique condition
+                λ<sub>4</sub>² = 8 m² λ<sub>6</sub>, and the silver ratio δ = 1+√2 falls
+                out as the unique fixed point of the back-reaction map.
             </p>
-
-            <h3>What this visualizer is, and isn't</h3>
             <p>
-                This is a <strong>visualization of the bulk potential V(φ)</strong>, computed
-                in closed form as you move the slider. It's not a soliton energy landscape
-                (which would be E(φ_core) at fixed Q — see
-                <a href="../scripts/energy_landscape_doublewell.py"><code>energy_landscape_doublewell.py</code></a>
-                for that calculation, which takes ~3 minutes on a workstation and would be
-                impractical in the browser). The <a href="../f3-solver/">F3 visualizer</a>
-                shows the constrained Morse-index analysis at fixed parameters; this
-                visualizer shows the <em>parameter space itself</em>.
+                This is what makes the silver ratio appear in 14 independent manifestations
+                across the corpus: the lepton mass ratios, the pion decay constant
+                (f<sub>π</sub>² = δ to 0.03%), the neutrino hierarchy (Δm²₃₂/Δm²₂₁ = δ⁴ − 1),
+                the field-space ratio φ<sub>v</sub>/φ<sub>b</sub> = δ, and many more. They
+                all trace back to this one condition on V(φ).
             </p>
 
-            <h3>Source</h3>
+            <h3 style="margin-top: 18px;">The hierarchy ratio is the most sensitive diagnostic</h3>
             <p>
-                Closed-form formulas from P1 (sign constraints) and P2 (Symmetric
-                Back-Reaction theorem). The Python scripts that compute the full soliton
-                energy landscape at fixed Q are
-                <a href="../scripts/energy_landscape_doublewell.py"><code>energy_landscape_doublewell.py</code></a>
-                and <a href="../scripts/mft_energy_landscape.py"><code>mft_energy_landscape.py</code></a>.
+                The live readout in the sidebar shows the hierarchy ratio
+                Δm²₃₂/Δm²₂₁ = [V²(φ_v) − V²(φ_b)] / V²(φ_b) at the current ρ. Because
+                this ratio depends on V<sup>4</sup>, it's <strong>extremely sensitive</strong>
+                to the silver-ratio condition:
+            </p>
+            <ul style="color:#444; font-size: 13.5px;">
+                <li>ρ = 8.0 → 32.97 exactly (δ⁴ − 1)</li>
+                <li>ρ = 7.92 (1% off) → ~30.0 (drift −9%)</li>
+                <li>ρ = 7.20 (10% off) → ~11.8 (drift −64%)</li>
+                <li>ρ = 8.80 (10% off in the other direction) → ~71.5 (drift +117%)</li>
+            </ul>
+            <p>
+                The PDG-observed value is 32.58 ± 0.3 — a 1.2% discrepancy from MFT's δ⁴ − 1
+                prediction. Tightening this measurement either tightens the silver-ratio
+                claim further or rules it out. Watching the hierarchy ratio drift live as
+                you slide ρ shows directly what falsifiability looks like in MFT: a 1%
+                miss in ρ corresponds to a ~10% miss in the most precise physical observable
+                this potential predicts.
+            </p>
+
+            <h3 style="margin-top: 18px;">What this page is, and isn't</h3>
+            <p>
+                <strong>This page is a closed-form algebra explorer</strong> for the bulk
+                potential V(φ). The slider varies ρ; the JavaScript computes critical points
+                and V values from the sextic formula; the canvas plots V(φ). No solitons,
+                no Q-ball dynamics, no constrained extremization.
+            </p>
+            <p>
+                <strong>This page is not the constrained Q-ball energy landscape</strong>
+                E(φ_core; Q = Q<sub>0</sub>) — that's the calculation in
+                <code>mft_energy_landscape.py</code> and <code>energy_landscape_doublewell.py</code>,
+                which takes minutes per run on a workstation and is shown (with cached results)
+                in the green "Independent verification" panel on the
+                <a href="../f3-solver/">F3 Visualizer</a>.
+            </p>
+
+            <h3 style="margin-top: 18px;">Sources</h3>
+            <p>
+                The closed-form formulas for V(φ_b), V(φ_v), φ_v/φ_b, and the hierarchy ratio
+                at the silver-ratio condition are derived in P1 and P2 of the corpus. The
+                Python scripts that compute the <em>constrained</em> energy landscape (which
+                is the verification of the Family-of-Three theorem in field space) are
+                separate calculations:
+            </p>
+            <ul style="color:#444; font-size: 13px;">
+                <li><a href="../scripts/mft_energy_landscape.py"><code>mft_energy_landscape.py</code></a>
+                    — computes E(φ_core; Q = Q<sub>0</sub>) at the canonical silver-ratio
+                    parameters, and verifies that it has exactly three critical points
+                    (muon at φ_core ≈ 0.83, barrier at 1.72, tau at 1.99). Shown on the F3 page.</li>
+                <li><a href="../scripts/energy_landscape_doublewell.py"><code>energy_landscape_doublewell.py</code></a>
+                    — alternative implementation of the same calculation. Independent
+                    verification of the three-critical-point result.</li>
+            </ul>
+            <p>
+                Full physics is in <strong>P1</strong> (sign constraints on the sextic potential —
+                K<sub>4</sub> &lt; 0 from Derrick's theorem on Q-ball solitons),
+                <strong>P2</strong> (the Symmetric Back-Reaction theorem deriving
+                λ<sub>4</sub>² = 8 m² λ<sub>6</sub>), and
+                <strong>P3</strong> (the Family-of-Three theorem operating at the
+                silver-ratio condition). Cross-references throughout to
+                <strong>P4</strong> (lepton masses), <strong>P5</strong> (galactic halos),
+                <strong>P8</strong> (microphysics including neutrino masses).
+                Corpus DOI: <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">10.5281/zenodo.19343255</a>.
+                See <a href="../foundations/">Foundations</a> for the broader MFT context.
             </p>
         </section>
 

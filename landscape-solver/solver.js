@@ -361,8 +361,27 @@ function updateAll(rho) {
         const V_v_silver = -DELTA / 3.0;
         const V_b_silver = 1.0 / (3.0 * DELTA);
 
+        // Live hierarchy ratio: Δm²₃₂/Δm²₂₁ = [V²(φ_v) − V²(φ_b)] / V²(φ_b)
+        // At silver ratio (ρ=8): exactly δ⁴ − 1 = 32.97
+        // PDG observed: 32.58
+        const hierarchyTarget = DELTA*DELTA*DELTA*DELTA - 1;  // δ⁴ − 1
+        const V2_b = V_b * V_b;
+        const V2_v = V_v * V_v;
+        const hierarchy = (V2_v - V2_b) / V2_b;  // V(0) = 0 so V²(0) = 0
+        const hierarchyDriftFromTarget = (hierarchy - hierarchyTarget) / hierarchyTarget * 100;
+        const hierarchyDriftFromObs = (hierarchy - 32.58) / 32.58 * 100;
+
+        // Color the hierarchy row by how far we are from the silver target
+        const absDrift = Math.abs(hierarchyDriftFromTarget);
+        const hierarchyColor = absDrift < 1 ? '#1e7e34' : absDrift < 10 ? '#b9770e' : '#922b21';
+
         silverBlock.innerHTML = `
             <h4>Silver-ratio targets</h4>
+            <div class="ratio-row hierarchy-row" style="border-bottom: 2px solid #e8eaee; padding-bottom: 8px; margin-bottom: 8px;">
+                <span class="ratio-name"><strong>Δm²₃₂/Δm²₂₁</strong><br><span style="font-size:11px; color:#888;">hierarchy ratio</span></span>
+                <span class="ratio-val" style="color:${hierarchyColor};"><strong>${hierarchy.toFixed(2)}</strong></span>
+                <span class="target">target δ⁴−1 = ${hierarchyTarget.toFixed(2)}<br><span style="color:${hierarchyColor};">${hierarchyDriftFromTarget >= 0 ? '+' : ''}${hierarchyDriftFromTarget.toFixed(1)}%</span><br><span style="color:#888; font-size:10.5px;">PDG obs: 32.58 (${hierarchyDriftFromObs >= 0 ? '+' : ''}${hierarchyDriftFromObs.toFixed(1)}%)</span></span>
+            </div>
             <div class="ratio-row">
                 <span class="ratio-name">φ_v/φ_b</span>
                 <span class="ratio-val"><strong>${fieldRatio.toFixed(4)}</strong></span>
