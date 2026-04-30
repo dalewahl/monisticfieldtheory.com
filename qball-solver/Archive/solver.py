@@ -473,37 +473,6 @@ def solve_spectrum(params):
                     'sin2_theta_W_observed': float(sin2_obs),
                 }
 
-        # Lepton-specific: tau production thresholds (the unique MFT prediction)
-        lepton_thresholds = None
-        if sector == 'lepton_sector' and triple is not None and scale is not None:
-            ti = (triple['idx0'], triple['idx1'], triple['idx2'])
-            E_e = all_solitons[ti[0]]['E']
-            E_mu = all_solitons[ti[1]]['E']
-            E_tau = all_solitons[ti[2]]['E']
-            phi_core_mu = all_solitons[ti[1]]['phi_core']
-            phi_core_tau = all_solitons[ti[2]]['phi_core']
-
-            thresh_pair_model = 2.0 * E_tau * scale
-            thresh_pair_obs = 2.0 * M_TAU
-            thresh_single_model = (E_tau - E_mu) * scale
-            thresh_single_obs = M_TAU - M_MUON
-
-            lepton_thresholds = {
-                'pair_model_MeV': float(thresh_pair_model),
-                'pair_observed_MeV': float(thresh_pair_obs),
-                'pair_error_pct': float(abs(thresh_pair_model - thresh_pair_obs) / thresh_pair_obs * 100),
-                'single_model_MeV': float(thresh_single_model),
-                'single_observed_MeV': float(thresh_single_obs),
-                'single_error_pct': float(abs(thresh_single_model - thresh_single_obs) / thresh_single_obs * 100),
-                'phi_core_muon': float(phi_core_mu),
-                'phi_core_tau': float(phi_core_tau),
-                'phi_barrier': float(phi_b) if phi_b is not None else 0.0,
-                'phi_vacuum': float(phi_v) if phi_v is not None else 0.0,
-                'muon_pct_barrier': float(phi_core_mu / phi_b * 100) if phi_b else 0.0,
-                'tau_pct_barrier': float(phi_core_tau / phi_b * 100) if phi_b else 0.0,
-                'tau_pct_vacuum': float(phi_core_tau / phi_v * 100) if phi_v else 0.0,
-            }
-
         return {
             'success': True,
             'message': f"Found {len(all_solitons)} distinct solitons.",
@@ -511,7 +480,6 @@ def solve_spectrum(params):
             'triple': triple_data,
             'photon': photon_entry,
             'weinberg': weinberg,
-            'lepton_thresholds': lepton_thresholds,
             'phi_barrier': phi_b,
             'phi_vacuum': phi_v,
             'potential_curve': {'phi': phi_arr.tolist(), 'V': V_arr.tolist()},
@@ -539,7 +507,6 @@ def solve_spectrum(params):
             'triple': None,
             'photon': None,
             'weinberg': None,
-            'lepton_thresholds': None,
             'phi_barrier': None,
             'phi_vacuum': None,
             'potential_curve': None,

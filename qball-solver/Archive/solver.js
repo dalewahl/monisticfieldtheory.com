@@ -37,8 +37,6 @@ async function initPyodide() {
         setTimeout(() => {
             statusSection.style.display = 'none';
             solverUI.style.display = 'grid';
-            const xsec = document.getElementById('cross-sector-panel');
-            if (xsec) xsec.style.display = 'block';
         }, 400);
     } catch (err) {
         statusText.textContent = `Error loading solver: ${err.message}`;
@@ -158,42 +156,18 @@ function plotCurves(canvas, curves, options = {}) {
         for (const m of options.markers) {
             const px = xToPixel(m.x);
             ctx.strokeStyle = m.color || '#888';
-            ctx.lineWidth = m.lineWidth || 1.5;
-            ctx.setLineDash(m.dashed === false ? [] : [4, 3]);
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 3]);
             ctx.beginPath();
             ctx.moveTo(px, padding.top);
             ctx.lineTo(px, padding.top + plotH);
             ctx.stroke();
             ctx.setLineDash([]);
-
-            // If marker has yPos (fraction 0-1), use that; otherwise stack at top
-            // yPos: 0 = top of plot, 1 = bottom of plot
-            const labelY = m.yPos !== undefined
-                ? padding.top + plotH * m.yPos
-                : padding.top + 12;
-
-            if (m.dot) {
-                // Filled dot at the marker's (x, yPos)
-                ctx.fillStyle = m.color || '#888';
-                ctx.beginPath();
-                ctx.arc(px, labelY, 5, 0, 2 * Math.PI);
-                ctx.fill();
-            }
-
             if (m.label) {
                 ctx.fillStyle = m.color || '#888';
-                ctx.font = m.bold ? 'bold 10.5px sans-serif' : '10px sans-serif';
-                // Position label to the right of the line, or to the left if right edge
-                const labelXOffset = m.labelLeft ? -3 : 3;
-                ctx.textAlign = m.labelLeft ? 'right' : 'left';
-                ctx.fillText(m.label, px + labelXOffset, labelY + 4);
-            }
-            if (m.sublabel) {
-                ctx.fillStyle = m.color || '#888';
-                ctx.font = '9px sans-serif';
-                const labelXOffset = m.labelLeft ? -3 : 3;
-                ctx.textAlign = m.labelLeft ? 'right' : 'left';
-                ctx.fillText(m.sublabel, px + labelXOffset, labelY + 16);
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(m.label, px + 3, padding.top + 12);
             }
         }
     }
@@ -223,52 +197,6 @@ function plotCurves(canvas, curves, options = {}) {
 
 // Color palette by particle position in the triple (slot 0/1/2)
 const SLOT_COLORS = ['#27ae60', '#2c5aa0', '#c0392b'];
-
-/* Renders the tau-production-threshold panel for the lepton sector.
- * Returns empty string if not applicable.
- *
- * The story (from mft_qball_lepton_masses.py):
- *   - Muon lives near the barrier (~93% of φ_b)
- *   - Tau lives PAST the barrier in the nonlinear vacuum (~104% of φ_v)
- *   - To form a tau, the local contraction field must cross the barrier
- *   - 2*m_τ pair production threshold: ~3539 MeV (observed 3554 MeV, 0.4%)
- *   - m_τ - m_μ single tau: ~1665 MeV (observed 1671 MeV, 0.4%)
- */
-function tauThresholdPanel(thresholds) {
-    if (!thresholds) return '';
-    const t = thresholds;
-    return `
-        <h4 style="margin-top: 18px;">Tau production threshold (MFT-specific prediction)</h4>
-        <p class="hint" style="margin-bottom: 8px;">
-            The tau lives <strong>past the barrier</strong> at φ_core ≈ ${t.phi_core_tau.toFixed(2)},
-            in the nonlinear vacuum (${t.tau_pct_vacuum.toFixed(0)}% of φ_v).
-            The muon lives at ${t.muon_pct_barrier.toFixed(0)}% of the barrier — close to threshold but still
-            in the linear regime. To <em>form</em> a tau, the local contraction field must be driven over
-            the barrier at φ_b = ${t.phi_barrier.toFixed(3)}. This is a structural prediction of the
-            silver-ratio potential and explains why taus are observed only at colliders, blazars, and AGN —
-            in environments with sufficient energy density.
-        </p>
-        <table class="lepton-ratios-table">
-            <thead>
-                <tr><th>Threshold</th><th>MFT model (MeV)</th><th>Observed (MeV)</th><th>Error</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>2·m<sub>τ</sub> (pair production at e⁺e⁻ colliders)</td>
-                    <td>${t.pair_model_MeV.toFixed(1)}</td>
-                    <td>${t.pair_observed_MeV.toFixed(1)}</td>
-                    <td>${t.pair_error_pct.toFixed(2)}%</td>
-                </tr>
-                <tr>
-                    <td>m<sub>τ</sub> − m<sub>μ</sub> (single tau from a muon)</td>
-                    <td>${t.single_model_MeV.toFixed(1)}</td>
-                    <td>${t.single_observed_MeV.toFixed(1)}</td>
-                    <td>${t.single_error_pct.toFixed(2)}%</td>
-                </tr>
-            </tbody>
-        </table>
-    `;
-}
 
 function renderResults(result) {
     const summary = document.getElementById('results-summary');
@@ -446,7 +374,6 @@ function renderResults(result) {
                 <tbody>${ratioRows}</tbody>
             </table>
             ${weinbergRow}
-            ${tauThresholdPanel(result.lepton_thresholds)}
             ${schemeNote}
             ${photonNote}
         `;
@@ -459,58 +386,17 @@ function renderResults(result) {
     // === Potential plot ===
     const potCanvas = document.getElementById('potential-canvas');
     const pc = result.potential_curve;
-
-    // Build markers: phi_barrier and phi_vacuum always shown.
-    // For the lepton sector (where the barrier-crossing physics is THE story),
-    // show each lepton's position on the potential with percent-of-barrier annotation.
     const markers = [
-        { x: result.phi_barrier, color: '#e67e22', label: `φ_b=${result.phi_barrier.toFixed(3)}`, yPos: 0.05, sublabel: 'barrier' },
-        { x: result.phi_vacuum, color: '#7f8c8d', label: `φ_v=${result.phi_vacuum.toFixed(3)}`, yPos: 0.05, sublabel: 'vacuum' },
+        { x: result.phi_barrier, color: '#e67e22', label: `φ_b=${result.phi_barrier.toFixed(3)}` },
+        { x: result.phi_vacuum, color: '#7f8c8d', label: `φ_v=${result.phi_vacuum.toFixed(3)}` },
     ];
-
     if (triple) {
         const idxs = [triple.idx0, triple.idx1, triple.idx2];
-        const phi_b = result.phi_barrier;
-        const phi_v = result.phi_vacuum;
-
-        // Stagger lepton markers vertically so labels don't overlap with barrier/vacuum or each other
-        const yPositions = [0.20, 0.42, 0.64];
-
         idxs.forEach((idx, slot) => {
             const s = result.spectrum[idx];
-            const phi_c = s.phi_core;
-            const name = triple.particles[slot];
-            const color = SLOT_COLORS[slot];
-
-            // Build sublabel showing position relative to barrier/vacuum
-            let sublabel = '';
-            if (result.sector === 'lepton_sector') {
-                const pctBarrier = (phi_c / phi_b * 100).toFixed(0);
-                const pctVacuum = (phi_c / phi_v * 100).toFixed(0);
-                if (phi_c < 0.5 * phi_b) {
-                    sublabel = `${pctBarrier}% of barrier (deep linear vacuum)`;
-                } else if (phi_c < 1.1 * phi_b) {
-                    sublabel = `${pctBarrier}% of barrier (near threshold)`;
-                } else {
-                    sublabel = `${pctVacuum}% of vacuum (past barrier)`;
-                }
-            } else {
-                sublabel = `φ_core=${phi_c.toFixed(3)}`;
-            }
-
-            markers.push({
-                x: phi_c,
-                color: color,
-                label: name,
-                sublabel: sublabel,
-                yPos: yPositions[slot],
-                bold: true,
-                dot: true,
-                lineWidth: 2,
-            });
+            markers.push({ x: s.phi_core, color: SLOT_COLORS[slot], label: triple.particles[slot] });
         });
     }
-
     plotCurves(potCanvas, [{ xs: pc.phi, ys: pc.V, color: '#333' }], {
         xlabel: 'φ', ylabel: 'V(φ)', markers,
     });
@@ -705,198 +591,7 @@ function loadPreset(name) {
     });
 }
 
-// === Cross-sector verification ===
-
-// Sector definitions for the cross-sector run.
-// Z values match the canonical MFT corpus (DERIVED for leptons/up/down, CONJECTURED for boson).
-const CROSS_SECTORS = [
-    { name: 'lepton_sector', label: 'Charged leptons',     Z: 1.0, particles: ['e', 'μ', 'τ'],   Z_origin: 'V″(0) = 1', Z_kind: 'derived' },
-    { name: 'up_quark_sector',   label: 'Up-type quarks',  Z: 1.0, particles: ['u', 'c', 't'],   Z_origin: 'same as lepton', Z_kind: 'derived' },
-    { name: 'down_quark_sector', label: 'Down-type quarks', Z: 2.0, particles: ['d', 's', 'b'],   Z_origin: 'λ₄/(2λ₆) = 2', Z_kind: 'derived' },
-    { name: 'boson_sector',  label: 'Gauge bosons',         Z: 1.8, particles: ['W', 'Z', 'H'],   Z_origin: '9/5 (SO(3))', Z_kind: 'conjectured' },
-];
-
-let crossSectorRunning = false;
-
-async function runCrossSector() {
-    if (!solverReady || crossSectorRunning) return;
-    crossSectorRunning = true;
-
-    const btn = document.getElementById('cross-sector-btn');
-    const progressDiv = document.getElementById('cross-sector-progress');
-    const resultsDiv = document.getElementById('cross-sector-results');
-
-    btn.disabled = true;
-    btn.textContent = 'Running…';
-    resultsDiv.innerHTML = '';
-
-    const results = [];
-    const startTime = Date.now();
-
-    for (let i = 0; i < CROSS_SECTORS.length; i++) {
-        const sec = CROSS_SECTORS[i];
-        progressDiv.innerHTML = `
-            <p style="margin: 0; font-size: 13.5px; color: #555;">
-                <span style="display: inline-block; width: 14px; height: 14px; border: 2px solid #2c5aa0;
-                             border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite;
-                             vertical-align: middle; margin-right: 8px;"></span>
-                Sector ${i + 1}/${CROSS_SECTORS.length}: <strong>${sec.label}</strong>
-                (Z = ${sec.Z}${sec.Z_kind === 'conjectured' ? ', conjectured' : ''}) —
-                solving Q-ball equation across ω²…
-            </p>
-            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-        `;
-
-        // Yield to browser so the spinner shows
-        await new Promise(r => setTimeout(r, 50));
-
-        const params = {
-            m2: 1.0, lam4: 2.0, lam6: 0.5, Z: sec.Z, a: 1.0,
-            sector: sec.name, n_omega: 40,
-        };
-
-        try {
-            pyodide.globals.set('xs_params', pyodide.toPy(params));
-            const py = pyodide.runPython('solve_spectrum(xs_params)');
-            const r = py.toJs({ dict_converter: Object.fromEntries });
-            py.destroy();
-            results.push({ sec, result: r });
-        } catch (err) {
-            results.push({ sec, result: { success: false, message: err.message } });
-        }
-
-        // Render partial results so the user sees progress filling in
-        renderCrossSectorResults(results, false);
-    }
-
-    const totalSeconds = ((Date.now() - startTime) / 1000).toFixed(1);
-    progressDiv.innerHTML = `
-        <p style="margin: 0; font-size: 13px; color: #1e7e34;">
-            <strong>✓ Completed</strong> all 4 sectors in ${totalSeconds} s.
-        </p>
-    `;
-
-    renderCrossSectorResults(results, true);
-
-    btn.disabled = false;
-    btn.textContent = 'Re-run cross-sector verification';
-    crossSectorRunning = false;
-}
-
-function renderCrossSectorResults(results, finalised) {
-    const resultsDiv = document.getElementById('cross-sector-results');
-    if (results.length === 0) {
-        resultsDiv.innerHTML = '';
-        return;
-    }
-
-    const errorClass = (errPct) => {
-        if (errPct === null || errPct === undefined) return '';
-        if (errPct < 1) return 'badge ok';
-        if (errPct < 10) return 'badge';
-        return 'badge warn';
-    };
-    const fmtPct = (p) => p === null || p === undefined ? '—' : `${p.toFixed(p < 1 ? 2 : 1)}%`;
-
-    const rows = results.map(({ sec, result }) => {
-        if (!result.success || !result.triple) {
-            return `
-                <tr>
-                    <td><strong>${sec.label}</strong></td>
-                    <td>${sec.Z}</td>
-                    <td colspan="6"><span class="badge warn">no triple identified</span></td>
-                </tr>
-            `;
-        }
-        const t = result.triple;
-        const m = t.mass_ratios_model;
-        const o = t.mass_ratios_observed;
-        const err = m.map((mi, i) => 100 * Math.abs(mi - o[i]) / o[i]);
-
-        // For up-quark sector, R10 is scheme-dependent
-        const isUpQuark = sec.name === 'up_quark_sector';
-        const r10ErrCell = isUpQuark
-            ? '<span class="badge warn" title="m_u is scheme-dependent (MS-bar at μ=2 GeV)">scheme-dep</span>'
-            : `<span class="${errorClass(err[0])}">${fmtPct(err[0])}</span>`;
-        const r20ErrCell = isUpQuark
-            ? '<span class="badge warn" title="m_u is scheme-dependent">scheme-dep</span>'
-            : `<span class="${errorClass(err[2])}">${fmtPct(err[2])}</span>`;
-
-        const particles = t.particles.join(', ');
-        const Zkind = sec.Z_kind === 'derived' ? 'derived' : 'conjectured';
-
-        return `
-            <tr>
-                <td><strong>${sec.label}</strong> <span class="muted" style="font-size:11px;">(${particles})</span></td>
-                <td>${sec.Z} <span class="muted" style="font-size:11px;">(${Zkind})</span></td>
-                <td>${m[0].toFixed(2)}</td>
-                <td>${o[0].toFixed(2)}</td>
-                <td>${r10ErrCell}</td>
-                <td>${m[1].toFixed(3)}</td>
-                <td>${o[1].toFixed(3)}</td>
-                <td><span class="${errorClass(err[1])}">${fmtPct(err[1])}</span></td>
-            </tr>
-        `;
-    }).join('');
-
-    // Pending rows for sectors not yet computed
-    const pendingRows = CROSS_SECTORS.slice(results.length).map(sec => `
-        <tr style="opacity: 0.4;">
-            <td><strong>${sec.label}</strong> <span class="muted" style="font-size:11px;">(${sec.particles.join(', ')})</span></td>
-            <td>${sec.Z}</td>
-            <td colspan="6"><em>pending…</em></td>
-        </tr>
-    `).join('');
-
-    let footer = '';
-    if (finalised) {
-        // Count successful matches
-        const goodCount = results.filter(({ result }) => {
-            if (!result.success || !result.triple) return false;
-            const m = result.triple.mass_ratios_model;
-            const o = result.triple.mass_ratios_observed;
-            // For non-up-quark sectors, both ratios should be < 10%
-            // For up-quark, just R21
-            const isUp = result.sector === 'up_quark_sector';
-            const r10err = 100 * Math.abs(m[0] - o[0]) / o[0];
-            const r21err = 100 * Math.abs(m[1] - o[1]) / o[1];
-            return isUp ? (r21err < 10) : (r10err < 10 && r21err < 10);
-        }).length;
-
-        footer = `
-            <p style="margin-top: 12px; font-size: 13.5px; color: #1e7e34;">
-                <strong>${goodCount}/4 sectors matched</strong> using one universal potential
-                (m₂=1, λ₄=2, λ₆=0.5) and four derived/conjectured Z values. No fitted parameters
-                across sectors — each sector uses one anchor mass for energy calibration.
-            </p>
-        `;
-    }
-
-    resultsDiv.innerHTML = `
-        <div style="overflow-x: auto;">
-            <table class="lepton-ratios-table" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th rowspan="2" style="vertical-align: middle;">Sector</th>
-                        <th rowspan="2" style="vertical-align: middle;">Z</th>
-                        <th colspan="3" style="text-align: center; border-bottom: 1px solid #ddd;">m₂/m₁ (R10)</th>
-                        <th colspan="3" style="text-align: center; border-bottom: 1px solid #ddd;">m₃/m₂ (R21)</th>
-                    </tr>
-                    <tr>
-                        <th style="font-size: 12px; font-weight: 500;">model</th>
-                        <th style="font-size: 12px; font-weight: 500;">observed</th>
-                        <th style="font-size: 12px; font-weight: 500;">error</th>
-                        <th style="font-size: 12px; font-weight: 500;">model</th>
-                        <th style="font-size: 12px; font-weight: 500;">observed</th>
-                        <th style="font-size: 12px; font-weight: 500;">error</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}${pendingRows}</tbody>
-            </table>
-        </div>
-        ${footer}
-    `;
-}
+// === Wiring ===
 
 document.addEventListener('DOMContentLoaded', () => {
     initPyodide();
@@ -909,7 +604,4 @@ document.addEventListener('DOMContentLoaded', () => {
             loadPreset(name);
         });
     });
-
-    const xsBtn = document.getElementById('cross-sector-btn');
-    if (xsBtn) xsBtn.addEventListener('click', runCrossSector);
 });

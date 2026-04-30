@@ -36,12 +36,6 @@
             Z value and angular momentum ℓ. The corresponding particle triple is found
             automatically by matching observed mass ratios.
         </p>
-        <p class="hint" style="margin-top: -8px;">
-            Pick a sector preset to compute its spectrum, or
-            <a href="#cross-sector-panel" style="color: #2c5aa0; font-weight: 500;">
-            run the cross-sector verification</a>
-            below to see all four sectors side-by-side using the same potential.
-        </p>
 
         <section class="status" id="status">
             <p id="status-text">Loading Pyodide and Python solver…</p>
@@ -125,26 +119,6 @@
 
                 <div id="spectrum-table-container"></div>
             </section>
-        </section>
-
-        <section class="cross-sector-panel" id="cross-sector-panel" style="display: none; margin-top: 28px; padding: 18px 20px; background: #f8f9fb; border: 1px solid #e0e4ea; border-radius: 6px;">
-            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 280px;">
-                    <h2 style="margin: 0 0 6px;">Cross-sector universality</h2>
-                    <p style="margin: 0 0 10px; color: #555; font-size: 14px;">
-                        Run all four sectors with the <strong>same potential parameters</strong>
-                        (m₂=1, λ₄=2, λ₆=0.5) and see all the mass ratios at once. Each sector uses its
-                        own derived Z value and its own calibration anchor — there are no fitted
-                        parameters across sectors.
-                    </p>
-                </div>
-                <div>
-                    <button id="cross-sector-btn" class="solve-button" style="white-space: nowrap;">Run cross-sector verification</button>
-                    <p class="solve-time-note" style="text-align: right; margin-top: 4px;">~60–90 seconds total (4 sectors)</p>
-                </div>
-            </div>
-            <div id="cross-sector-progress" style="margin-top: 12px;"></div>
-            <div id="cross-sector-results" style="margin-top: 12px;"></div>
         </section>
 
         <section class="explanatory">
