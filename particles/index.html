@@ -789,16 +789,101 @@
             </p>
 
             <!-- Bosons -->
-            <h3>6c. The electroweak boson sector — deriving $Z_{\text{boson}} = 9/5$</h3>
+            <h3>6c. Deriving the three sector couplings <span class="paper-tag">P8</span></h3>
             <p>
-                The Coulomb couplings for leptons ($Z_{\text{lep}} = 1$) and down quarks
-                ($Z_{\text{down}} = 2$) are derived directly from potential structure:
-                $Z_{\text{lep}} = V''(0) = m^2$, $Z_{\text{down}} = (\varphi_b^2 + \varphi_v^2)/2 = \lambda_4/(2\lambda_6)$.
-                The boson coupling $Z_{\text{boson}} = 9/5$ is conjectured from SO(3) mode
-                counting in three dimensions.
+                The Q-ball equation contains a Coulomb-coupling parameter $Z$ whose value
+                is sector-specific. In the Standard Model, the analogous content (gauge
+                couplings, Yukawa structure, etc.) is fitted to data. In MFT, two of the
+                three values are <strong>derived</strong> from the structure of $V_6(\varphi)$,
+                and the third is conjectured from a clean SO(3) mode-counting argument.
+                None is fitted.
             </p>
 
-            <h4>The mode-counting argument</h4>
+            <h4>The role of $Z$ in the Q-ball equation</h4>
+            <p>
+                The radial Q-ball equation in the silver-ratio potential is
+            </p>
+            <div class="equation-display">
+                $$-\nabla^2 \varphi(r) + V_{\text{eff}}'(\varphi)\, \varphi(r) = -\omega^2\, \varphi(r)$$
+            </div>
+            <p>
+                where the effective potential carries the sector dependence:
+            </p>
+            <div class="equation-display">
+                $$V_{\text{eff}}(\varphi) = V_6(\varphi) - \tfrac{1}{2} Z\, \varphi^2$$
+            </div>
+            <p>
+                The parameter $Z$ controls the curvature the Q-ball <em>feels</em> at its
+                operating point in field space. Linearising around the relevant vacuum
+                $\varphi_*$ gives an effective mass-squared for fluctuations,
+                $V_{\text{eff}}''(\varphi_*) = V''(\varphi_*) - Z$. Solitons in different
+                sectors live at different field-space regimes — leptons in the linear
+                vacuum near $\varphi = 0$, down-type quarks across the double-well, bosons
+                in the high-curvature regime — and their effective $Z$ values are determined
+                by where in field space they sit.
+            </p>
+
+            <h4>$Z_{\text{lep}} = V''(0) = m_2 = 1$ (curvature at the linear vacuum)</h4>
+            <p>
+                Charged-lepton solitons are admissible modes of the Family-of-Three theorem
+                — three states $\{u_0, u_1, u_2\}$ that all extrapolate from the linear
+                vacuum at $\varphi = 0$. The electron sits at $\varphi_{\text{core}} \approx 0$;
+                the muon and tau are excited modes of the <em>same</em> Q-ball equation
+                with the same vacuum. The effective Coulomb coupling each feels is therefore
+                the curvature of the bare potential at the linear vacuum:
+            </p>
+            <div class="equation-display">
+                $$\boxed{Z_{\text{lep}} = V''(\varphi=0) = m_2 = 1}$$
+            </div>
+            <p>
+                where the last equality uses the canonical normalisation $m_2 = 1$. This is
+                an algebraic consequence of the potential's quadratic-tachyonic structure:
+                $V_6(\varphi) = m_2\varphi^2/2 - \lambda_4\varphi^4/4 + \lambda_6\varphi^6/6$
+                gives $V''(\varphi) = m_2 - 3\lambda_4\varphi^2 + 5\lambda_6\varphi^4$, and at
+                $\varphi = 0$ this reduces to $V''(0) = m_2$.
+            </p>
+
+            <h4>$Z_{\text{down}} = (\varphi_b^2 + \varphi_v^2)/2 = \lambda_4/(2\lambda_6) = 2$ (Vieta average)</h4>
+            <p>
+                Down-type quarks are confined solitons that extend across the double-well
+                — their Q-ball amplitude does not localise at either critical point but
+                interpolates between them. The effective coupling they feel is therefore
+                <em>not</em> the curvature at any single vacuum but the symmetric combination
+                of the two.
+            </p>
+            <p>
+                The two non-trivial critical points of $V_6(\varphi)$ satisfy the quadratic
+                $\lambda_6\varphi^4 - \lambda_4\varphi^2 + m_2 = 0$ (after dividing $V'(\varphi)/\varphi = 0$
+                by $\varphi$). In the variable $u = \varphi^2$, this is
+                $\lambda_6 u^2 - \lambda_4 u + m_2 = 0$, with roots $u_b = \varphi_b^2$ and
+                $u_v = \varphi_v^2$. Vieta's formulas give:
+            </p>
+            <div class="equation-display">
+                $$u_b + u_v = \frac{\lambda_4}{\lambda_6}, \qquad u_b\, u_v = \frac{m_2}{\lambda_6}$$
+            </div>
+            <p>
+                The down-quark Coulomb coupling is the average of these field-space squares:
+            </p>
+            <div class="equation-display">
+                $$\boxed{Z_{\text{down}} = \frac{\varphi_b^2 + \varphi_v^2}{2} = \frac{\lambda_4}{2\lambda_6} = 2}$$
+            </div>
+            <p>
+                where the final equality uses the silver-ratio condition
+                $\lambda_4/\lambda_6 = 4$ (which follows from $\lambda_4^2 = 8 m_2 \lambda_6$
+                with $m_2 = 1$). The factor of 2 in the denominator is the symmetric
+                averaging; the factor $\lambda_4/\lambda_6$ is the Vieta sum. <strong>Both
+                are algebraic — neither is fitted.</strong>
+            </p>
+            <p>
+                Numerically: $\varphi_b^2 = 2 - \sqrt{2} \approx 0.586$ and $\varphi_v^2 = 2 + \sqrt{2}
+                \approx 3.414$. Their average is exactly 2.
+            </p>
+
+            <h4>$Z_{\text{boson}} = 9/5$ (SO(3) mode counting)</h4>
+            <p>
+                Unlike the previous two, the boson coupling is <em>conjectured</em> rather
+                than derived in closed form. The argument:
+            </p>
             <p>
                 In three dimensions, the displacement gradient $\partial_i u_j$ of the
                 elastic medium has $3^2 = 9$ independent components. Under SO(3), these
@@ -857,6 +942,21 @@
                 coupling enhanced by $9/5$. If confirmed, the three sector couplings would
                 join the potential shape as derived consequences of the medium's structure.
             </p>
+
+            <h4>Summary: where each sector lives in field space</h4>
+            <div class="chain-wrapper">
+                <table class="chain-table">
+                    <thead>
+                        <tr><th>Sector</th><th>Field-space regime</th><th>Effective curvature</th><th>$Z$ value</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Charged leptons</td><td>Linear vacuum, $\varphi \to 0$</td><td>$V''(0)$</td><td>$1$</td><td><strong>Derived</strong></td></tr>
+                        <tr><td>Down-type quarks</td><td>Spans the double-well</td><td>$(\varphi_b^2 + \varphi_v^2)/2$</td><td>$2$</td><td><strong>Derived</strong></td></tr>
+                        <tr><td>Up-type quarks</td><td>Linear-vacuum with $V_6$ structure</td><td>$V''(0)$ (shared with leptons)</td><td>$1$</td><td><strong>Derived</strong></td></tr>
+                        <tr><td>Electroweak bosons</td><td>Tensor-mode regime</td><td>$N_{\text{tot}}/(N_{\text{tot}}-N_{\text{bos}})$</td><td>$9/5$</td><td>Conjectured</td></tr>
+                    </tbody>
+                </table>
+            </div>
 
             <p class="paper-link">
                 <a href="https://doi.org/10.5281/zenodo.19343255" target="_blank">P8: Microphysics (Zenodo) →</a>
